@@ -14,11 +14,11 @@ interface User extends Document {
 	clerkId: string;
 	email: string;
 	username: string;
-	firstName: string;
-	lastName: string;
+	firstName?: string;
+	lastName?: string;
 	photo: string;
 	hasProfileCompleted: boolean;
-	address: Address;
+	address?: Address;
 }
 
 // Define Address schema
@@ -39,7 +39,7 @@ const UserSchema = new Schema<User>({
 	lastName: { type: String },
 	photo: { type: String, required: true },
 	hasProfileCompleted: { type: Boolean, required: true, default: false },
-	address: { type: AddressSchema, required: false },
+	address: { type: AddressSchema },
 });
 
 // Define the User model with the User interface
