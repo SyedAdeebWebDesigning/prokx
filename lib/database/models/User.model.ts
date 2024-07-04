@@ -39,7 +39,7 @@ const UserSchema = new Schema<User>({
 	lastName: { type: String, required: true },
 	photo: { type: String, required: true },
 	hasProfileCompleted: { type: Boolean, required: true, default: false },
-	address: { type: AddressSchema, required: true },
+	address: { type: AddressSchema, required: false },
 });
 
 // Define the User model with the User interface

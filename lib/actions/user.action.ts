@@ -1,6 +1,6 @@
 "use server";
 
-import User from "../database/models/User.model";
+import User, { User as UserType } from "../database/models/User.model";
 import { connectToDatabase } from "../database";
 
 export interface createUserProps {
@@ -11,13 +11,6 @@ export interface createUserProps {
 	lastName: string;
 	photo: string;
 	hasProfileCompleted: boolean;
-	address?: {
-		street: string;
-		city: string;
-		state: string;
-		country: string;
-		postalCode: string;
-	};
 }
 
 export const createUser = async (user: createUserProps) => {
@@ -27,6 +20,6 @@ export const createUser = async (user: createUserProps) => {
 		const newUser = await User.create(user);
 		return JSON.parse(JSON.stringify(newUser));
 	} catch (error) {
-		console.log(error);
+		console.error("Error creating user:", error);
 	}
 };
