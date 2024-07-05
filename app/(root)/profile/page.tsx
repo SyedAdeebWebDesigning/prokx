@@ -9,9 +9,8 @@ interface pageProps {
 }
 
 const Page = async ({ searchParams }: pageProps) => {
-	const { sessionClaims } = auth();
-	const userId = sessionClaims?.userId as string;
-	const user = await getUserById(userId as string);
+	const currentClerkUser = await currentUser();
+	const user = await getUserById(currentClerkUser?.id as string);
 	return (
 		<div>
 			<AddressForm searchParams={searchParams} user={user} />

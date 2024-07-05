@@ -48,11 +48,11 @@ export const createUser = async (user: createUserProps) => {
 	}
 };
 
-export const getUserById = async (userId: string) => {
+export const getUserById = async (clerkId: string) => {
 	try {
 		await connectToDatabase();
 
-		const user = await User.findOne({ _id: userId });
+		const user = await User.findOne({ clerkId: clerkId });
 		if (!user) {
 			return {};
 		}

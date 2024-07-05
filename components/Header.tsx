@@ -31,7 +31,8 @@ const Header = async ({}: HeaderProps) => {
 	];
 	const { sessionClaims } = auth();
 	const userId = sessionClaims?.userId as string;
-	const clerkUser = await getUserById(userId as string);
+	const currentClerkUser = await currentUser();
+	const clerkUser = await getUserById(currentClerkUser?.id as string);
 
 	return (
 		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg">

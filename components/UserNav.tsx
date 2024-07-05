@@ -24,16 +24,26 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
-				<div className="flex items-center justify-center">
-					<UserIcon className="size-8 p-1 bg-blue-100 rounded-full shadow-xl" />
+				<div className="relative size-8">
+					<Image
+						className="size-8 bg-blue-100 rounded-full shadow-xl"
+						src={clerkUser.photo}
+						fill
+						alt="User Photo"
+					/>
 				</div>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
 				className="bg-gray-100 w-[350px] shadow-xl p-4 rounded-xl"
 				align="end">
 				<div className="flex items-center justify-start gap-2 p-2 w-full">
-					<div className="flex items-center justify-center">
-						<UserIcon className="size-8 p-1 bg-blue-100 rounded-full shadow-xl" />
+					<div className="relative size-8">
+						<Image
+							className="size-8 bg-blue-100 rounded-full shadow-xl"
+							src={clerkUser.photo}
+							fill
+							alt="User Photo"
+						/>
 					</div>
 					<div className="flex flex-col space-y-0.5 leading-none">
 						<p className="font-medium text-sm text-black line-clamp-1">
@@ -63,7 +73,10 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 							<Button
 								variant={"destructive"}
 								className="cursor-pointer w-full h-7 rounded-full bg-red-500 hover:bg-red-600 focus:bg-red-600"
-								onClick={() => signOut()}>
+								onClick={() => {
+									signOut();
+									window.location.href = `/sign-in`;
+								}}>
 								Logout
 							</Button>
 						</DropdownMenuItem>
