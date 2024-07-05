@@ -37,8 +37,9 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 					</div>
 					<div className="flex flex-col space-y-0.5 leading-none">
 						<p className="font-medium text-sm text-black line-clamp-1">
-							Manage your account
+							Manage your account <br />
 						</p>
+						<span className="text-xs">{clerkUser.email}</span>
 					</div>
 				</div>
 				<DropdownMenuSeparator className="bg-gray-300 h-[2px]" />
