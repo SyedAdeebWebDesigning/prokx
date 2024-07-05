@@ -1,4 +1,7 @@
-import { createUserProps } from "../../../../lib/actions/user.action";
+import {
+	createUserProps,
+	updateUser,
+} from "../../../../lib/actions/user.action";
 import { Webhook } from "svix";
 import { headers } from "next/headers";
 import { WebhookEvent, clerkClient } from "@clerk/nextjs/server";
@@ -71,6 +74,27 @@ export async function POST(req: Request) {
 		}
 
 		return NextResponse.json({ message: "OK", user: newUser });
+	}
+
+	if (evt.type === "user.updated") {
+		const { id, email_addresses, image_url, first_name, last_name, username } =
+			evt.data;
+
+		const updateProps = {
+			email: email_addresses[0].email_address,
+			username: username!,
+			firstName: first_name ?? "",
+			lastName: last_name ?? "",
+			photo: image_url,
+		};
+
+		const updatedUser = await updateUser(id, updateProps);
+
+		return NextResponse.json({ message: "User updated", user: updatedUser });
+	}
+
+	if (evt.type === "user.deleted") {
+		// Handle user deleted event here
 	}
 
 	return new Response("", { status: 200 });
