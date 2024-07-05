@@ -12,6 +12,7 @@ import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
+import { UserIcon } from "lucide-react";
 
 interface UserNavProps {
 	clerkUser: User;
@@ -23,37 +24,20 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger>
-				<div className="relative size-8 cursor-pointer">
-					{clerkUser ? (
-						<Image
-							src={clerkUser.photo}
-							alt={`${clerkUser?.username}`}
-							fill
-							className="rounded-full object-cover object-center"
-						/>
-					) : (
-						<div className="rounded-full size-8 animate-pulse" aria-hidden />
-					)}
+				<div className="flex items-center justify-center">
+					<UserIcon className="size-8 p-1 bg-blue-100 rounded-full shadow-xl" />
 				</div>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
 				className="bg-gray-100 w-[350px] shadow-xl p-4 rounded-xl"
 				align="end">
 				<div className="flex items-center justify-start gap-2 p-2 w-full">
-					<div className="relative size-8">
-						<Image
-							src={clerkUser.photo}
-							alt={`${clerkUser?.username}`}
-							fill
-							className="rounded-full object-cover object-center"
-						/>
+					<div className="flex items-center justify-center">
+						<UserIcon className="size-8 p-1 bg-blue-100 rounded-full shadow-xl" />
 					</div>
 					<div className="flex flex-col space-y-0.5 leading-none">
 						<p className="font-medium text-sm text-black line-clamp-1">
-							{clerkUser?.username}
-						</p>
-						<p className="font-medium text-sm text-gray-600 line-clamp-1">
-							{clerkUser?.email}
+							Manage your account
 						</p>
 					</div>
 				</div>
@@ -61,15 +45,15 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 				<div className="flex flex-col justify-between">
 					<div className="my-3">
 						<DropdownMenuItem asChild className="cursor-pointer ">
-							<Link href={"/user-profile"}>Manage Account</Link>
+							<Link href={"/user-profile"}>Update profile</Link>
 						</DropdownMenuItem>
 						{clerkUser.hasProfileCompleted ? (
 							<DropdownMenuItem asChild className="cursor-pointer ">
-								<Link href={"/profile?type=update"}>Update your profile</Link>
+								<Link href={"/profile?type=update"}>Update your address</Link>
 							</DropdownMenuItem>
 						) : (
 							<DropdownMenuItem asChild className="cursor-pointer ">
-								<Link href={"/profile?type=create"}>Complete your profile</Link>
+								<Link href={"/profile?type=create"}>Complete your address</Link>
 							</DropdownMenuItem>
 						)}
 					</div>

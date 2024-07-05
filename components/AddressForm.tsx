@@ -208,8 +208,8 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 								type="submit"
 								className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md w-full">
 								{searchParams.type === "create"
-									? "Complete Profile"
-									: "Update Profile"}
+									? "Complete Address"
+									: "Update Address"}
 							</Button>
 						</div>
 					</form>

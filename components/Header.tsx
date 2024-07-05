@@ -1,3 +1,5 @@
+"use server";
+
 import Image from "next/image";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
