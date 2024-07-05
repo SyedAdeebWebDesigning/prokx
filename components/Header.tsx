@@ -70,7 +70,7 @@ const Header = async ({}: HeaderProps) => {
 								<h2>Cart (0)</h2>
 							</div>
 							<div className="text-gray-400">|</div>
-							<UserNav clerkUser={clerkUser} />
+							{clerkUser && <UserNav clerkUser={clerkUser} />}
 						</SignedIn>
 					</nav>
 				</div>
