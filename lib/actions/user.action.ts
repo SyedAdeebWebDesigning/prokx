@@ -11,6 +11,7 @@ export interface createUserProps {
 	lastName?: string;
 	photo: string;
 	hasProfileCompleted: boolean;
+	isAdmin: boolean;
 }
 
 export const createUser = async (user: createUserProps) => {

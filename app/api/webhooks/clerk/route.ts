@@ -55,6 +55,7 @@ export async function POST(req: Request) {
 			lastName: last_name ?? "",
 			photo: image_url,
 			hasProfileCompleted: false,
+			isAdmin: false,
 		};
 
 		const newUser = await createUser(user);

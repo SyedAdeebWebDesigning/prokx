@@ -19,6 +19,7 @@ interface User extends Document {
 	photo: string;
 	hasProfileCompleted: boolean;
 	address?: Address;
+	isAdmin: boolean;
 }
 
 // Define Address schema
@@ -40,6 +41,7 @@ const UserSchema = new Schema<User>({
 	photo: { type: String, required: true },
 	hasProfileCompleted: { type: Boolean, required: true, default: false },
 	address: { type: AddressSchema },
+	isAdmin: { type: Boolean, required: true, default: false },
 });
 
 // Define the User model with the User interface
