@@ -1,5 +1,6 @@
 import {
 	createUserProps,
+	deleteUser,
 	updateUser,
 } from "../../../../lib/actions/user.action";
 import { Webhook } from "svix";
@@ -94,7 +95,11 @@ export async function POST(req: Request) {
 	}
 
 	if (evt.type === "user.deleted") {
-		// Handle user deleted event here
+		const { id } = evt.data;
+		const clerkId = id ?? "null";
+		const deletedUser = await deleteUser(clerkId);
+
+		return NextResponse.json({ message: "User deleted", user: deletedUser });
 	}
 
 	return new Response("", { status: 200 });

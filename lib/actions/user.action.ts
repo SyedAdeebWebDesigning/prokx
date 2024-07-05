@@ -53,3 +53,19 @@ export const updateUser = async (
 		console.error("Error updating user:", error);
 	}
 };
+
+export const deleteUser = async (clerkId: string) => {
+	try {
+		await connectToDatabase();
+
+		const deletedUser = await User.findOneAndDelete({ clerkId });
+
+		if (!deletedUser) {
+			throw new Error("User not found");
+		}
+
+		return JSON.parse(JSON.stringify(deletedUser));
+	} catch (error) {
+		console.error("Error deleting user:", error);
+	}
+};
