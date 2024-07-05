@@ -48,11 +48,14 @@ export const createUser = async (user: createUserProps) => {
 	}
 };
 
-export const getUserById = async (clerkId: string) => {
+export const getUserById = async (userId: string) => {
 	try {
 		await connectToDatabase();
 
-		const user = await User.findOne({ clerkId });
+		const user = await User.findOne({ _id: userId });
+		if (!user) {
+			return {};
+		}
 		return JSON.parse(JSON.stringify(user));
 	} catch (error) {
 		console.error("Error getting user:", error);

@@ -24,12 +24,16 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 		<DropdownMenu>
 			<DropdownMenuTrigger>
 				<div className="relative size-8 cursor-pointer">
-					<Image
-						src={clerkUser.photo}
-						alt={`${clerkUser?.username}`}
-						fill
-						className="rounded-full object-cover object-center"
-					/>
+					{clerkUser ? (
+						<Image
+							src={clerkUser.photo}
+							alt={`${clerkUser?.username}`}
+							fill
+							className="rounded-full object-cover object-center"
+						/>
+					) : (
+						<div className="rounded-full size-8 animate-pulse" aria-hidden />
+					)}
 				</div>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent

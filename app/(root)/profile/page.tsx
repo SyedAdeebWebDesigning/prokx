@@ -1,6 +1,6 @@
 import AddressForm from "@/components/AddressForm";
 import { getUserById } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 interface pageProps {
 	searchParams: {
@@ -8,9 +8,10 @@ interface pageProps {
 	};
 }
 
-const Page = async({ searchParams }: pageProps) => {
-    const clerkUser = await currentUser();
-		const user = await getUserById(clerkUser?.id as string);
+const Page = async ({ searchParams }: pageProps) => {
+	const { sessionClaims } = auth();
+	const userId = sessionClaims?.userId as string;
+	const user = await getUserById(userId as string);
 	return (
 		<div>
 			<AddressForm searchParams={searchParams} user={user} />

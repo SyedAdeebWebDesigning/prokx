@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ShoppingBagIcon } from "lucide-react";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { getUserById } from "@/lib/actions/user.action";
-import { currentUser } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import UserNav from "./UserNav";
 interface HeaderProps {}
 
@@ -27,9 +27,9 @@ const Header = async ({}: HeaderProps) => {
 			href: "/zipper",
 		},
 	];
-
-	const user = await currentUser();
-	const clerkUser = await getUserById(user?.id as string);
+	const { sessionClaims } = auth();
+	const userId = sessionClaims?.userId as string;
+	const clerkUser = await getUserById(userId as string);
 
 	return (
 		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg">
@@ -70,7 +70,7 @@ const Header = async ({}: HeaderProps) => {
 								<h2>Cart (0)</h2>
 							</div>
 							<div className="text-gray-400">|</div>
-							{clerkUser && <UserNav clerkUser={clerkUser} />}
+							<UserNav clerkUser={clerkUser} />
 						</SignedIn>
 					</nav>
 				</div>
