@@ -28,6 +28,10 @@ const Header = async ({}: HeaderProps) => {
 			name: "Zippers",
 			href: "/zipper",
 		},
+		{
+			name: "Mugs",
+			href: "/mugs",
+		},
 	];
 	const { sessionClaims } = auth();
 	const userId = sessionClaims?.userId as string;
@@ -70,7 +74,7 @@ const Header = async ({}: HeaderProps) => {
 						<SignedIn>
 							<div className="flex items-center space-x-1">
 								<ShoppingBagIcon className="size-5" />
-								<h2>Cart (0)</h2>
+								<h2 className="line-clamp-1">Cart (0)</h2>
 							</div>
 							<div className="text-gray-400">|</div>
 							<UserNav clerkUser={clerkUser} />

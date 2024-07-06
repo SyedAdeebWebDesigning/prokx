@@ -12,8 +12,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-	title: "PROKS",
-	description: "PROKS is an ecommerce platform for selling products.",
+	title: "PROKX",
+	description:
+		"PROKX is an ecommerce platform for selling high quality merchandise products.",
 	icons: {
 		icon: ["/logos/P.svg"],
 	},

@@ -58,4 +58,8 @@
 	.wrapper {
 		@apply max-w-7xl lg:mx-auto p-5 md:px-10 xl:px-0 w-full;
 	}
+
+	.text-shadow {
+		text-shadow: 4px 0px 4px rgb(61, 61, 61);
+	}
 }
