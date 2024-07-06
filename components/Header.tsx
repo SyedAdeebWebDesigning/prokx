@@ -9,9 +9,8 @@ import { auth, currentUser } from "@clerk/nextjs/server";
 import UserNav from "./UserNav";
 import HeaderLinks from "./HeaderLinks";
 import Cart from "./Cart";
-import { Menu, MenuIcon } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import MobileNav from "./MobileNav";
+
 interface HeaderProps {}
 
 const Header = async ({}: HeaderProps) => {
@@ -43,9 +42,9 @@ const Header = async ({}: HeaderProps) => {
 	const clerkUser = await getUserById(currentClerkUser?.id as string);
 
 	return (
-		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg">
+		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg h-16 items-center">
 			<MaxWidthWrapper>
-				<div className="flex items-center  justify-between">
+				<div className="flex items-center justify-between -mt-5">
 					<Link href={"/"} className="relative w-[100px] md:w-[200px] h-[50px]">
 						<Image
 							src={"/logos/Logo.svg"}
@@ -58,7 +57,7 @@ const Header = async ({}: HeaderProps) => {
 					<SignedIn>
 						<ul className="items-center justify-center text-gray-800 space-x-10 hidden lg:flex font-semibold">
 							{navLinks.map((navLink) => (
-								<HeaderLinks navLink={navLink} />
+								<HeaderLinks navLink={navLink} key={navLink.name} />
 							))}
 						</ul>
 					</SignedIn>
