@@ -7,7 +7,7 @@ interface BannerProps {}
 
 const Banner = ({}: BannerProps) => {
 	return (
-		<section className="bg-dotted-pattern min-h-[50vh] bg-primary/10 sm:py-40  py-10 overflow-x-hidden">
+		<section className="bg-dotted-pattern bg-primary/10 sm:pt-40 py-10 overflow-hidden">
 			<MaxWidthWrapper>
 				<div className="grid grid-cols-1 lg:grid-cols-2 ">
 					<div className="relative md:size-[700px] rotate-45 mt-16 lg:order-2 lg:ml-auto mx-auto hidden lg:flex z-0 -mr-80">
