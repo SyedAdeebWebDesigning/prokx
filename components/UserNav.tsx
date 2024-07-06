@@ -3,7 +3,6 @@ import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
-	DropdownMenuLabel,
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
@@ -12,7 +11,6 @@ import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { UserIcon } from "lucide-react";
 
 interface UserNavProps {
 	clerkUser: User;
@@ -23,7 +21,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 
 	return (
 		<DropdownMenu>
-			<DropdownMenuTrigger>
+			<DropdownMenuTrigger className="focus:outline-none rounded-full">
 				<div className="relative size-8">
 					<Image
 						className="size-8 bg-blue-100 rounded-full shadow-xl"

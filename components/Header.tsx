@@ -3,11 +3,15 @@
 import Image from "next/image";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import Link from "next/link";
-import { ShoppingBagIcon } from "lucide-react";
 import { SignedIn, SignedOut } from "@clerk/nextjs";
 import { getUserById } from "@/lib/actions/user.action";
 import { auth, currentUser } from "@clerk/nextjs/server";
 import UserNav from "./UserNav";
+import HeaderLinks from "./HeaderLinks";
+import Cart from "./Cart";
+import { Menu, MenuIcon } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import MobileNav from "./MobileNav";
 interface HeaderProps {}
 
 const Header = async ({}: HeaderProps) => {
@@ -52,13 +56,9 @@ const Header = async ({}: HeaderProps) => {
 						/>
 					</Link>
 					<SignedIn>
-						<ul className="items-center justify-center text-gray-800 space-x-10 hidden md:flex font-semibold">
+						<ul className="items-center justify-center text-gray-800 space-x-10 hidden lg:flex font-semibold">
 							{navLinks.map((navLink) => (
-								<Link key={navLink.name} href={navLink.href}>
-									<h2 className=" hover:underline underline-offset-4 px-4 py-2 rounded transition-all duration-200">
-										{navLink.name}
-									</h2>
-								</Link>
+								<HeaderLinks navLink={navLink} />
 							))}
 						</ul>
 					</SignedIn>
@@ -72,12 +72,10 @@ const Header = async ({}: HeaderProps) => {
 						</SignedOut>
 
 						<SignedIn>
-							<div className="flex items-center space-x-1">
-								<ShoppingBagIcon className="size-5" />
-								<h2 className="line-clamp-1">Cart (0)</h2>
-							</div>
+							<Cart />
 							<div className="text-gray-400">|</div>
 							<UserNav clerkUser={clerkUser} />
+							<MobileNav navLinks={navLinks} />
 						</SignedIn>
 					</nav>
 				</div>
