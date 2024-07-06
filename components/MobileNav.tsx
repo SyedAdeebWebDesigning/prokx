@@ -12,7 +12,7 @@ interface MobileNavProps {
 const MobileNav = ({ navLinks }: MobileNavProps) => {
 	const pathname = usePathname();
 	return (
-		<div className="lg:hidden">
+		<div className="md:hidden">
 			<Sheet>
 				<SheetTrigger aria-hidden>
 					<Menu />

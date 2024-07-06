@@ -10,11 +10,25 @@ import UserNav from "./UserNav";
 import HeaderLinks from "./HeaderLinks";
 import Cart from "./Cart";
 import MobileNav from "./MobileNav";
+import {
+	NavigationMenu,
+	NavigationMenuContent,
+	NavigationMenuIndicator,
+	NavigationMenuItem,
+	NavigationMenuLink,
+	NavigationMenuList,
+	NavigationMenuTrigger,
+	NavigationMenuViewport,
+} from "@/components/ui/navigation-menu";
 
 interface HeaderProps {}
 
 const Header = async ({}: HeaderProps) => {
 	const navLinks = [
+		{
+			name: "Products",
+			href: "/products",
+		},
 		{
 			name: "TShirts",
 			href: "/tshirts",
@@ -35,6 +49,15 @@ const Header = async ({}: HeaderProps) => {
 			name: "Mugs",
 			href: "/mugs",
 		},
+		{
+			name: "Orders",
+			href: "/orders",
+		},
+		{
+			name: "Dashboard",
+			href: "/dashboard",
+			isAdmin: true,
+		},
 	];
 	const { sessionClaims } = auth();
 	const userId = sessionClaims?.userId as string;
@@ -45,22 +68,52 @@ const Header = async ({}: HeaderProps) => {
 		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg h-16 items-center">
 			<MaxWidthWrapper>
 				<div className="flex items-center justify-between -mt-5">
-					<Link href={"/"} className="relative w-[100px] md:w-[200px] h-[50px]">
-						<Image
-							src={"/logos/Logo.svg"}
-							fill
-							alt="logo"
-							loading="eager"
-							className=""
-						/>
-					</Link>
-					<SignedIn>
-						<ul className="items-center justify-center text-gray-800 space-x-10 hidden lg:flex font-semibold">
-							{navLinks.map((navLink) => (
-								<HeaderLinks navLink={navLink} key={navLink.name} />
-							))}
-						</ul>
-					</SignedIn>
+					<div className="flex space-x-2 items-center">
+						<Link
+							href={"/"}
+							className="relative w-[100px] md:w-[200px] h-[50px]">
+							<Image
+								src={"/logos/Logo.svg"}
+								fill
+								alt="logo"
+								loading="eager"
+								className=""
+							/>
+						</Link>
+						<SignedIn>
+							<div className="hidden md:flex">
+								<NavigationMenu>
+									<NavigationMenuList>
+										<NavigationMenuItem>
+											<NavigationMenuTrigger>Products</NavigationMenuTrigger>
+											<NavigationMenuContent>
+												<NavigationMenuLink>
+													<ul className="">
+														{navLinks.slice(0, 6).map((navLink) => (
+															<HeaderLinks
+																navLink={navLink}
+																key={navLink.name}
+																clerkUser={clerkUser}
+															/>
+														))}
+													</ul>
+												</NavigationMenuLink>
+											</NavigationMenuContent>
+										</NavigationMenuItem>
+									</NavigationMenuList>
+								</NavigationMenu>
+								{navLinks.slice(6).map((navLink) => {
+									return (
+										<HeaderLinks
+											navLink={navLink}
+											key={navLink.name}
+											clerkUser={clerkUser}
+										/>
+									);
+								})}
+							</div>
+						</SignedIn>
+					</div>
 					<nav className="flex items-center space-x-4">
 						<SignedOut>
 							<Link
