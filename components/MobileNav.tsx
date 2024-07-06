@@ -4,13 +4,22 @@ import { usePathname } from "next/navigation";
 import clsx from "clsx";
 import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 import { Menu } from "lucide-react";
+import User from "@/lib/database/models/User.model";
 
-interface MobileNavProps {
-	navLinks: any;
+interface NavLink {
+	name: string;
+	href: string;
+	isAdmin?: boolean;
 }
 
-const MobileNav = ({ navLinks }: MobileNavProps) => {
+interface MobileNavProps {
+	navLinks: NavLink[];
+	clerkUser: User;
+}
+
+const MobileNav = ({ navLinks, clerkUser }: MobileNavProps) => {
 	const pathname = usePathname();
+
 	return (
 		<div className="md:hidden">
 			<Sheet>
@@ -19,8 +28,13 @@ const MobileNav = ({ navLinks }: MobileNavProps) => {
 				</SheetTrigger>
 				<SheetContent>
 					<div className="flex flex-col space-y-2">
-						{navLinks.map((navLink: any) => {
+						{navLinks.map((navLink) => {
 							const isActive = pathname === navLink.href;
+
+							if (navLink.isAdmin && !clerkUser.isAdmin) {
+								return null;
+							}
+
 							return (
 								<a key={navLink.name} href={navLink.href}>
 									<h2

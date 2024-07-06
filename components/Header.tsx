@@ -127,7 +127,7 @@ const Header = async ({}: HeaderProps) => {
 							<Cart />
 							<div className="text-gray-400">|</div>
 							<UserNav clerkUser={clerkUser} />
-							<MobileNav navLinks={navLinks} />
+							<MobileNav navLinks={navLinks} clerkUser={clerkUser} />
 						</SignedIn>
 					</nav>
 				</div>
