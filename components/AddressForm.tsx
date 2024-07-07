@@ -1,4 +1,5 @@
 "use client";
+
 import { formSchema } from "@/lib/zodSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -21,6 +22,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 interface AddressFormProps {
 	searchParams: {
@@ -31,6 +33,8 @@ interface AddressFormProps {
 
 const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 	const router = useRouter();
+	const [loadingPostalCode, setLoadingPostalCode] = useState(false);
+	const [loadingForm, setLoadingForm] = useState(false);
 	const form = useForm<z.infer<typeof formSchema>>({
 		resolver: zodResolver(formSchema),
 		defaultValues: {
@@ -48,8 +52,33 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 		router.push("/profile?type=create");
 	}
 
+	const fetchAddressDetails = async (postalCode: string) => {
+		try {
+			setLoadingPostalCode(true);
+			const response = await fetch(
+				`https://api.postalpincode.in/pincode/${postalCode}`
+			);
+			const data = await response.json();
+
+			if (data[0].Status === "Success") {
+				const { District, State, Country } = data[0].PostOffice[0];
+				form.setValue("city", District);
+				form.setValue("state", State);
+				form.setValue("country", Country);
+				toast.success("Address details updated based on postal code");
+			} else {
+				toast.error("Invalid postal code");
+			}
+		} catch (error) {
+			toast.error("Failed to fetch address details");
+		} finally {
+			setLoadingPostalCode(false);
+		}
+	};
+
 	const onSubmit = async (values: z.infer<typeof formSchema>) => {
 		try {
+			setLoadingForm(true);
 			if (searchParams.type === "create") {
 				try {
 					const { street, city, state, country, postalCode } = values;
@@ -93,6 +122,8 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 			}
 		} catch (error) {
 			toast.error("Error");
+		} finally {
+			setLoadingForm(false);
 		}
 	};
 
@@ -136,6 +167,31 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 									</FormItem>
 								)}
 							/>
+							<FormField
+								control={form.control}
+								name="postalCode"
+								render={({ field }) => (
+									<FormItem>
+										<FormControl>
+											<div className="relative">
+												<Input
+													placeholder="Enter postal code"
+													{...field}
+													className="input bg-gray-200/60"
+													onBlur={() => fetchAddressDetails(field.value)}
+													disabled={loadingPostalCode || loadingForm}
+												/>
+												{loadingPostalCode && (
+													<div className="absolute inset-y-0 right-0 flex items-center pr-3">
+														<div className="loader"></div>
+													</div>
+												)}
+											</div>
+										</FormControl>
+										<FormMessage />
+									</FormItem>
+								)}
+							/>
 							<div className="flex space-x-4 w-full">
 								<FormField
 									control={form.control}
@@ -147,6 +203,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 													placeholder="Enter city"
 													{...field}
 													className="input bg-gray-200/60"
+													disabled={loadingPostalCode || loadingForm}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -163,6 +220,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 													placeholder="Enter state"
 													{...field}
 													className="input bg-gray-200/60"
+													disabled={loadingPostalCode || loadingForm}
 												/>
 											</FormControl>
 											<FormMessage />
@@ -180,22 +238,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 												placeholder="Enter country"
 												{...field}
 												className="input bg-gray-200/60"
-											/>
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							<FormField
-								control={form.control}
-								name="postalCode"
-								render={({ field }) => (
-									<FormItem>
-										<FormControl>
-											<Input
-												placeholder="Enter postal code"
-												{...field}
-												className="input bg-gray-200/60"
+												disabled={loadingPostalCode || loadingForm}
 											/>
 										</FormControl>
 										<FormMessage />
@@ -206,7 +249,8 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 						<div className="flex justify-center w-full">
 							<Button
 								type="submit"
-								className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md w-full">
+								className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg shadow-md w-full"
+								disabled={loadingForm}>
 								{searchParams.type === "create"
 									? "Complete Address"
 									: "Update Address"}
