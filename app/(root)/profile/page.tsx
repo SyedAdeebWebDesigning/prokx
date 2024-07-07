@@ -12,7 +12,7 @@ const Page = async ({ searchParams }: pageProps) => {
 	const currentClerkUser = await currentUser();
 	const user = await getUserById(currentClerkUser?.id as string);
 	return (
-		<div>
+		<div className="">
 			<AddressForm searchParams={searchParams} user={user} />
 		</div>
 	);

@@ -110,7 +110,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 	}
 
 	return (
-		<div className="min-h-[80vh] flex items-center justify-center bg-gray-100">
+		<div className="min-h-[95vh] flex items-center justify-center bg-white">
 			<div className="w-full max-w-md">
 				<h1 className="text-2xl font-semibold text-center mb-8">
 					{searchParams.type === "create" ? "Create Address" : "Update Address"}{" "}
