@@ -68,9 +68,12 @@ const Categories = ({}: CategoriesProps) => {
 									loading="lazy"
 									alt={category.name}
 									objectFit={category.objectFit}
-									className="rounded-lg z-10 object-center"
+									className="rounded-lg z-10"
 								/>
-								<h2 className="absolute inset-0 flex items-center justify-center md:justify-center text-center uppercase text-white text-shadow-small group-hover:z-30 group-hover:opacity-100 opacity-0 text-4xl lg:text-7xl font-semibold transition-all duration-300 ease-in-out  md:bottom-5  md:text-4xl md:ml-4 ">
+								<h2
+									className={`absolute inset-0 flex items-center justify-center md:justify-center text-center uppercase text-white text-shadow-small group-hover:z-30 group-hover:opacity-100 opacity-0 text-4xl lg:text-7xl font-semibold transition-all duration-300 ease-in-out  md:bottom-5  md:text-4xl md:ml-4 ${
+										category.name === "Mugs" && "lg:mr-7"
+									}`}>
 									{category.name}
 								</h2>
 							</div>

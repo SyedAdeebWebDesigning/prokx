@@ -10,7 +10,7 @@ const NotFound = () => {
 			<Header />
 			<div className="flex min-h-[80vh] items-center justify-center flex-col">
 				<h1 className="text-7xl font-medium">404</h1>
-				<p>
+				<p className="text-center">
 					It looks like the page you searched for has not been created or
 					doesn't exist.
 				</p>
