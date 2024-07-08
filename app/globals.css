@@ -51,6 +51,10 @@
 	* {
 		@apply border-border;
 	}
+
+	html {
+		scroll-behavior: smooth;
+	}
 	body {
 		@apply bg-background text-foreground;
 		font-family: var(--font-poppins);
@@ -61,5 +65,9 @@
 
 	.text-shadow {
 		text-shadow: 4px 0px 4px rgb(61, 61, 61);
+	}
+
+	.text-shadow-small {
+		text-shadow: 2px 2px 4px rgb(0, 0, 0);
 	}
 }

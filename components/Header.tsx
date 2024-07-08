@@ -27,31 +27,35 @@ const Header = async ({}: HeaderProps) => {
 	const navLinks = [
 		{
 			name: "Products",
-			href: "/products",
+			href: "/products?page=1",
 		},
 		{
 			name: "TShirts",
-			href: "/tshirts",
+			href: "/tshirts?page=1",
 		},
 		{
 			name: "Hoodies",
-			href: "/hoodies",
+			href: "/hoodies?page=1",
 		},
 		{
 			name: "Sweatshirts",
-			href: "/sweatshirts",
+			href: "/sweatshirts?page=1",
 		},
 		{
 			name: "Zippers",
-			href: "/zipper",
+			href: "/zipper?page=1",
 		},
 		{
 			name: "Mugs",
-			href: "/mugs",
+			href: "/mugs?page=1",
+		},
+		{
+			name: "Caps",
+			href: "/caps?page=1",
 		},
 		{
 			name: "Orders",
-			href: "/orders",
+			href: "/orders?page=1",
 		},
 		{
 			name: "Dashboard",
@@ -89,7 +93,7 @@ const Header = async ({}: HeaderProps) => {
 											<NavigationMenuContent>
 												<NavigationMenuLink>
 													<ul className="">
-														{navLinks.slice(0, 6).map((navLink) => (
+														{navLinks.slice(0, 7).map((navLink) => (
 															<HeaderLinks
 																navLink={navLink}
 																key={navLink.name}
@@ -102,7 +106,7 @@ const Header = async ({}: HeaderProps) => {
 										</NavigationMenuItem>
 									</NavigationMenuList>
 								</NavigationMenu>
-								{navLinks.slice(6).map((navLink) => {
+								{navLinks.slice(7).map((navLink) => {
 									return (
 										<HeaderLinks
 											navLink={navLink}

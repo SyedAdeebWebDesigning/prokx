@@ -1,4 +1,6 @@
 import Banner from "@/components/Banner";
+import Categories from "@/components/Categories";
+import Heading from "@/components/Heading";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { CircleCheckBig, TruckIcon, Leaf, Plane } from "lucide-react";
 
@@ -8,9 +10,7 @@ export default function Home() {
 			<Banner />
 			<section className="bg-white py-10">
 				<MaxWidthWrapper>
-					<h2 className="text-4xl font-bold text-center mb-10">
-						Why Choose Us?
-					</h2>
+					<Heading>Why Choose Us?</Heading>
 					<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mx-auto place-items-center gap-4">
 						<div className="flex flex-col items-center bg-zinc-100 p-4 rounded-md">
 							<CircleCheckBig className="size-12 bg-primary/30 rounded-full p-2" />
@@ -40,6 +40,9 @@ export default function Home() {
 						</div>
 					</div>
 				</MaxWidthWrapper>
+			</section>
+			<section id="categories">
+				<Categories />
 			</section>
 		</main>
 	);

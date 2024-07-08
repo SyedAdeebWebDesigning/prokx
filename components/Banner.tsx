@@ -37,8 +37,16 @@ const Banner = ({}: BannerProps) => {
 								<Button
 									size={"lg"}
 									variant={"default"}
-									className="rounded-sm py-4">
+									className="rounded-sm py-4 w-full hover:bg-transparent border-2 border-primary hover:text-gray-800">
 									Shop Now
+								</Button>
+							</Link>
+							<Link href={"#categories"}>
+								<Button
+									size={"lg"}
+									variant={"secondary"}
+									className="rounded-sm py-4 border-2 border-primary hover:bg-primary w-full hover:text-white">
+									Browse Categories
 								</Button>
 							</Link>
 						</div>
