@@ -8,6 +8,7 @@ const isProtectedRoute = createRouteMatcher([
 	"/sweatshirts",
 	"/zippers",
 	"/mugs",
+	"/caps",
 	"/orders",
 	"/dashboard",
 ]);
