@@ -73,4 +73,24 @@
 	.text-shadow-sm {
 		text-shadow: 20px 20px 20px rgb(0, 0, 0);
 	}
+
+	html,
+	body {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	html::-webkit-scrollbar,
+	body::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, and Opera */
+	}
+
+	.no-scrollbar {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	.no-scrollbar::-webkit-scrollbar {
+		display: none; /* Chrome, Safari, and Opera */
+	}
 }
