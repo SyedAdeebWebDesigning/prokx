@@ -69,7 +69,7 @@ const Header = async ({}: HeaderProps) => {
 	const clerkUser = await getUserById(currentClerkUser?.id as string);
 
 	return (
-		<header className="bg-[#ffffff] w-full border-b sticky top-0 z-50 py-2 border-gray-300 shadow-lg h-16 items-center">
+		<header className="bg-white/10 backdrop-blur-2xl w-full fixed top-0 z-50 py-2 shadow-lg h-16 items-center">
 			<MaxWidthWrapper>
 				<div className="flex items-center justify-between -mt-5">
 					<div className="flex space-x-2 items-center">
@@ -89,7 +89,9 @@ const Header = async ({}: HeaderProps) => {
 								<NavigationMenu>
 									<NavigationMenuList>
 										<NavigationMenuItem>
-											<NavigationMenuTrigger>Products</NavigationMenuTrigger>
+											<NavigationMenuTrigger className="bg-transparent hover:bg-transparent">
+												Products
+											</NavigationMenuTrigger>
 											<NavigationMenuContent>
 												<NavigationMenuLink>
 													<ul className="">
@@ -131,7 +133,9 @@ const Header = async ({}: HeaderProps) => {
 							<Cart />
 							<div className="text-gray-400">|</div>
 							<UserNav clerkUser={clerkUser} />
-							<MobileNav navLinks={navLinks} clerkUser={clerkUser} />
+							<div className="mt-2">
+								<MobileNav navLinks={navLinks} clerkUser={clerkUser} />
+							</div>
 						</SignedIn>
 					</nav>
 				</div>

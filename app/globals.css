@@ -68,6 +68,9 @@
 	}
 
 	.text-shadow-small {
-		text-shadow: 2px 2px 4px rgb(0, 0, 0);
+		text-shadow: 2px 2px 2px rgb(0, 0, 0);
+	}
+	.text-shadow-sm {
+		text-shadow: 20px 20px 20px rgb(0, 0, 0);
 	}
 }
