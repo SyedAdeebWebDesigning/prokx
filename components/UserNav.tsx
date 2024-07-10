@@ -58,11 +58,11 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
 						</DropdownMenuItem>
 						{clerkUser.hasProfileCompleted ? (
 							<DropdownMenuItem asChild className="cursor-pointer ">
-								<Link href={"/profile?type=update"}>Update your address</Link>
+								<Link href={"/address?type=update"}>Update your address</Link>
 							</DropdownMenuItem>
 						) : (
 							<DropdownMenuItem asChild className="cursor-pointer ">
-								<Link href={"/profile?type=create"}>Complete your address</Link>
+								<Link href={"/address?type=create"}>Complete your address</Link>
 							</DropdownMenuItem>
 						)}
 					</div>

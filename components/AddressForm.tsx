@@ -47,9 +47,9 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
 	});
 
 	if (user.hasProfileCompleted) {
-		router.push("/profile?type=update");
+		router.push("/address?type=update");
 	} else {
-		router.push("/profile?type=create");
+		router.push("/address?type=create");
 	}
 
 	const fetchAddressDetails = async (postalCode: string) => {
