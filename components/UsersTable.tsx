@@ -37,7 +37,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 						key={user.id}
 						className="cursor-pointer"
 						onClick={() => router.push(`/admin-users/${user.clerkId}`)}>
-						<TableCell className="font-medium">{index + 1}</TableCell>
+						<TableCell className="font-medium">{index + 1}. </TableCell>
 						<TableCell className="line-clamp-1">{user.clerkId}</TableCell>
 						<TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
 						<TableCell>{user.email}</TableCell>
@@ -46,7 +46,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 						</TableCell>
 
 						<TableCell className="text-right">
-							{user.isAdmin ? "Admin" : "User"}
+							{user.isOwner ? "Owner" : user.isAdmin ? "Admin" : "User"}
 						</TableCell>
 					</TableRow>
 				))}
