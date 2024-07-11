@@ -59,7 +59,7 @@ const Header = async ({}: HeaderProps) => {
 		},
 		{
 			name: "Dashboard",
-			href: "/dashboard",
+			href: "/admin-dashboard",
 			isAdmin: true,
 		},
 	];
