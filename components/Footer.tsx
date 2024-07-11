@@ -106,6 +106,12 @@ const Footer = ({}: FooterProps) => {
 					</div>
 				</div>
 			</MaxWidthWrapper>
+			<div className="w-full bg-primary/[0.10] text-center h-10 flex items-center justify-center">
+				<h2>
+					&copy; 2024 <span className="font-semibold">PROKX</span> - All Rights
+					Reserved
+				</h2>
+			</div>
 		</footer>
 	);
 };

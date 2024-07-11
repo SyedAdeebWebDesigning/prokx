@@ -8,6 +8,9 @@ export default function Home() {
 	return (
 		<main className="">
 			<Banner />
+			<section id="categories">
+				<Categories />
+			</section>
 			<section className="bg-white py-10">
 				<MaxWidthWrapper>
 					<Heading>Why Choose Us?</Heading>
@@ -40,9 +43,6 @@ export default function Home() {
 						</div>
 					</div>
 				</MaxWidthWrapper>
-			</section>
-			<section id="categories">
-				<Categories />
 			</section>
 		</main>
 	);

@@ -60,12 +60,10 @@ export async function POST(req: Request) {
 			photo: image_url,
 			hasProfileCompleted: false,
 			isAdmin: false,
+			isOwner: false,
 		};
 
 		const newUser = await createUser(user);
-		console.clear();
-		console.log(newUser);
-
 		if (newUser) {
 			await clerkClient.users.updateUserMetadata(id, {
 				publicMetadata: {

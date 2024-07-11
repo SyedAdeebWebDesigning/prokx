@@ -11,25 +11,29 @@ import { useAuth } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 interface UserNavProps {
 	clerkUser: User;
 }
 
 const UserNav = ({ clerkUser }: UserNavProps) => {
 	const { signOut } = useAuth();
-
+	const firstLetterOfName = clerkUser?.firstName?.[0] ?? "";
+	const lastLetterOfName = clerkUser?.lastName?.[0] ?? "";
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger className="focus:outline-none rounded-full">
-				<div className="relative size-8">
-					<Image
-						className="size-8 bg-blue-100 rounded-full shadow-xl"
+				<Avatar className="border-4 border-primary/50 ">
+					<AvatarImage
 						src={clerkUser.photo}
-						fill
-						alt="User Photo"
+						alt="user"
+						className="rounded-full"
 					/>
-				</div>
+					<AvatarFallback>
+						{firstLetterOfName}
+						{lastLetterOfName}
+					</AvatarFallback>
+				</Avatar>
 			</DropdownMenuTrigger>
 			<DropdownMenuContent
 				className="bg-gray-100 w-[350px] shadow-xl p-4 rounded-xl"

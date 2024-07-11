@@ -12,6 +12,7 @@ export interface createUserProps {
 	photo: string;
 	hasProfileCompleted: boolean;
 	isAdmin: boolean;
+	isOwner?: boolean;
 }
 export interface UpdateUserProps {
 	email?: string;
