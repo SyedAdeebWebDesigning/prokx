@@ -160,3 +160,63 @@ export const updateAddressOfUser = async ({
 		throw error; // Rethrow the error to handle it in the caller function
 	}
 };
+
+export const getUsers = async (userId: string): Promise<User[]> => {
+	try {
+		await connectToDatabase();
+		const users = await User.find({ clerkId: { $ne: userId } });
+
+		return JSON.parse(JSON.stringify(users));
+	} catch (error) {
+		console.error("Error getting users:", error);
+		return [];
+	}
+};
+
+export const addAdmin = async (userId: string) => {
+	try {
+		await connectToDatabase();
+
+		const user = await User.findById(userId);
+
+		if (!user) {
+			return { success: false, message: "User not found" };
+		}
+
+		user.isAdmin = true;
+		await user.save();
+
+		return { success: true, message: "User granted admin privileges" };
+	} catch (error) {
+		console.error("Error adding admin:", error);
+		return { success: false, message: "An error occurred while adding admin" };
+	}
+};
+
+// Function to remove admin role from a user, ensuring the owner cannot be removed
+export const removeAdmin = async (userId: string) => {
+	try {
+		await connectToDatabase();
+
+		const user = await User.findById(userId);
+
+		if (!user) {
+			return { success: false, message: "User not found" };
+		}
+
+		if (user.isOwner) {
+			return { success: false, message: "Owner cannot be removed as admin" };
+		}
+
+		user.isAdmin = false;
+		await user.save();
+
+		return { success: true, message: "Admin privileges removed from user" };
+	} catch (error) {
+		console.error("Error removing admin:", error);
+		return {
+			success: false,
+			message: "An error occurred while removing admin",
+		};
+	}
+};

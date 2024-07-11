@@ -18,8 +18,8 @@ interface User extends Document {
 	lastName?: string;
 	photo: string;
 	hasProfileCompleted: boolean;
-	_createdAt?: Date;
-	_updatedAt?: Date;
+	createdAt?: Date;
+	updatedAt?: Date;
 	address?: Address;
 	isAdmin: boolean;
 	isOwner?: boolean;

@@ -1,0 +1,58 @@
+"use client";
+
+import User from "@/lib/database/models/User.model";
+import {
+	Table,
+	TableBody,
+	TableCaption,
+	TableCell,
+	TableHead,
+	TableHeader,
+	TableRow,
+} from "@/components/ui/table";
+import { useRouter } from "next/navigation";
+
+interface UsersTableProps {
+	users: User[];
+}
+
+const UsersTable = ({ users }: UsersTableProps) => {
+	const router = useRouter();
+	return (
+		<Table>
+			<TableCaption>A list of users.</TableCaption>
+			<TableHeader>
+				<TableRow>
+					<TableHead className="">S.No</TableHead>
+					<TableHead>ID</TableHead>
+					<TableHead>Name</TableHead>
+					<TableHead>Email</TableHead>
+					<TableHead className="text-right">Postal Code</TableHead>
+					<TableHead className="text-right">Status</TableHead>
+				</TableRow>
+			</TableHeader>
+			<TableBody>
+				{users.map((user, index) => (
+					<TableRow
+						key={user.id}
+						className="cursor-pointer"
+						onClick={() => router.push(`/admin-users/${user.clerkId}`)}>
+						<TableCell className="font-medium">{index + 1}</TableCell>
+						<TableCell className="line-clamp-1">{user.clerkId}</TableCell>
+						<TableCell>{`${user.firstName} ${user.lastName}`}</TableCell>
+						<TableCell>{user.email}</TableCell>
+						<TableCell className="text-right">
+							{user.address?.postalCode || "-"}
+						</TableCell>
+
+						<TableCell className="text-right">
+							{user.isAdmin ? "Admin" : "User"}
+						</TableCell>
+					</TableRow>
+				))}
+			</TableBody>
+		</Table>
+	);
+};
+
+export default UsersTable;

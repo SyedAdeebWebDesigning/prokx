@@ -6,40 +6,47 @@ import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
 
-interface SidebarProps {}
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import User from "@/lib/database/models/User.model";
 
-const Sidebar = ({}: SidebarProps) => {
+interface SidebarProps {
+	clerkUser: User;
+}
+
+const Sidebar = ({ clerkUser }: SidebarProps) => {
 	const pathname = usePathname();
+
 	const sideBarList = [
 		{
 			title: "Dashboard",
 			icon: LayoutDashboard,
-			href: "/dashboard",
+			href: "/admin-dashboard",
 		},
 		{
 			title: "Products",
 			icon: ShoppingBasket,
-			href: "/dashboard/products?page=1",
+			href: "/admin-products?page=1",
 		},
 		{
 			title: "Orders",
 			icon: Package2,
-			href: "/dashboard/orders?page=1",
+			href: "/admin-orders?page=1",
 		},
 		{
 			title: "Users",
 			icon: Users,
-			href: "/dashboard/users?page=1",
+			href: "/admin-users?page=1",
 		},
 	];
 
+	const firstLetterOfName = clerkUser?.firstName?.[0] ?? "";
+	const lastLetterOfName = clerkUser?.lastName?.[0] ?? "";
+
 	return (
-		<div className="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
-			<ul className="space-y-2 font-medium">
+		<div className="h-full px-0 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800">
+			<ul className="font-medium">
 				<li>
-					<Link
-						href={"/"}
-						className="flex items-center justify-center p-2 border-b border-gray-300">
+					<Link href={"/"} className="flex items-center justify-center p-2 ">
 						<Image
 							src={"/logos/Logo.svg"}
 							alt="logo"
@@ -49,23 +56,60 @@ const Sidebar = ({}: SidebarProps) => {
 						/>
 					</Link>
 				</li>
-				{sideBarList.map((item) => (
-					<li key={item.title}>
-						<Link
-							href={item.href}
-							className={clsx(
-								"flex items-center text-gray-900 rounded dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 group p-4",
-								{
-									"bg-gray-200 dark:bg-gray-700": pathname === item.href,
-								}
-							)}>
-							<item.icon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
-							<span className="flex-1 ml-3 whitespace-nowrap line-clamp-1">
-								{item.title}
-							</span>
-						</Link>
-					</li>
-				))}
+				<li>
+					<div
+						className={clsx(
+							"flex items-center text-gray-900 rounded dark:text-white bg-primary/[0.10] dark:hover:bg-gray-700 group p-4"
+						)}>
+						<Avatar className="border-4 border-primary/20 ">
+							<AvatarImage
+								src={clerkUser.photo}
+								alt="user"
+								className="rounded-full"
+							/>
+							<AvatarFallback>
+								{firstLetterOfName}
+								{lastLetterOfName}
+							</AvatarFallback>
+						</Avatar>
+						<div className="flex-1 ml-3 whitespace-nowrap line-clamp-1 flex flex-col justify-center">
+							<p className="text-medium line-clamp-1 text-pretty text-primary text-lg">
+								{clerkUser.username}
+							</p>
+							<p className="text-sm text-muted-foreground line-clamp-1">
+								{clerkUser.email}
+							</p>
+						</div>
+					</div>
+				</li>
+				<li className="my-2">
+					{sideBarList.map((item) => {
+						const updatedPathname = item.href.slice(
+							0,
+							item.href.includes("?")
+								? item.href.indexOf("?")
+								: item.href.length
+						);
+						return (
+							<Link
+								key={item.title}
+								href={item.href}
+								className={clsx(
+									"flex items-center text-gray-900 rounded dark:text-white hover:bg-primary/[0.10] dark:hover:bg-gray-700 group p-4",
+									{
+										"bg-primary/[0.10] dark:bg-gray-700":
+											pathname === updatedPathname ||
+											pathname.includes(updatedPathname),
+									}
+								)}>
+								<item.icon className="w-6 h-6 text-gray-500 dark:text-gray-400" />
+								<span className="flex-1 ml-3 whitespace-nowrap line-clamp-3">
+									{item.title}
+								</span>
+							</Link>
+						);
+					})}
+				</li>
 			</ul>
 		</div>
 	);

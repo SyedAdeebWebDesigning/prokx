@@ -44,7 +44,7 @@ const layout = async ({
 	return (
 		<div className="h-screen grid grid-cols-1 sm:grid-cols-[20%_80%]">
 			<aside className="hidden sm:block bg-gray-200">
-				<Sidebar />
+				<Sidebar clerkUser={clerkUser} />
 			</aside>
 			<main className="flex-1 bg-white">{children}</main>
 		</div>
