@@ -1,7 +1,13 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { LayoutDashboard, Package2, ShoppingBasket, Users } from "lucide-react";
+import {
+	LayoutDashboard,
+	Package2,
+	ShoppingBasket,
+	Users,
+	VerifiedIcon,
+} from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import clsx from "clsx";
@@ -73,8 +79,15 @@ const Sidebar = ({ clerkUser }: SidebarProps) => {
 							</AvatarFallback>
 						</Avatar>
 						<div className="flex-1 ml-3 whitespace-nowrap line-clamp-1 flex flex-col justify-center">
-							<p className="text-medium line-clamp-1 text-pretty text-primary text-lg">
+							<p className="text-medium line-clamp-1 text-pretty text-primary text-lg flex items-center">
 								{clerkUser.username}
+								<span className="ml-1">
+									{" "}
+									<VerifiedIcon
+										fill={clerkUser.isOwner ? "gold" : "lightblue"}
+										className={clerkUser.isOwner ? "text-black" : "text-white"}
+									/>
+								</span>
 							</p>
 							<p className="text-sm text-muted-foreground line-clamp-1">
 								{clerkUser.email}
