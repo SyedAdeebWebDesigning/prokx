@@ -49,7 +49,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
 						<TableCell
 							className={cn("text-right", {
 								"text-yellow-600 font-semibold": user.isOwner,
-								"text-green-600 font-semibold": user.isAdmin,
+								"text-green-600 font-semibold": user.isAdmin && !user.isOwner,
 								"text-gray-600": !user.isAdmin && !user.isOwner,
 							})}>
 							{user.isOwner ? "Owner" : user.isAdmin ? "Admin" : "User"}
