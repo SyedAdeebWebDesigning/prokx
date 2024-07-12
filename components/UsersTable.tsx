@@ -11,6 +11,7 @@ import {
 	TableRow,
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 interface UsersTableProps {
 	users: User[];
@@ -45,7 +46,12 @@ const UsersTable = ({ users }: UsersTableProps) => {
 							{user.address?.postalCode || "-"}
 						</TableCell>
 
-						<TableCell className="text-right">
+						<TableCell
+							className={cn("text-right", {
+								"text-yellow-600 font-semibold": user.isOwner,
+								"text-green-600 font-semibold": user.isAdmin,
+								"text-gray-600": !user.isAdmin && !user.isOwner,
+							})}>
 							{user.isOwner ? "Owner" : user.isAdmin ? "Admin" : "User"}
 						</TableCell>
 					</TableRow>

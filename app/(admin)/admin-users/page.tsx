@@ -1,15 +1,6 @@
 import Heading from "@/components/Heading";
 import { getUsers } from "@/lib/actions/user.action";
 import { currentUser } from "@clerk/nextjs/server";
-import {
-	Table,
-	TableBody,
-	TableCaption,
-	TableCell,
-	TableHead,
-	TableHeader,
-	TableRow,
-} from "@/components/ui/table";
 import { User } from "@/lib/database/models/User.model"; // Adjust the path as per your project structure
 import UsersTable from "@/components/UsersTable";
 

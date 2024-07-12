@@ -73,9 +73,9 @@ const Page = ({}: PageProps) => {
 	return (
 		<main className="p-5">
 			{user ? (
-				<div className="bg-gray-50 shadow-md rounded p-6 w-1/2 mx-auto">
+				<div className="bg-gray-50 shadow-md rounded p-6 md:w-1/2 w-full md:mx-auto">
 					<h1 className="text-xl font-bold mb-4 text-center">User Details</h1>
-					<div>
+					<div className="line-clamp-1">
 						<p className="flex justify-start">
 							<span className="font-semibold mr-2">id:</span> {user.clerkId}
 						</p>
