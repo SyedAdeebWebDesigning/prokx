@@ -6,55 +6,57 @@ import Link from "next/link";
 interface BannerProps {}
 
 const Banner = ({}: BannerProps) => {
-	return (
-		<section className="bg-dotted-pattern bg-primary/[0.05] sm:pt-40 py-10 overflow-hidden">
-			<MaxWidthWrapper>
-				<div className="grid grid-cols-1 lg:grid-cols-2">
-					<div className="relative md:size-[700px] rotate-45 mt-16 lg:order-2 lg:ml-auto mx-auto hidden lg:flex z-0 -mr-80 ">
-						<Image
-							src={"/banner-image.png"}
-							fill
-							alt="banner"
-							loading="eager"
-						/>
-					</div>
-					<div className="flex flex-col sm:w-2/3 lg:w-full mx-auto lg:order-1 z-10">
-						<div className="pt-10">
-							<h2 className="text-4xl sm:text-5xl md:text-[4.5rem] lg:text-[5.6rem] font-medium">
-								Discover Your Style with high quality <br />
-								<span className="text-primary lg:text-shadow font-semibold">
-									Premium Merchandise
-								</span>
-								.
-							</h2>
-							<br />
-							<h3 className="text-lg text-gray-500 md:text-3xl font-normal -mt-5">
-								Over 1000+ satisfied customers worldwide
-							</h3>
-						</div>
-						<div className="flex flex-col md:flex-row mt-8 gap-2 justify-normal">
-							<Link href={"/products?page=1"}>
-								<Button
-									size={"lg"}
-									variant={"default"}
-									className="rounded-sm py-4 w-full hover:bg-transparent border-2 border-primary hover:text-gray-800">
-									Shop Now
-								</Button>
-							</Link>
-							<Link href={"#categories"}>
-								<Button
-									size={"lg"}
-									variant={"secondary"}
-									className="rounded-sm py-4 border-2 border-primary hover:bg-primary w-full hover:text-white">
-									Browse Categories
-								</Button>
-							</Link>
-						</div>
-					</div>
-				</div>
-			</MaxWidthWrapper>
-		</section>
-	);
+  return (
+    <section className="overflow-hidden bg-primary/[0.05] bg-dotted-pattern py-10 sm:pt-40">
+      <MaxWidthWrapper>
+        <div className="grid grid-cols-1 lg:grid-cols-2">
+          <div className="relative z-0 mx-auto -mr-80 mt-16 hidden rotate-45 md:size-[700px] lg:order-2 lg:ml-auto lg:flex">
+            <Image
+              src={"/banner-image.png"}
+              fill
+              alt="banner"
+              loading="eager"
+            />
+          </div>
+          <div className="z-10 mx-auto flex flex-col sm:w-2/3 lg:order-1 lg:w-full">
+            <div className="pt-10">
+              <h2 className="text-4xl font-medium sm:text-5xl md:text-[4.5rem] lg:text-[5.6rem]">
+                Discover Your Style with high quality <br />
+                <span className="lg:text-shadow font-semibold text-primary">
+                  Premium Merchandise
+                </span>
+                .
+              </h2>
+              <br />
+              <h3 className="-mt-5 text-lg font-normal text-gray-500 md:text-3xl">
+                Over 1000+ satisfied customers worldwide
+              </h3>
+            </div>
+            <div className="mt-8 flex flex-col justify-normal gap-2 md:flex-row">
+              <Link href={"/products?page=1"}>
+                <Button
+                  size={"lg"}
+                  variant={"default"}
+                  className="w-full rounded-sm border-2 border-primary py-4 hover:bg-transparent hover:text-gray-800"
+                >
+                  Shop Now
+                </Button>
+              </Link>
+              <Link href={"#categories"}>
+                <Button
+                  size={"lg"}
+                  variant={"secondary"}
+                  className="w-full rounded-sm border-2 border-primary py-4 hover:bg-primary hover:text-white"
+                >
+                  Browse Categories
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </div>
+      </MaxWidthWrapper>
+    </section>
+  );
 };
 
 export default Banner;

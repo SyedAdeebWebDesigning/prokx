@@ -6,44 +6,44 @@ import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 const poppins = Poppins({
-	subsets: ["latin"],
-	weight: ["400", "500", "600", "700"],
-	variable: "--font-poppins",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
 });
 
 export const metadata: Metadata = {
-	title: "PROKX",
-	description:
-		"PROKX is an ecommerce platform for selling high quality merchandise products.",
-	icons: {
-		icon: ["/logos/P.svg"],
-	},
+  title: "PROKX",
+  description:
+    "PROKX is an ecommerce platform for selling high quality merchandise products.",
+  icons: {
+    icon: ["/logos/P.svg"],
+  },
 };
 
 export default function RootLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<ClerkProvider>
-			<html lang="en">
-				<body className={poppins.variable}>
-					{children}
-					<ToastContainer
-						position="top-right"
-						autoClose={1500}
-						hideProgressBar={false}
-						newestOnTop={false}
-						closeOnClick
-						rtl={false}
-						pauseOnFocusLoss
-						draggable
-						pauseOnHover
-						theme="light"
-					/>
-				</body>
-			</html>
-		</ClerkProvider>
-	);
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className={poppins.variable}>
+          {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={1500}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+        </body>
+      </html>
+    </ClerkProvider>
+  );
 }

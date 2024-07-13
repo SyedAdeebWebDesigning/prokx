@@ -7,16 +7,16 @@ import UsersTable from "@/components/UsersTable";
 interface AdminUserPageProps {}
 
 const AdminUserPage = async ({}: AdminUserPageProps) => {
-	const _ = await currentUser();
-	const userId: string = _?.id || "";
-	const users: User[] = await getUsers(userId); // Assuming getUsers returns an array of User objects
+  const _ = await currentUser();
+  const userId: string = _?.id || "";
+  const users: User[] = await getUsers(userId); // Assuming getUsers returns an array of User objects
 
-	return (
-		<main className="my-10">
-			<Heading>Users</Heading>
-			<UsersTable users={users} />
-		</main>
-	);
+  return (
+    <main className="my-10">
+      <Heading>Users</Heading>
+      <UsersTable users={users} />
+    </main>
+  );
 };
 
 export default AdminUserPage;
