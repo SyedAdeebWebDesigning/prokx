@@ -71,7 +71,7 @@ const Page = ({}: PageProps) => {
   };
 
   return (
-    <main className="p-5">
+    <main className="flex min-h-screen items-center justify-center p-5">
       {user ? (
         <div className="w-full rounded bg-gray-50 p-6 shadow-md md:mx-auto md:w-1/2">
           <h1 className="mb-4 text-center text-xl font-bold">User Details</h1>

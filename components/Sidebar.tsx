@@ -31,17 +31,17 @@ const Sidebar = ({ clerkUser }: SidebarProps) => {
     {
       title: "Products",
       icon: ShoppingBasket,
-      href: "/admin-products?page=1",
+      href: "/admin-products",
     },
     {
       title: "Orders",
       icon: Package2,
-      href: "/admin-orders?page=1",
+      href: "/admin-orders",
     },
     {
       title: "Users",
       icon: Users,
-      href: "/admin-users?page=1",
+      href: "/admin-users",
     },
   ];
 

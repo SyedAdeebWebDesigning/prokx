@@ -22,6 +22,14 @@ export interface UpdateUserProps {
   photo?: string;
 }
 
+interface PaginatedUsers {
+  users: User[];
+  total: number;
+  totalPages: number;
+  page: number;
+  pageSize: number;
+}
+
 interface AddAddressProps {
   clerkId: string;
   address: Address; // Assuming Address is properly defined in your User model
@@ -218,5 +226,20 @@ export const removeAdmin = async (userId: string) => {
       success: false,
       message: "An error occurred while removing admin",
     };
+  }
+};
+
+export const findUserFromQuery = async (query: string) => {
+  try {
+    await connectToDatabase();
+
+    const users = await User.find({
+      $or: [{ clerkId: query }, { email: query }, { username: query }],
+    });
+
+    return JSON.parse(JSON.stringify(users));
+  } catch (error) {
+    console.error("Error finding user from query:", error);
+    return [];
   }
 };
