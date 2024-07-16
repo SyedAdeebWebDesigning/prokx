@@ -49,7 +49,7 @@ const Sidebar = ({ clerkUser }: SidebarProps) => {
   const lastLetterOfName = clerkUser?.lastName?.[0] ?? "";
 
   return (
-    <div className="h-full overflow-y-auto bg-gray-50 px-0 py-4 dark:bg-gray-800">
+    <div className="fixed h-full w-[20%] overflow-y-auto bg-gray-50 px-0 py-4 dark:bg-gray-800">
       <ul className="font-medium">
         <li>
           <Link href={"/"} className="flex items-center justify-center p-2">

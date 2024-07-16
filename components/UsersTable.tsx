@@ -13,12 +13,14 @@ import {
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
+import { useRouter } from "next/navigation";
 
 interface UsersTableProps {
   users: User[];
 }
 
 const UsersTable = ({ users }: UsersTableProps) => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
   // Handle search input change
@@ -39,7 +41,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
   // Handle row click action
   const handleRowClick = (userId: string) => {
     // Implement navigation logic here, for example:
-    // router.push(`/admin-users/${userId}`);
+    router.push(`/admin-users/${userId}`);
     console.log(`Clicked user ID: ${userId}`);
   };
 
