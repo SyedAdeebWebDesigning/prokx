@@ -1,12 +1,17 @@
 import Heading from "@/components/Heading";
+import ProductHeader from "@/components/ProductHeader";
+import ProductsTable from "@/components/ProductsTable";
+import { getAllProducts } from "@/lib/actions/product.action";
 
 interface adminProductsPageProps {}
 
-const adminProductsPage = ({}: adminProductsPageProps) => {
+const adminProductsPage = async ({}: adminProductsPageProps) => {
+  const products = await getAllProducts();
   return (
-    <main className="my-10">
+    <main className="mb-10">
+      <ProductHeader />
       <Heading>Products</Heading>
-      {/* <ProductsTable /> */}
+      <ProductsTable products={products} />
     </main>
   );
 };

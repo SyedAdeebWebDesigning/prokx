@@ -10,6 +10,13 @@ const AdminUserPage = async ({}: AdminUserPageProps) => {
   const userId: string = _?.id || "";
   const users = await getUsers(userId);
 
+  if (users.length === 0) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        Current there are no users available
+      </div>
+    );
+  }
   return (
     <main className="my-10">
       <Heading>Users</Heading>

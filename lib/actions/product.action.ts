@@ -1,7 +1,5 @@
-"use server";
 import { connectToDatabase } from "../database";
-import Product from "../database/models/Product.model";
-import { IProductDocument } from "../database/models/Product.model";
+import Product, { IProductDocument } from "../database/models/Product.model";
 
 // Create a new product
 export const createProduct = async (productData: Partial<IProductDocument>) => {

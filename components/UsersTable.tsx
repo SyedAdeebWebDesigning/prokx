@@ -78,7 +78,7 @@ const UsersTable = ({ users }: UsersTableProps) => {
                 "cursor-pointer hover:bg-transparent",
                 index % 2 !== 0 ? "bg-slate-100 hover:bg-slate-100" : "",
               )}
-              onClick={() => handleRowClick(user.id)} // Handle row click
+              onClick={() => handleRowClick(user.clerkId)} // Handle row click
             >
               <TableCell className="font-medium">{index + 1}.</TableCell>
               <TableCell className="line-clamp-1">{user.clerkId}</TableCell>
