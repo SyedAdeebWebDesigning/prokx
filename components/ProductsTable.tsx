@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import debounce from "lodash.debounce";
 import type { IProductDocument } from "@/lib/database/models/Product.model";
 import { Button } from "./ui/button";
 import Link from "next/link";
@@ -16,6 +17,7 @@ import {
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { Input } from "./ui/input";
+import { Search } from "lucide-react";
 
 interface ProductsTableProps {
   products: IProductDocument[];
@@ -23,16 +25,32 @@ interface ProductsTableProps {
 
 const ProductsTable = ({ products }: ProductsTableProps) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [filteredProducts, setFilteredProducts] =
+    useState<IProductDocument[]>(products);
 
-  const filteredProducts = products.filter((product) => {
-    const query = searchQuery.toLowerCase();
-    return (
-      String(product._id).toLowerCase().includes(query) ||
-      product.product_name.toLowerCase().includes(query) ||
-      (product.product_category &&
-        product.product_category.toLowerCase().includes(query))
-    );
-  });
+  const debouncedFilterProducts = useMemo(
+    () =>
+      debounce((query: string) => {
+        const lowercasedQuery = query.toLowerCase();
+        const filtered = products.filter((product) => {
+          return (
+            String(product._id).toLowerCase().includes(lowercasedQuery) ||
+            product.product_name.toLowerCase().includes(lowercasedQuery) ||
+            (product.product_category &&
+              product.product_category.toLowerCase().includes(lowercasedQuery))
+          );
+        });
+        setFilteredProducts(filtered);
+      }, 300), // Adjust the debounce delay as needed
+    [products],
+  );
+
+  useEffect(() => {
+    debouncedFilterProducts(searchQuery);
+    return () => {
+      debouncedFilterProducts.cancel();
+    };
+  }, [searchQuery, debouncedFilterProducts]);
 
   if (products.length === 0) {
     return (
@@ -49,14 +67,17 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
 
   return (
     <div>
-      <div className="mb-4 flex w-full items-center justify-center">
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by ID, Name, or Category"
-          className="mx-2 bg-slate-50/60"
-        />
+      <div className="mb-4 flex items-center justify-center">
+        <div className="relative w-full">
+          <Input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search by ID, Name, or Category"
+            className="relative mx-2 bg-slate-50/60 pl-10"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 transform text-muted-foreground" />
+        </div>
       </div>
       <Table>
         <TableCaption>A list of products.</TableCaption>

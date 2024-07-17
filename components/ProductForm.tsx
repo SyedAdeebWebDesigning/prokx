@@ -22,6 +22,8 @@ import {
   publishProduct,
   unpublishProduct,
 } from "@/lib/actions/product.action";
+import { IndianRupee } from "lucide-react";
+import Image from "next/image";
 
 interface Size {
   size: string; // Updated to string type for Select component
@@ -268,13 +270,16 @@ const ProductForm = ({
         <Label className="block text-sm font-medium text-gray-700">
           Product Price
         </Label>
-        <Input
-          type="number"
-          value={productPrice}
-          onChange={(e) => setProductPrice(e.target.value)}
-          placeholder="Product Price"
-          className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-        />
+        <div className="relative">
+          <Input
+            type="number"
+            value={productPrice}
+            onChange={(e) => setProductPrice(e.target.value)}
+            placeholder="Product Price"
+            className="block w-full rounded border border-gray-300 px-3 py-2 pl-7 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          />
+          <IndianRupee className="absolute left-2 top-1/2 size-5 -translate-y-1/2 transform text-sm font-semibold text-muted-foreground" />
+        </div>
       </div>
       <div className="space-y-2">
         <Label className="block text-sm font-medium text-gray-700">
@@ -363,19 +368,24 @@ const ProductForm = ({
                       ))}
                     </SelectContent>
                   </Select>
-                  <Input
-                    type="number"
-                    value={size.available_qty}
-                    onChange={(e) => {
-                      const updatedSizes = [...variant.sizes];
-                      updatedSizes[sizeIndex].available_qty = parseInt(
-                        e.target.value,
-                      );
-                      updateVariant(index, { sizes: updatedSizes });
-                    }}
-                    placeholder="Available Quantity"
-                    className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
+                  <div className="relative">
+                    <Input
+                      type="number"
+                      value={size.available_qty}
+                      onChange={(e) => {
+                        const updatedSizes = [...variant.sizes];
+                        updatedSizes[sizeIndex].available_qty = parseInt(
+                          e.target.value,
+                        );
+                        updateVariant(index, { sizes: updatedSizes });
+                      }}
+                      placeholder="Available Quantity"
+                      className="block w-full rounded border border-gray-300 px-3 py-2 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    />
+                    <div className="absolute left-2 top-1/2 -translate-y-1/2 transform text-sm font-semibold text-muted-foreground">
+                      QTY
+                    </div>
+                  </div>
                 </div>
               ))}
               <Button
@@ -390,7 +400,7 @@ const ProductForm = ({
               <Label className="block text-sm font-medium text-gray-700">
                 Images
               </Label>
-              <div className="flex items-center space-x-4">
+              <div className="flex flex-col items-center">
                 <Input
                   type="file"
                   accept="image/*"
@@ -398,14 +408,18 @@ const ProductForm = ({
                   onChange={(e) => handleFileChange(e, index)}
                   className="block rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                 />
-                {variant.images.map((image, imageIndex) => (
-                  <img
-                    key={imageIndex}
-                    src={image.url}
-                    alt={`Variant ${index + 1} Image ${imageIndex + 1} ${image.url}`}
-                    className="h-20 rounded border border-gray-300 object-contain shadow-sm"
-                  />
-                ))}
+                <div className="my-4 grid w-full grid-cols-7 justify-start gap-4">
+                  {variant.images.map((image, imageIndex) => (
+                    <Image
+                      height={80}
+                      width={80}
+                      key={imageIndex}
+                      src={image.url}
+                      alt={`Variant ${index + 1} Image ${imageIndex + 1} ${image.url}`}
+                      className="h-20 rounded border border-gray-300 object-contain shadow-sm"
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           </div>

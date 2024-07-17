@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import User from "@/lib/database/models/User.model";
 import {
   Table,
@@ -14,6 +14,8 @@ import {
 import { cn } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
+import debounce from "lodash/debounce";
 
 interface UsersTableProps {
   users: User[];
@@ -23,24 +25,27 @@ const UsersTable = ({ users }: UsersTableProps) => {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Handle search input change
-  const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  // Debounce search input change
+  const handleSearchInputChange = debounce(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+    },
+    300,
+  );
 
   // Filtered users based on search query
-  const filteredUsers = users?.filter(
-    (user) =>
-      `${user.firstName} ${user.lastName}`
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      user.clerkId.toLowerCase().includes(searchQuery.toLowerCase()),
-  );
+  const filteredUsers = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return users?.filter(
+      (user) =>
+        `${user.firstName} ${user.lastName}`.toLowerCase().includes(query) ||
+        user.email.toLowerCase().includes(query) ||
+        user.clerkId.toLowerCase().includes(query),
+    );
+  }, [users, searchQuery]);
 
   // Handle row click action
   const handleRowClick = (userId: string) => {
-    // Implement navigation logic here, for example:
     router.push(`/admin-users/${userId}`);
     console.log(`Clicked user ID: ${userId}`);
   };
@@ -49,13 +54,15 @@ const UsersTable = ({ users }: UsersTableProps) => {
     <div className="overflow-x-auto">
       {/* Search input */}
       <div className="mb-4 flex justify-center">
-        <Input
-          type="text"
-          value={searchQuery}
-          onChange={handleSearchInputChange}
-          placeholder="Search users by Name, Email, or ID..."
-          className="m-2 w-full rounded border bg-gray-50 px-4 py-2 shadow-sm"
-        />
+        <div className="relative mx-auto w-full">
+          <Input
+            type="text"
+            onChange={handleSearchInputChange}
+            placeholder="Search users by Name, Email, or ID..."
+            className="m-2 w-full rounded border bg-gray-50 px-4 py-2 pl-10 shadow-sm"
+          />
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 transform text-gray-400" />
+        </div>
       </div>
 
       <Table>
