@@ -15,7 +15,7 @@ export default function Home() {
         <MaxWidthWrapper>
           <Heading>Why Choose Us?</Heading>
           <div className="mx-auto grid grid-cols-1 place-items-center gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div className="flex flex-col items-center rounded-md bg-zinc-100 p-4">
+            <div className="flex flex-col items-center rounded bg-zinc-100 p-4">
               <CircleCheckBig className="size-12 rounded-full bg-primary/30 p-2" />
               <h2 className="my-2 text-3xl">Quality Products</h2>
               <p className="text-center text-sm">
@@ -23,7 +23,7 @@ export default function Home() {
                 our products are not too expensive to produce.
               </p>
             </div>
-            <div className="flex flex-col items-center rounded-md bg-zinc-100 p-4">
+            <div className="flex flex-col items-center rounded bg-zinc-100 p-4">
               <TruckIcon className="size-12 rounded-full bg-orange-300/70 p-2" />
               <h2 className="my-2 text-3xl">Fast Delivery</h2>
               <p className="text-center text-sm">
@@ -33,7 +33,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex flex-col items-center rounded-md bg-zinc-100 p-4">
+            <div className="flex flex-col items-center rounded bg-zinc-100 p-4">
               <Leaf className="size-12 rounded-full bg-emerald-700/30 p-2" />
               <h2 className="my-2 text-3xl">Eco Friendly</h2>
               <p className="text-center text-sm">

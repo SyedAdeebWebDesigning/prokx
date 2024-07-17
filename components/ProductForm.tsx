@@ -51,20 +51,25 @@ const ProductForm = ({
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
   const [productPrice, setProductPrice] = useState<number | string | any>("");
-  const [productCategory, setProductCategory] = useState<string | any>(
-    "T-Shirts",
-  );
+  const [productCategory, setProductCategory] = useState<string | any>("");
   const [variants, setVariants] = useState<Variant[]>([]);
   const [isPublished, setIsPublished] = useState<boolean>(false); // State for publish status
-
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   useEffect(() => {
     if (type === "update" && product) {
-      setProductName(product.product_name);
-      setProductDescription(product.product_description);
-      setProductPrice(product.product_price);
-      setProductCategory(product?.product_category || "");
-      setVariants(product.product_variants);
-      setIsPublished(product.isPublished || false); // Initialize publish status
+      try {
+        setProductName(product.product_name);
+        setProductDescription(product.product_description);
+        setProductPrice(product.product_price);
+        setProductCategory(
+          product.product_category && product.product_category,
+        );
+        setVariants(product.product_variants);
+        setIsPublished(product.isPublished || false); // Initialize publish status
+      } catch (error) {
+      } finally {
+        setIsLoading(false);
+      }
     }
   }, [type, product]);
 
@@ -203,24 +208,12 @@ const ProductForm = ({
   };
 
   const ProductCategories = [
-    {
-      name: "T-Shirt",
-    },
-    {
-      name: "Hoodies",
-    },
-    {
-      name: "Sweatshirts",
-    },
-    {
-      name: "Zippers",
-    },
-    {
-      name: "Caps",
-    },
-    {
-      name: "Mugs",
-    },
+    "T-Shirt",
+    "Hoodies",
+    "Sweatshirts",
+    "Zippers",
+    "Caps",
+    "Mugs",
   ];
 
   const SizeOptions = ["S", "M", "L", "XL", "XXL"];
@@ -238,6 +231,13 @@ const ProductForm = ({
         variant.sizes.length > 0,
     );
 
+  if (isLoading) {
+    return (
+      <div className="flex min-h-[80vh] items-center justify-center">
+        Loading...
+      </div>
+    );
+  }
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
       <div className="space-y-2">
@@ -288,9 +288,9 @@ const ProductForm = ({
             <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent className="rounded">
-            {ProductCategories.map((value: { name: string }, index: number) => (
-              <SelectItem key={index} className="rounded" value={value.name}>
-                {value.name}
+            {ProductCategories.map((value: string, index: number) => (
+              <SelectItem key={index} className="rounded" value={value}>
+                {value}
               </SelectItem>
             ))}
           </SelectContent>

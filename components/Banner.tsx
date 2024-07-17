@@ -37,7 +37,7 @@ const Banner = ({}: BannerProps) => {
                 <Button
                   size={"lg"}
                   variant={"default"}
-                  className="w-full rounded-sm border-2 border-primary py-4 hover:bg-transparent hover:text-gray-800"
+                  className="w-full rounded border-2 border-primary py-4 hover:bg-transparent hover:text-gray-800"
                 >
                   Shop Now
                 </Button>
@@ -46,7 +46,7 @@ const Banner = ({}: BannerProps) => {
                 <Button
                   size={"lg"}
                   variant={"secondary"}
-                  className="w-full rounded-sm border-2 border-primary py-4 hover:bg-primary hover:text-white"
+                  className="w-full rounded border-2 border-primary py-4 hover:bg-primary hover:text-white"
                 >
                   Browse Categories
                 </Button>

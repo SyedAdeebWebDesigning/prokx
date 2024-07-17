@@ -36,7 +36,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
-        className="w-[350px] rounded-xl bg-gray-100 p-4 shadow-xl"
+        className="w-[350px] rounded bg-gray-100 p-4 shadow-xl"
         align="end"
       >
         <div className="flex w-full items-center justify-start gap-2 p-2">

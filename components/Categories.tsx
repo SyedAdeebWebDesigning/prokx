@@ -60,7 +60,7 @@ const Categories = ({}: CategoriesProps) => {
             <div
               onClick={() => handleClick(category.href)}
               key={category.name}
-              className="no-scrollbar group z-30 flex scale-100 cursor-pointer items-center justify-center overflow-hidden rounded-2xl bg-gray-100/50 transition-all duration-200 ease-in-out hover:scale-100"
+              className="no-scrollbar group z-30 flex scale-100 cursor-pointer items-center justify-center overflow-hidden rounded bg-gray-100/50 transition-all duration-200 ease-in-out hover:scale-100"
             >
               <div className="relative h-[400px] w-full md:h-[500px] lg:h-[500px]">
                 <Image
@@ -69,7 +69,7 @@ const Categories = ({}: CategoriesProps) => {
                   loading="lazy"
                   alt={category.name}
                   objectFit={category.objectFit}
-                  className="z-20 rounded-lg"
+                  className="z-20 rounded"
                 />
                 <h2
                   className={`text-shadow-sm group-hover:text-shadow-small no-scrollbar absolute inset-0 z-0 flex items-center justify-center text-center font-semibold uppercase text-white opacity-20 transition-all duration-500 ease-in-out group-hover:z-30 group-hover:rotate-0 group-hover:text-7xl group-hover:text-white group-hover:opacity-100 md:bottom-5 md:ml-4 md:justify-center md:text-4xl lg:overflow-auto lg:text-7xl lg:text-[100rem] ${

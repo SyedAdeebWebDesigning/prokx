@@ -93,8 +93,8 @@ const Header = async ({}: HeaderProps) => {
                       <NavigationMenuTrigger className="bg-transparent hover:bg-transparent">
                         Products
                       </NavigationMenuTrigger>
-                      <NavigationMenuContent>
-                        <NavigationMenuLink>
+                      <NavigationMenuContent className="">
+                        <NavigationMenuLink className="">
                           <ul className="">
                             {navLinks.slice(0, 7).map((navLink) => (
                               <HeaderLinks

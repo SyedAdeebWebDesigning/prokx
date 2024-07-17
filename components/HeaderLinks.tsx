@@ -24,10 +24,10 @@ const HeaderLinks = ({ navLink, clerkUser }: HeaderLinksProps) => {
   return (
     <>
       {showLink && (
-        <Link key={navLink.name} href={navLink.href}>
+        <Link key={navLink.name} href={navLink.href} className="">
           <h2
             className={clsx(
-              "rounded px-4 py-2 underline-offset-4 transition-all duration-200 hover:underline",
+              "px-4 py-2 underline-offset-4 transition-all duration-200 hover:underline",
               { "font-bold text-primary": isActive },
             )}
           >
