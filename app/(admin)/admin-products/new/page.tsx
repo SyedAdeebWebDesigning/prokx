@@ -7,7 +7,7 @@ const NewProductPage = async ({}: NewProductPageProps) => {
   return (
     <main className="my-10">
       <Heading>Product Form</Heading>
-      <ProductForm />
+      <ProductForm type="create" />
     </main>
   );
 };

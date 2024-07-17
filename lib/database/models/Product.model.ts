@@ -13,24 +13,19 @@ interface ProductVariant {
   sizes: { size: string; available_qty: number }[];
 }
 
-interface ProductCategory {
-  category_name: string;
-}
-
 export interface IProductDocument extends Document {
-  product_id: string;
   product_name: string;
   product_description: string;
   product_price: number;
-  product_reviews?: ProductReview[]; // Making product reviews optional
+  product_reviews?: ProductReview[];
   product_variants: ProductVariant[];
-  product_category?: ProductCategory; // Single product category
+  product_category?: string;
   isPublished: boolean;
   created_at: Date;
   updated_at: Date;
 }
 
-const productReviewSchema = new Schema<ProductReview>({
+export const productReviewSchema = new Schema<ProductReview>({
   user_clerk_id: { type: String, required: true },
   user_rating: { type: Number, required: true },
   user_review: { type: String, required: true },
@@ -52,24 +47,17 @@ const productVariantSchema = new Schema<ProductVariant>({
   ],
 });
 
-const productCategorySchema = new Schema<ProductCategory>({
-  category_name: { type: String, required: true },
-});
-
 const productSchema = new Schema<IProductDocument>(
   {
-    product_id: { type: String, required: true },
     product_name: { type: String, required: true },
     product_description: { type: String, required: true },
     product_price: { type: Number, required: true },
     isPublished: { type: Boolean, required: true, default: false },
-    product_reviews: [productReviewSchema], // Optional array of product reviews
     product_variants: [productVariantSchema],
-    product_category: { type: productCategorySchema, required: true }, // Single product category
+    product_category: { type: String }, // Define as String type
   },
   { timestamps: true },
 );
-
 const Product =
   mongoose.models.Product ||
   mongoose.model<IProductDocument>("Product", productSchema);

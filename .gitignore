@@ -37,3 +37,6 @@ next-env.d.ts
 
 # test
 /app/(test)
+
+# Images
+/public/images/products

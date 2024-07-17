@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Label } from "./ui/label";
 import { Input } from "./ui/input";
@@ -12,9 +13,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { IProductDocument } from "@/lib/database/models/Product.model";
+import { toast } from "react-toastify";
+import {
+  CreateProductData,
+  createProduct,
+  updateProduct,
+  publishProduct,
+  unpublishProduct,
+} from "@/lib/actions/product.action";
 
 interface Size {
-  size: string;
+  size: string; // Updated to string type for Select component
   available_qty: number;
 }
 
@@ -30,22 +40,43 @@ interface Variant {
   sizes: Size[];
 }
 
-const ProductForm = () => {
+const ProductForm = ({
+  type,
+  product,
+}: {
+  type: "create" | "update";
+  product?: IProductDocument;
+}) => {
+  const router = useRouter();
   const [productName, setProductName] = useState("");
   const [productDescription, setProductDescription] = useState("");
-  const [productPrice, setProductPrice] = useState<number | string>("");
-  const [productCategory, setProductCategory] = useState<string>("T Shirts");
+  const [productPrice, setProductPrice] = useState<number | string | any>("");
+  const [productCategory, setProductCategory] = useState<string | any>(
+    "T-Shirts",
+  );
   const [variants, setVariants] = useState<Variant[]>([]);
+  const [isPublished, setIsPublished] = useState<boolean>(false); // State for publish status
+
+  useEffect(() => {
+    if (type === "update" && product) {
+      setProductName(product.product_name);
+      setProductDescription(product.product_description);
+      setProductPrice(product.product_price);
+      setProductCategory(product?.product_category || "");
+      setVariants(product.product_variants);
+      setIsPublished(product.isPublished || false); // Initialize publish status
+    }
+  }, [type, product]);
 
   const addVariant = () => {
     setVariants([
-      ...variants,
       {
         color_name: "",
         color_hex_code: "",
-        images: [], // Initialize with an empty array
-        sizes: [{ size: "", available_qty: 0 }],
+        images: [],
+        sizes: [{ size: "", available_qty: 1 }],
       },
+      ...variants,
     ]);
   };
 
@@ -57,20 +88,33 @@ const ProductForm = () => {
 
   const addSize = (variantIndex: number) => {
     const updatedVariants = [...variants];
-    updatedVariants[variantIndex].sizes.push({ size: "", available_qty: 0 });
+    updatedVariants[variantIndex].sizes.push({ size: "", available_qty: 1 });
     setVariants(updatedVariants);
   };
 
-  const handleImageUpload = (variantIndex: number, files: FileList | null) => {
-    if (files && files.length > 0) {
+  const handleFileChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    variantIndex: number,
+  ) => {
+    const files = e.target.files;
+    if (files) {
       const updatedVariants = [...variants];
-      const file = files[0];
-      const imageUrl = URL.createObjectURL(file);
-      updatedVariants[variantIndex].images = [
-        ...updatedVariants[variantIndex].images.filter((img) => img.file),
-        { url: imageUrl, file },
-      ];
-      setVariants(updatedVariants);
+      const updatedImages: Image[] = [];
+
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const reader = new FileReader();
+
+        reader.onload = (event) => {
+          if (event.target && typeof event.target.result === "string") {
+            updatedImages.push({ url: event.target.result });
+            updatedVariants[variantIndex].images = updatedImages;
+            setVariants(updatedVariants);
+          }
+        };
+
+        reader.readAsDataURL(file);
+      }
     }
   };
 
@@ -80,16 +124,119 @@ const ProductForm = () => {
     setVariants(updatedVariants);
   };
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    console.log({
-      productName,
-      productDescription,
-      productPrice: Number(productPrice),
-      productCategory,
-      variants,
-    });
+    try {
+      const data: CreateProductData = {
+        product_name: productName,
+        product_description: productDescription,
+        product_price: parseFloat(productPrice),
+        product_category: productCategory,
+        product_variants: variants.map((variant) => ({
+          color_name: variant.color_name,
+          color_hex_code: variant.color_hex_code,
+          images: variant.images.map((image) => ({
+            url: image.url,
+          })),
+          sizes: variant.sizes.map((size) => ({
+            size: size.size,
+            available_qty: size.available_qty,
+          })),
+        })),
+        isPublished: false,
+      };
+
+      if (type === "create") {
+        await createProduct(data);
+        toast.success(
+          "Product created successfully. You need to publish the product",
+        );
+        setTimeout(() => {
+          router.push("/admin-products");
+        }, 1500);
+      } else if (type === "update" && product) {
+        // Implement update logic if needed
+        await updateProduct(String(product._id), data);
+        toast.success("Product updated successfully");
+        setTimeout(() => {
+          router.push("/admin-products");
+        }, 1500);
+      }
+    } catch (error: any) {
+      toast.error(error.message);
+      console.error("Error saving product:", error);
+    }
   };
+
+  const handlePublish = async () => {
+    if (!product) return; // Ensure product is defined
+
+    try {
+      await publishProduct(String(product._id)); // Convert product._id to string before passing it as an argument
+      setIsPublished(true);
+      toast.success("Product published successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+      console.error("Error publishing product:", error);
+    } finally {
+      setTimeout(() => {
+        router.refresh();
+      }, 1500);
+    }
+  };
+
+  const handleUnPublish = async () => {
+    if (!product) return; // Ensure product is defined
+
+    try {
+      await unpublishProduct(String(product._id)); // Convert product._id to string before passing it as an argument
+      setIsPublished(false);
+      toast.success("Product unpublished successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+      console.error("Error un-publishing product:", error);
+    } finally {
+      setTimeout(() => {
+        router.refresh();
+      }, 1500);
+    }
+  };
+
+  const ProductCategories = [
+    {
+      name: "T-Shirt",
+    },
+    {
+      name: "Hoodies",
+    },
+    {
+      name: "Sweatshirts",
+    },
+    {
+      name: "Zippers",
+    },
+    {
+      name: "Caps",
+    },
+    {
+      name: "Mugs",
+    },
+  ];
+
+  const SizeOptions = ["S", "M", "L", "XL", "XXL"];
+
+  const isFormValid =
+    productName.trim() !== "" &&
+    productDescription.trim() !== "" &&
+    productPrice !== "" &&
+    productCategory !== "" &&
+    variants.length > 0 &&
+    variants.every(
+      (variant) =>
+        variant.color_name.trim() !== "" &&
+        variant.color_hex_code.trim() !== "" &&
+        variant.sizes.length > 0,
+    );
 
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
@@ -141,24 +288,11 @@ const ProductForm = () => {
             <SelectValue placeholder="Select Category" />
           </SelectTrigger>
           <SelectContent className="rounded">
-            <SelectItem className="rounded" value="T Shirts">
-              T Shirts
-            </SelectItem>
-            <SelectItem className="rounded" value="Hoodies">
-              Hoodies
-            </SelectItem>
-            <SelectItem className="rounded" value="Sweatshirts">
-              Sweatshirts
-            </SelectItem>
-            <SelectItem className="rounded" value="Zippers">
-              Zippers
-            </SelectItem>
-            <SelectItem className="rounded" value="Caps">
-              Caps
-            </SelectItem>
-            <SelectItem className="rounded" value="Mugs">
-              Mugs
-            </SelectItem>
+            {ProductCategories.map((value: { name: string }, index: number) => (
+              <SelectItem key={index} className="rounded" value={value.name}>
+                {value.name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>
@@ -189,112 +323,113 @@ const ProductForm = () => {
                 className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               />
             </div>
-            <div className="flex w-full flex-col items-center justify-center">
-              <Label className="block text-sm font-medium text-gray-700">
-                Color Hex Code
-              </Label>
-              <SketchPicker
-                color={variant.color_hex_code}
-                onChange={(color: ColorResult) =>
-                  handleColorChange(color, index)
-                }
-              />
+            <div className="space-y-2">
+              <div className="flex w-full flex-col items-center justify-center space-x-4">
+                <Label className="block text-sm font-medium text-gray-700">
+                  Color Picker
+                </Label>
+                <SketchPicker
+                  color={variant.color_hex_code}
+                  onChange={(color) => handleColorChange(color, index)}
+                />
+              </div>
             </div>
             <div className="space-y-2">
               <Label className="block text-sm font-medium text-gray-700">
-                Images
-              </Label>
-              {variant.images.map((image, imageIndex) => (
-                <div key={imageIndex} className="space-y-2">
-                  <div className="grid w-full items-center gap-1.5">
-                    <Label htmlFor={`picture-${index}-${imageIndex}`}>
-                      Picture
-                    </Label>
-                    <Input
-                      id={`picture-${index}-${imageIndex}`}
-                      type="file"
-                      className="cursor-pointer rounded"
-                      onChange={(e) => handleImageUpload(index, e.target.files)}
-                    />
-                    {image.url && (
-                      <picture>
-                        <img
-                          src={image.url}
-                          alt={`Variant ${index} Image ${imageIndex}`}
-                          className="mt-2 h-20 w-20 object-cover"
-                        />
-                      </picture>
-                    )}
-                  </div>
-                </div>
-              ))}
-              <Button
-                type="button"
-                onClick={() =>
-                  updateVariant(index, {
-                    images: [...variant.images, { url: "", file: undefined }],
-                  })
-                }
-                className="my-2 rounded px-4 py-2 text-white shadow-sm hover:bg-blue-600"
-              >
-                Add Image
-              </Button>
-            </div>
-            <div className="space-y-2">
-              <Label className="block text-sm font-medium text-gray-700">
-                Sizes & Quantities
+                Sizes
               </Label>
               {variant.sizes.map((size, sizeIndex) => (
-                <div key={sizeIndex} className="flex items-center space-x-4">
-                  <Input
-                    type="text"
+                <div key={sizeIndex} className="flex space-x-4">
+                  <Select
                     value={size.size}
-                    onChange={(e) =>
-                      updateVariant(index, {
-                        sizes: [
-                          ...variant.sizes.slice(0, sizeIndex),
-                          { ...size, size: e.target.value },
-                          ...variant.sizes.slice(sizeIndex + 1),
-                        ],
-                      })
-                    }
-                    placeholder="Size"
-                    className="block w-1/2 rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                  />
+                    onValueChange={(value) => {
+                      const updatedSizes = [...variant.sizes];
+                      updatedSizes[sizeIndex].size = value;
+                      updateVariant(index, { sizes: updatedSizes });
+                    }}
+                  >
+                    <SelectTrigger className="rounded">
+                      <SelectValue placeholder="Select Size" />
+                    </SelectTrigger>
+                    <SelectContent className="rounded">
+                      {SizeOptions.map((option, optIndex) => (
+                        <SelectItem
+                          key={optIndex}
+                          className="rounded"
+                          value={option}
+                        >
+                          {option}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <Input
                     type="number"
                     value={size.available_qty}
-                    onChange={(e) =>
-                      updateVariant(index, {
-                        sizes: [
-                          ...variant.sizes.slice(0, sizeIndex),
-                          {
-                            ...size,
-                            available_qty: Number(e.target.value),
-                          },
-                          ...variant.sizes.slice(sizeIndex + 1),
-                        ],
-                      })
-                    }
-                    placeholder="Quantity"
-                    className="block w-1/2 rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                    onChange={(e) => {
+                      const updatedSizes = [...variant.sizes];
+                      updatedSizes[sizeIndex].available_qty = parseInt(
+                        e.target.value,
+                      );
+                      updateVariant(index, { sizes: updatedSizes });
+                    }}
+                    placeholder="Available Quantity"
+                    className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   />
                 </div>
               ))}
               <Button
                 type="button"
                 onClick={() => addSize(index)}
-                className="my-2 rounded px-4 py-2 text-white shadow-sm hover:bg-blue-600"
+                className="mt-2 rounded px-4 py-2 text-white shadow-sm hover:bg-blue-600"
               >
                 Add Size
               </Button>
             </div>
+            <div className="space-y-2">
+              <Label className="block text-sm font-medium text-gray-700">
+                Images
+              </Label>
+              <div className="flex items-center space-x-4">
+                <Input
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  onChange={(e) => handleFileChange(e, index)}
+                  className="block rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                />
+                {variant.images.map((image, imageIndex) => (
+                  <img
+                    key={imageIndex}
+                    src={image.url}
+                    alt={`Variant ${index + 1} Image ${imageIndex + 1} ${image.url}`}
+                    className="h-20 rounded border border-gray-300 object-contain shadow-sm"
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         ))}
       </div>
-      <Button type="submit" className="rounded px-6 py-3 text-white shadow-sm">
-        Save Product
-      </Button>
+      <div className="flex justify-end">
+        <Button
+          type="submit"
+          className="rounded bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700"
+          disabled={type === "create" && !isFormValid}
+        >
+          {type === "create" ? "Create Product" : "Update Product"}
+        </Button>
+        {type === "update" && (
+          <Button
+            type="button"
+            variant={"outline"}
+            onClick={product?.isPublished ? handleUnPublish : handlePublish}
+            className="ml-2 rounded px-4 py-2 shadow-sm"
+          >
+            {product?.isPublished ? "Un-Publish" : "Publish"}
+          </Button>
+        )}
+      </div>
     </form>
   );
 };
