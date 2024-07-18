@@ -33,7 +33,7 @@ const Banner = ({}: BannerProps) => {
               </h3>
             </div>
             <div className="mt-8 flex flex-col justify-normal gap-2 md:flex-row">
-              <Link href={"/products?page=1"}>
+              <Link href={"/products"}>
                 <Button
                   size={"lg"}
                   variant={"default"}

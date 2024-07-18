@@ -13,31 +13,31 @@ const Footer = ({}: FooterProps) => {
       links: [
         {
           name: "All Products",
-          href: "/products?page=1",
+          href: "/products",
         },
         {
           name: "TShirts",
-          href: "/tshirts?page=1",
+          href: "/tshirts",
         },
         {
           name: "Hoodies",
-          href: "/hoodies?page=1",
+          href: "/hoodies",
         },
         {
           name: "Sweatshirts",
-          href: "/sweatshirts?page=1",
+          href: "/sweatshirts",
         },
         {
           name: "Zippers",
-          href: "/zippers?page=1",
+          href: "/zippers",
         },
         {
           name: "Mugs",
-          href: "/mugs?page=1",
+          href: "/mugs",
         },
         {
           name: "Caps",
-          href: "/caps?page=1",
+          href: "/caps",
         },
       ],
     },
@@ -59,7 +59,7 @@ const Footer = ({}: FooterProps) => {
       links: [
         {
           name: "Your Orders",
-          href: "/orders?page=1",
+          href: "/orders",
         },
       ],
     },

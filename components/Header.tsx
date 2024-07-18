@@ -10,16 +10,14 @@ import UserNav from "./UserNav";
 import HeaderLinks from "./HeaderLinks";
 import Cart from "./Cart";
 import MobileNav from "./MobileNav";
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu";
+import
+  {
+    NavigationMenu,
+    NavigationMenuContent, NavigationMenuItem,
+    NavigationMenuLink,
+    NavigationMenuList,
+    NavigationMenuTrigger
+  } from "@/components/ui/navigation-menu";
 
 interface HeaderProps {}
 
@@ -27,35 +25,35 @@ const Header = async ({}: HeaderProps) => {
   const navLinks = [
     {
       name: "Products",
-      href: "/products?page=1",
+      href: "/products",
     },
     {
       name: "TShirts",
-      href: "/tshirts?page=1",
+      href: "/tshirts",
     },
     {
       name: "Hoodies",
-      href: "/hoodies?page=1",
+      href: "/hoodies",
     },
     {
       name: "Sweatshirts",
-      href: "/sweatshirts?page=1",
+      href: "/sweatshirts",
     },
     {
       name: "Zippers",
-      href: "/zipper?page=1",
+      href: "/zipper",
     },
     {
       name: "Mugs",
-      href: "/mugs?page=1",
+      href: "/mugs",
     },
     {
       name: "Caps",
-      href: "/caps?page=1",
+      href: "/caps",
     },
     {
       name: "Orders",
-      href: "/orders?page=1",
+      href: "/orders",
     },
     {
       name: "Dashboard",

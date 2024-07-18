@@ -159,3 +159,17 @@ export const unpublishProduct = async (productId: string) => {
     throw error;
   }
 };
+
+export const getProductsByCategory = async (category: string) => {
+  try {
+    await connectToDatabase();
+    const products = await Product.find({
+      product_category: category,
+      isPublished: true,
+    });
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    console.error("Error getting products by category:", error);
+    throw error;
+  }
+};
