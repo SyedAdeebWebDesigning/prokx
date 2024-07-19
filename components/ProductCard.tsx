@@ -13,12 +13,17 @@ import {
 interface ProductCardProps {
   product: IProductDocument;
   index: number;
+  isNotCategorized?: boolean;
 }
 
 // Define the custom order for sizes
 const sizeOrder = ["S", "M", "L", "XL", "XXL"];
 
-const ProductCard = ({ product, index }: ProductCardProps) => {
+const ProductCard = ({
+  product,
+  index,
+  isNotCategorized,
+}: ProductCardProps) => {
   const [imageIndex, setImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -74,7 +79,14 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
         </div>
         <div className="w-full bg-gradient-to-b from-transparent to-gray-100 p-5">
           <div className="flex w-full items-center justify-between py-2">
-            <h3 className="text-lg font-medium">{product.product_name}</h3>
+            <div>
+              {isNotCategorized && (
+                <h5 className="text-sm font-medium text-muted-foreground">
+                  {product.product_category}
+                </h5>
+              )}
+              <h3 className="text-lg font-medium">{product.product_name}</h3>
+            </div>
             <span className="text-md font-semibold text-muted-foreground">
               ₹{product.product_price}
             </span>

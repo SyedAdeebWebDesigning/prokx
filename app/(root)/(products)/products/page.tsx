@@ -1,10 +1,7 @@
 import Heading from "@/components/Heading";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import ProductCard from "@/components/ProductCard";
-import {
-  getProductsByCategory,
-  getPublishableProducts,
-} from "@/lib/actions/product.action";
+import { getPublishableProducts } from "@/lib/actions/product.action";
 import { IProductDocument } from "@/lib/database/models/Product.model";
 
 interface productsPageProps {}
@@ -26,7 +23,9 @@ const productsPage = async ({}: productsPageProps) => {
       <MaxWidthWrapper>
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product: IProductDocument, index: number) => {
-            return <ProductCard index={index} product={product} />;
+            return (
+              <ProductCard index={index} product={product} isNotCategorized />
+            );
           })}
         </section>
       </MaxWidthWrapper>
