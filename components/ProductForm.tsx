@@ -150,7 +150,7 @@ const ProductForm = ({
             available_qty: size.available_qty,
           })),
         })),
-        isPublished: false,
+        isPublished: isPublished,
       };
 
       if (type === "create") {
@@ -165,9 +165,6 @@ const ProductForm = ({
         // Implement update logic if needed
         await updateProduct(String(product._id), data);
         toast.success("Product updated successfully");
-        setTimeout(() => {
-          router.push("/admin-products");
-        }, 1500);
       }
     } catch (error: any) {
       toast.error(error.message);
@@ -233,7 +230,7 @@ const ProductForm = ({
         variant.sizes.length > 0,
     );
 
-  if (isLoading) {
+  if (isLoading && type === "update") {
     return (
       <div className="flex min-h-[80vh] items-center justify-center">
         Loading...

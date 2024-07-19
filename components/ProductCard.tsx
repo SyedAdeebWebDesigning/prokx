@@ -27,14 +27,20 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
     const defaultSize = defaultVariant.sizes[0].size; // Assuming sizes is an array
     const defaultColor = defaultVariant.color_name; // Assuming name is available
 
-    const url = `/product/${product._id}?size=${defaultSize}&color=${defaultColor}`;
+    const url = `/products/${product._id}?size=${defaultSize}&color=${defaultColor}`;
     window.location.href = url;
   };
 
-  // Sorting sizes according to the custom order
-  const sortedSizes = product.product_variants[0].sizes.sort((a, b) => {
-    return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
-  });
+  // Find all available sizes and sort them according to the custom order
+  const availableSizes = Array.from(
+    new Set(
+      product.product_variants.flatMap((variant) =>
+        variant.sizes
+          .filter((size) => size.available_qty > 0)
+          .map((size) => size.size),
+      ),
+    ),
+  ).sort((a, b) => sizeOrder.indexOf(a) - sizeOrder.indexOf(b));
 
   return (
     <div
@@ -79,16 +85,15 @@ const ProductCard = ({ product, index }: ProductCardProps) => {
           <div className="mt-4 flex w-full items-center justify-between">
             <div className="flex items-center space-x-1">
               <span key={index} className="text-lg text-muted-foreground">
-                {sortedSizes.map((size) => size.size).join(", ")}
+                {availableSizes.join(", ")}
               </span>
             </div>
             <div className="flex items-center space-x-1">
               {product.product_variants.map((variant, index) => {
                 return (
-                  <HoverCard>
+                  <HoverCard key={index}>
                     <HoverCardTrigger>
                       <div
-                        key={index}
                         className="size-4 rounded-full border-2 border-gray-300"
                         style={{
                           backgroundColor: variant.color_hex_code,

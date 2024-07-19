@@ -1,13 +1,16 @@
 import Heading from "@/components/Heading";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import ProductCard from "@/components/ProductCard";
-import { getProductsByCategory } from "@/lib/actions/product.action";
+import {
+  getProductsByCategory,
+  getPublishableProducts,
+} from "@/lib/actions/product.action";
 import { IProductDocument } from "@/lib/database/models/Product.model";
 
-interface capsPageProps {}
+interface productsPageProps {}
 
-const capsPage = async ({}: capsPageProps) => {
-  const data = (await getProductsByCategory("Caps")) as IProductDocument[];
+const productsPage = async ({}: productsPageProps) => {
+  const data = await getPublishableProducts();
   const products = JSON.parse(JSON.stringify(data));
   console.log(products);
   if (products.length === 0) {
@@ -19,7 +22,7 @@ const capsPage = async ({}: capsPageProps) => {
   }
   return (
     <main className="my-20">
-      <Heading>Caps Collections </Heading>
+      <Heading>Products Collections </Heading>
       <MaxWidthWrapper>
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product: IProductDocument, index: number) => {
@@ -31,4 +34,4 @@ const capsPage = async ({}: capsPageProps) => {
   );
 };
 
-export default capsPage;
+export default productsPage;
