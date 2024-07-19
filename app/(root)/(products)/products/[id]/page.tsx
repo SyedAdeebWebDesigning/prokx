@@ -18,7 +18,7 @@ const Skeleton = () => (
       <div className="container mx-auto px-5 py-24">
         <div className="mx-auto flex flex-wrap md:w-4/5">
           <div className="relative w-full md:w-1/2">
-            <div className="absolute -top-20 left-0 flex flex-wrap space-x-2 md:-left-24 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
+            <div className="absolute -top-24 left-0 flex flex-wrap space-x-2 md:-left-24 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
               {Array(4)
                 .fill("")
                 .map((_, idx) => (
@@ -137,20 +137,20 @@ const Page = ({ params }: PageProps): ReactElement => {
         <div className="container mx-auto px-5 py-24">
           <div className="mx-auto flex flex-wrap md:w-4/5">
             <div className="relative w-full md:w-1/2">
-              <div className="absolute -top-20 left-0 flex flex-wrap space-x-2 md:-left-20 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
+              <div className="absolute -top-20 left-0 mx-auto flex w-full justify-center space-x-2 overflow-x-scroll md:-left-20 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
                 {selectedVariant?.images.map((image: any) => (
-                  <button
+                  <Button
                     key={image.url}
-                    className="relative h-20 w-20 rounded border-2 border-gray-300"
+                    className="relative size-16 overflow-x-scroll rounded border-2 border-gray-300"
                     onClick={() => handleImageClick(image.url)}
                   >
                     <Image
                       alt="ecommerce"
                       layout="fill"
-                      className="object-contain"
+                      className="bg-white object-cover"
                       src={image.url}
                     />
-                  </button>
+                  </Button>
                 ))}
               </div>
               <div className="relative h-96 w-full rounded object-center md:h-[500px]">
@@ -192,7 +192,7 @@ const Page = ({ params }: PageProps): ReactElement => {
                     <select
                       value={size}
                       onChange={handleSizeChange}
-                      className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-base focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+                      className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-2"
                     >
                       {selectedVariant?.sizes
                         .sort((a: any, b: any) => {
