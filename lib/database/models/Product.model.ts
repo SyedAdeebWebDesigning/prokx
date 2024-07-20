@@ -7,7 +7,7 @@ interface ProductReview {
 }
 
 export interface ProductVariant {
-  _id: string;
+  _id?: string;
   color_name: string;
   color_hex_code: string;
   images: { url: string }[];
