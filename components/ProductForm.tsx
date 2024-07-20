@@ -26,19 +26,19 @@ import { IndianRupee } from "lucide-react";
 import Image from "next/image";
 
 interface Size {
-  size: string; // Updated to string type for Select component
+  size: string;
   available_qty: number;
 }
 
 interface Image {
-  url: string; // URL of the image
-  file?: File; // Optional file object for new uploads
+  url: string;
+  file?: File;
 }
 
 interface Variant {
   color_name: string;
   color_hex_code: string;
-  images: Image[]; // Array of Image objects containing URL and optional file
+  images: Image[];
   sizes: Size[];
 }
 
@@ -55,8 +55,11 @@ const ProductForm = ({
   const [productPrice, setProductPrice] = useState<number | string | any>("");
   const [productCategory, setProductCategory] = useState<string | any>("");
   const [variants, setVariants] = useState<Variant[]>([]);
-  const [isPublished, setIsPublished] = useState<boolean>(false); // State for publish status
+  const [isPublished, setIsPublished] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isPublishing, setIsPublishing] = useState<boolean>(false);
+
   useEffect(() => {
     if (type === "update" && product) {
       try {
@@ -67,7 +70,7 @@ const ProductForm = ({
           product.product_category && product.product_category,
         );
         setVariants(product.product_variants);
-        setIsPublished(product.isPublished || false); // Initialize publish status
+        setIsPublished(product.isPublished || false);
       } catch (error) {
       } finally {
         setIsLoading(false);
@@ -133,6 +136,7 @@ const ProductForm = ({
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    setIsSubmitting(true);
     try {
       const data: CreateProductData = {
         product_name: productName,
@@ -162,27 +166,29 @@ const ProductForm = ({
           router.push("/admin-products");
         }, 1500);
       } else if (type === "update" && product) {
-        // Implement update logic if needed
         await updateProduct(String(product._id), data);
         toast.success("Product updated successfully");
       }
     } catch (error: any) {
       toast.error(error.message);
       console.error("Error saving product:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   const handlePublish = async () => {
-    if (!product) return; // Ensure product is defined
-
+    if (!product) return;
+    setIsPublishing(true);
     try {
-      await publishProduct(String(product._id)); // Convert product._id to string before passing it as an argument
+      await publishProduct(String(product._id));
       setIsPublished(true);
       toast.success("Product published successfully");
     } catch (error: any) {
       toast.error(error.message);
       console.error("Error publishing product:", error);
     } finally {
+      setIsPublishing(false);
       setTimeout(() => {
         router.refresh();
       }, 1500);
@@ -190,16 +196,17 @@ const ProductForm = ({
   };
 
   const handleUnPublish = async () => {
-    if (!product) return; // Ensure product is defined
-
+    if (!product) return;
+    setIsPublishing(true);
     try {
-      await unpublishProduct(String(product._id)); // Convert product._id to string before passing it as an argument
+      await unpublishProduct(String(product._id));
       setIsPublished(false);
       toast.success("Product unpublished successfully");
     } catch (error: any) {
       toast.error(error.message);
       console.error("Error un-publishing product:", error);
     } finally {
+      setIsPublishing(false);
       setTimeout(() => {
         router.refresh();
       }, 1500);
@@ -237,6 +244,7 @@ const ProductForm = ({
       </div>
     );
   }
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
       <div className="space-y-2">
@@ -248,7 +256,7 @@ const ProductForm = ({
           value={productName}
           onChange={(e) => setProductName(e.target.value)}
           placeholder="Product Name"
-          className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
       </div>
       <div className="space-y-2">
@@ -260,7 +268,7 @@ const ProductForm = ({
           value={productDescription}
           onChange={(e) => setProductDescription(e.target.value)}
           placeholder="Product Description"
-          className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+          className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
         />
       </div>
       <div className="space-y-2">
@@ -273,7 +281,7 @@ const ProductForm = ({
             value={productPrice}
             onChange={(e) => setProductPrice(e.target.value)}
             placeholder="Product Price"
-            className="block w-full rounded border border-gray-300 px-3 py-2 pl-7 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            className="block w-full rounded border border-gray-300 px-3 py-2 pl-7 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
           />
           <IndianRupee className="absolute left-2 top-1/2 size-5 -translate-y-1/2 transform text-sm font-semibold text-muted-foreground" />
         </div>
@@ -283,34 +291,28 @@ const ProductForm = ({
           Product Category
         </Label>
         <Select
-          onValueChange={(value) => setProductCategory(value)}
           value={productCategory}
+          onValueChange={setProductCategory}
+          defaultValue={productCategory}
         >
-          <SelectTrigger className="w-full rounded">
-            <SelectValue placeholder="Select Category" />
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select a category" />
           </SelectTrigger>
-          <SelectContent className="rounded">
-            {ProductCategories.map((value: string, index: number) => (
-              <SelectItem key={index} className="rounded" value={value}>
-                {value}
+          <SelectContent>
+            {ProductCategories.map((category) => (
+              <SelectItem key={category} value={category}>
+                {category}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
       </div>
-      <div className="">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Variants</h3>
-          <Button
-            type="button"
-            onClick={addVariant}
-            className="my-2 rounded px-4 py-2 text-white shadow-sm hover:bg-blue-600"
-          >
-            Add Variant
-          </Button>
-        </div>
+      <div className="space-y-4">
+        <Label className="block text-sm font-medium text-gray-700">
+          Variants
+        </Label>
         {variants.map((variant, index) => (
-          <div key={index} className="space-y-4 rounded border p-4 shadow-sm">
+          <div key={index} className="mb-4 rounded border p-4">
             <div className="space-y-2">
               <Label className="block text-sm font-medium text-gray-700">
                 Color Name
@@ -322,18 +324,40 @@ const ProductForm = ({
                   updateVariant(index, { color_name: e.target.value })
                 }
                 placeholder="Color Name"
-                className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
               />
             </div>
             <div className="space-y-2">
-              <div className="flex w-full flex-col items-center justify-center space-x-4">
-                <Label className="block text-sm font-medium text-gray-700">
-                  Color Picker
-                </Label>
-                <SketchPicker
-                  color={variant.color_hex_code}
-                  onChange={(color) => handleColorChange(color, index)}
-                />
+              <Label className="block text-sm font-medium text-gray-700">
+                Color Hex Code
+              </Label>
+              <SketchPicker
+                color={variant.color_hex_code}
+                onChange={(color) => handleColorChange(color, index)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label className="block text-sm font-medium text-gray-700">
+                Images
+              </Label>
+              <Input
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleFileChange(e, index)}
+                className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+              />
+              <div className="flex space-x-4">
+                {variant.images.map((image, imgIndex) => (
+                  <div key={imgIndex} className="relative">
+                    <Image
+                      src={image.url}
+                      alt={`Variant ${index} Image ${imgIndex}`}
+                      width={100}
+                      height={100}
+                      className="rounded"
+                    />
+                  </div>
+                ))}
               </div>
             </div>
             <div className="space-y-2">
@@ -341,7 +365,7 @@ const ProductForm = ({
                 Sizes
               </Label>
               {variant.sizes.map((size, sizeIndex) => (
-                <div key={sizeIndex} className="flex space-x-4">
+                <div key={sizeIndex} className="flex space-x-2">
                   <Select
                     value={size.size}
                     onValueChange={(value) => {
@@ -349,96 +373,71 @@ const ProductForm = ({
                       updatedSizes[sizeIndex].size = value;
                       updateVariant(index, { sizes: updatedSizes });
                     }}
+                    defaultValue={size.size}
                   >
-                    <SelectTrigger className="rounded">
-                      <SelectValue placeholder="Select Size" />
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select a size" />
                     </SelectTrigger>
-                    <SelectContent className="rounded">
-                      {SizeOptions.map((option, optIndex) => (
-                        <SelectItem
-                          key={optIndex}
-                          className="rounded"
-                          value={option}
-                        >
-                          {option}
+                    <SelectContent>
+                      {SizeOptions.map((sizeOption) => (
+                        <SelectItem key={sizeOption} value={sizeOption}>
+                          {sizeOption}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  <div className="relative">
-                    <Input
-                      type="number"
-                      value={size.available_qty}
-                      onChange={(e) => {
-                        const updatedSizes = [...variant.sizes];
-                        updatedSizes[sizeIndex].available_qty = parseInt(
-                          e.target.value,
-                        );
-                        updateVariant(index, { sizes: updatedSizes });
-                      }}
-                      placeholder="Available Quantity"
-                      className="block w-full rounded border border-gray-300 px-3 py-2 pl-10 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    />
-                    <div className="absolute left-2 top-1/2 -translate-y-1/2 transform text-sm font-semibold text-muted-foreground">
-                      QTY
-                    </div>
-                  </div>
+                  <Input
+                    type="number"
+                    value={size.available_qty}
+                    onChange={(e) => {
+                      const updatedSizes = [...variant.sizes];
+                      updatedSizes[sizeIndex].available_qty = Number(
+                        e.target.value,
+                      );
+                      updateVariant(index, { sizes: updatedSizes });
+                    }}
+                    placeholder="Available Quantity"
+                    className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+                  />
                 </div>
               ))}
-              <Button
-                type="button"
-                onClick={() => addSize(index)}
-                className="mt-2 rounded px-4 py-2 text-white shadow-sm hover:bg-blue-600"
-              >
+              <Button type="button" onClick={() => addSize(index)}>
                 Add Size
               </Button>
             </div>
-            <div className="space-y-2">
-              <Label className="block text-sm font-medium text-gray-700">
-                Images
-              </Label>
-              <div className="flex flex-col items-center">
-                <Input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => handleFileChange(e, index)}
-                  className="block rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                />
-                <div className="my-4 grid w-full grid-cols-7 justify-start gap-4">
-                  {variant.images.map((image, imageIndex) => (
-                    <Image
-                      height={80}
-                      width={80}
-                      key={imageIndex}
-                      src={image.url}
-                      alt={`Variant ${index + 1} Image ${imageIndex + 1} ${image.url}`}
-                      className="h-20 rounded border border-gray-300 object-contain shadow-sm"
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
         ))}
+        <Button type="button" onClick={addVariant}>
+          Add Variant
+        </Button>
       </div>
-      <div className="flex justify-end">
-        <Button
-          type="submit"
-          className="rounded bg-blue-600 px-4 py-2 text-white shadow-sm hover:bg-blue-700"
-          disabled={type === "create" && !isFormValid}
-        >
-          {type === "create" ? "Create Product" : "Update Product"}
+      <div className="flex items-center justify-end space-x-2">
+        <Button type="submit" disabled={!isFormValid || isSubmitting}>
+          {type === "create"
+            ? isSubmitting
+              ? "Creating..."
+              : "Create Product"
+            : isSubmitting
+              ? "Updating..."
+              : "Update Product"}
         </Button>
         {type === "update" && (
-          <Button
-            type="button"
-            variant={"outline"}
-            onClick={product?.isPublished ? handleUnPublish : handlePublish}
-            className="ml-2 rounded px-4 py-2 shadow-sm"
-          >
-            {product?.isPublished ? "Un-Publish" : "Publish"}
-          </Button>
+          <div className="space-y-4">
+            {isPublished ? (
+              <Button
+                type="button"
+                variant="destructive"
+                onClick={handleUnPublish}
+                disabled={isPublishing}
+              >
+                {isPublishing ? "Unpublish..." : "Unpublish"}
+              </Button>
+            ) : (
+              <Button type="button" onClick={handlePublish}>
+                {isPublishing ? "Publishing..." : "Publish"}
+              </Button>
+            )}
+          </div>
         )}
       </div>
     </form>

@@ -1,10 +1,14 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { getProductById } from "@/lib/actions/product.action";
-import { IProductDocument } from "@/lib/database/models/Product.model";
+import {
+  IProductDocument,
+  ProductVariant,
+} from "@/lib/database/models/Product.model";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
+import { addCart } from "@/lib/cart"; // Import addCart function
 
 interface PageProps {
   params: {
@@ -84,7 +88,9 @@ const Page = ({ params }: PageProps): ReactElement => {
   const color = searchParams.get("color") || "defaultColor";
 
   const [product, setProduct] = useState<IProductDocument | null>(null);
-  const [selectedVariant, setSelectedVariant] = useState<any | null>(null);
+  const [selectedVariant, setSelectedVariant] = useState<ProductVariant | null>(
+    null,
+  );
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -94,7 +100,6 @@ const Page = ({ params }: PageProps): ReactElement => {
         const data = await getProductById(id);
         const result = JSON.parse(JSON.stringify(data));
         setProduct(result);
-        // Find the variant that matches the selected color
         const initialVariant = result.product_variants.find(
           (variant: any) => variant.color_name === color,
         );
@@ -129,6 +134,49 @@ const Page = ({ params }: PageProps): ReactElement => {
 
   const handleImageClick = (imageUrl: string) => {
     setMainImage(imageUrl);
+  };
+
+  const productQuantity = selectedVariant?.sizes.find(
+    (s) => s.size === size,
+  )?.available_qty;
+
+  const handleAddToCart = () => {
+    if (selectedVariant) {
+      // Find the size details for the selected size
+      const selectedSize: any = selectedVariant.sizes.find(
+        (s) => s.size === size,
+      );
+      const sizeId = selectedSize?._id;
+
+      // Get the available quantity for the selected size
+      const availableQty = selectedSize ? selectedSize.available_qty : 0;
+
+      // Get the first image of the selected color
+      const image =
+        selectedVariant.images[0]?.url ||
+        product.product_variants[0].images[0]?.url;
+
+      if (availableQty > 0) {
+        // Assuming a default quantity of 1 for simplicity
+        const quantity = 1;
+
+        addCart({
+          id: sizeId,
+          name: product.product_name,
+          quantity,
+          size: size,
+          color: color as string,
+          price: product.product_price,
+          availableQty: availableQty,
+          image: image,
+          maxQuantity: availableQty,
+        });
+        window.location.reload();
+      } else {
+        // Handle case when the selected size is not available
+        console.log("Selected size is not available.");
+      }
+    }
   };
 
   return (
@@ -228,7 +276,10 @@ const Page = ({ params }: PageProps): ReactElement => {
                 <span className="title-font text-2xl font-medium text-gray-900">
                   ₹{product.product_price}
                 </span>
-                <Button className="ml-auto flex border-0 px-6 py-2 text-white focus:outline-none">
+                <Button
+                  className="ml-auto flex border-0 px-6 py-2 text-white focus:outline-none"
+                  onClick={handleAddToCart}
+                >
                   Add to Cart
                 </Button>
               </div>

@@ -251,7 +251,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
             <div className="flex w-full justify-center">
               <Button
                 type="submit"
-                className="w-full rounded bg-blue-500 px-6 py-3 font-semibold text-white shadow-md hover:bg-blue-600"
+                className="w-full rounded bg-primary px-6 py-3 font-semibold text-white shadow-md hover:bg-primary"
                 disabled={loadingForm}
               >
                 {searchParams.type === "create"

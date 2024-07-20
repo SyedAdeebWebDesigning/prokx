@@ -6,7 +6,8 @@ interface ProductReview {
   user_review: string;
 }
 
-interface ProductVariant {
+export interface ProductVariant {
+  _id: string;
   color_name: string;
   color_hex_code: string;
   images: { url: string }[];

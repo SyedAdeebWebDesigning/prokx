@@ -10,14 +10,14 @@ import UserNav from "./UserNav";
 import HeaderLinks from "./HeaderLinks";
 import Cart from "./Cart";
 import MobileNav from "./MobileNav";
-import
-  {
-    NavigationMenu,
-    NavigationMenuContent, NavigationMenuItem,
-    NavigationMenuLink,
-    NavigationMenuList,
-    NavigationMenuTrigger
-  } from "@/components/ui/navigation-menu";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 interface HeaderProps {}
 
