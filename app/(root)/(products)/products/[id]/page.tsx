@@ -8,9 +8,11 @@ import {
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
-import { addCart, getCart } from "@/lib/cart"; // Import addCart function
+import { addCart, getCart } from "@/lib/cart";
 import { cn, formatCurrency } from "@/lib/utils";
 import { toast } from "react-toastify";
+import SlateEditor from "@/components/SlateEditor";
+import { Descendant } from "slate";
 
 interface PageProps {
   params: {
@@ -95,6 +97,7 @@ const Page = ({ params }: PageProps): ReactElement => {
   );
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isFullText, setIsFullText] = useState(false);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -117,7 +120,7 @@ const Page = ({ params }: PageProps): ReactElement => {
       }
     };
     fetchProduct();
-  }, []);
+  }, [id, color]);
 
   if (isLoading || !product) {
     return <Skeleton />;
@@ -144,27 +147,19 @@ const Page = ({ params }: PageProps): ReactElement => {
 
   const handleAddToCart = () => {
     if (selectedVariant) {
-      // Find the size details for the selected size
       const selectedSize: any = selectedVariant.sizes.find(
         (s) => s.size === size,
       );
       const sizeId = selectedSize?._id;
-
-      // Get the available quantity for the selected size
       const availableQty = selectedSize ? selectedSize.available_qty : 0;
-
-      // Get the first image of the selected color
       const image =
         selectedVariant.images[0]?.url ||
         product.product_variants[0].images[0]?.url;
-
-      // Get the current cart items
       const currentCart = getCart();
       const currentItem = currentCart.items.find((item) => item.id === sizeId);
 
       if (availableQty > 0) {
-        // Assuming a default quantity of 1 for simplicity
-        const quantityToAdd = 1; // Adjust this based on your actual requirement
+        const quantityToAdd = 1;
 
         if (
           quantityToAdd + (currentItem ? currentItem.quantity : 0) <=
@@ -194,14 +189,12 @@ const Page = ({ params }: PageProps): ReactElement => {
           });
         }
       } else {
-        // Handle case when the selected size is not available
         toast.error("Selected size is not available", {
           autoClose: false,
         });
       }
     }
 
-    // Optional: Consider whether you need to reload the page
     window.location.reload();
   };
 
@@ -209,6 +202,50 @@ const Page = ({ params }: PageProps): ReactElement => {
     selectedVariant?.sizes.find((s) => s.size === size)?.available_qty ?? 0 > 0
       ? true
       : false;
+
+  const formatDescription = (text: string) => {
+    // Split the text by newlines to handle bullet points and formatting
+    const lines = text.split("\n");
+
+    return (
+      <div>
+        {lines.map((line, index) => {
+          // Handle bullet points
+          if (line.startsWith("- ")) {
+            const bulletPointText = line.replace(/^-\s*/, "• ");
+
+            // Split the line into parts, where **text** should be bold
+            const parts = bulletPointText
+              .split(/(\*\*.*?\*\*)/g)
+              .filter(Boolean);
+
+            return (
+              <p key={index} className="text-base">
+                {parts.map((part, i) => {
+                  if (part.startsWith("**") && part.endsWith("**")) {
+                    // Remove the ** from the text and make it bold
+                    return <strong key={i}>{part.slice(2, -2)}</strong>;
+                  } else {
+                    return <span key={i}>{part}</span>;
+                  }
+                })}
+              </p>
+            );
+          }
+
+          // Handle lines without bullet points
+          return (
+            <p key={index} className="text-base">
+              {line}
+            </p>
+          );
+        })}
+      </div>
+    );
+  };
+
+  const productDescription = product.product_description;
+  
 
   return (
     <main className="my-20">
@@ -248,7 +285,23 @@ const Page = ({ params }: PageProps): ReactElement => {
               <h1 className="title-font mb-1 text-3xl font-medium text-gray-900">
                 {product.product_name} ({size}/{color})
               </h1>
-              <p className="leading-relaxed">{product.product_description}</p>
+              <p
+                className={`${isFullText ? "line-clamp-none" : "line-clamp-6"} `}
+              >
+                {formatDescription(
+                  isFullText
+                    ? productDescription
+                    : productDescription.slice(0, 500),
+                )}
+              </p>
+
+              <Button
+                variant={"ghost"}
+                onClick={() => setIsFullText(!isFullText)}
+              >
+                {isFullText ? "Read less" : "Read more"}{" "}
+              </Button>
+
               <div className="mb-5 mt-6 flex items-center border-b-2 border-gray-100 pb-5">
                 <div className="flex space-x-1">
                   <span className="mr-3">Color</span>

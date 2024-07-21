@@ -24,6 +24,7 @@ import {
 } from "@/lib/actions/product.action";
 import { IndianRupee } from "lucide-react";
 import Image from "next/image";
+import { Textarea } from "./ui/textarea";
 
 interface Size {
   size: string;
@@ -263,9 +264,9 @@ const ProductForm = ({
         <Label className="block text-sm font-medium text-gray-700">
           Product Description
         </Label>
-        <Input
-          type="text"
+        <Textarea
           value={productDescription}
+          rows={7}
           onChange={(e) => setProductDescription(e.target.value)}
           placeholder="Product Description"
           className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
