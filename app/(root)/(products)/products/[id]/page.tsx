@@ -8,7 +8,9 @@ import {
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { ReactElement, useEffect, useState } from "react";
-import { addCart } from "@/lib/cart"; // Import addCart function
+import { addCart, getCart } from "@/lib/cart"; // Import addCart function
+import { cn, formatCurrency } from "@/lib/utils";
+import { toast } from "react-toastify";
 
 interface PageProps {
   params: {
@@ -115,7 +117,7 @@ const Page = ({ params }: PageProps): ReactElement => {
       }
     };
     fetchProduct();
-  }, [id, color]);
+  }, []);
 
   if (isLoading || !product) {
     return <Skeleton />;
@@ -156,28 +158,57 @@ const Page = ({ params }: PageProps): ReactElement => {
         selectedVariant.images[0]?.url ||
         product.product_variants[0].images[0]?.url;
 
+      // Get the current cart items
+      const currentCart = getCart();
+      const currentItem = currentCart.items.find((item) => item.id === sizeId);
+
       if (availableQty > 0) {
         // Assuming a default quantity of 1 for simplicity
-        const quantity = 1;
+        const quantityToAdd = 1; // Adjust this based on your actual requirement
 
-        addCart({
-          id: sizeId,
-          name: product.product_name,
-          quantity,
-          size: size,
-          color: color as string,
-          price: product.product_price,
-          availableQty: availableQty,
-          image: image,
-          maxQuantity: availableQty,
-        });
-        window.location.reload();
+        if (
+          quantityToAdd + (currentItem ? currentItem.quantity : 0) <=
+          availableQty
+        ) {
+          addCart({
+            id: sizeId,
+            name: product.product_name,
+            quantity: quantityToAdd,
+            size: size,
+            color: color as string,
+            price: product.product_price,
+            availableQty: availableQty,
+            image: image,
+            maxQuantity: availableQty,
+          });
+
+          const newTotalQuantity =
+            (currentItem ? currentItem.quantity : 0) + quantityToAdd;
+
+          toast.success(`Item added to cart.`, {
+            autoClose: false,
+          });
+        } else {
+          toast.error("Not enough stock available", {
+            autoClose: false,
+          });
+        }
       } else {
         // Handle case when the selected size is not available
-        console.log("Selected size is not available.");
+        toast.error("Selected size is not available", {
+          autoClose: false,
+        });
       }
     }
+
+    // Optional: Consider whether you need to reload the page
+    window.location.reload();
   };
+
+  const isAvailable =
+    selectedVariant?.sizes.find((s) => s.size === size)?.available_qty ?? 0 > 0
+      ? true
+      : false;
 
   return (
     <main className="my-20">
@@ -231,7 +262,7 @@ const Page = ({ params }: PageProps): ReactElement => {
                       } focus:outline-none`}
                       style={{ backgroundColor: variant.color_hex_code }}
                       onClick={() => handleColorChange(variant.color_name)}
-                    ></button>
+                    />
                   ))}
                 </div>
                 <div className="ml-6 flex items-center">
@@ -272,13 +303,17 @@ const Page = ({ params }: PageProps): ReactElement => {
                   </div>
                 </div>
               </div>
+              <p className={cn(!isAvailable ? "text-red-400" : "")}>
+                {isAvailable ? "available" : "out of stock"}
+              </p>
               <div className="flex items-center">
                 <span className="title-font text-2xl font-medium text-gray-900">
-                  ₹{product.product_price}
+                  {formatCurrency(Number(product.product_price))}
                 </span>
                 <Button
                   className="ml-auto flex border-0 px-6 py-2 text-white focus:outline-none"
                   onClick={handleAddToCart}
+                  disabled={!isAvailable}
                 >
                   Add to Cart
                 </Button>

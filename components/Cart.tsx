@@ -8,18 +8,106 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { addCart, cartLength, getCart } from "@/lib/cart";
+import {
+  addCart,
+  cartLength,
+  clearCart,
+  getCart,
+  getSubtotal,
+  removeCart,
+  removeOneItem,
+} from "@/lib/cart";
+import { formatCurrency } from "@/lib/utils";
 
-import { Minus, Plus, ShoppingBagIcon } from "lucide-react";
+import { Minus, Plus, ShoppingBagIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getProductById } from "@/lib/actions/product.action"; // Import your server actions
+import { ProductVariant } from "@/lib/database/models/Product.model";
+import { toast } from "react-toastify";
+import { Button } from "./ui/button";
 
 interface CartProps {}
 
 const Cart = ({}: CartProps) => {
-  const cart = getCart();
-  const cartLen = cartLength();
-  const cartItems = cartLen;
+  const [cart, setCart] = useState(getCart());
+  const [cartItems, setCartItems] = useState(cart.items.length);
+
+  // Function to update cart items based on their availability
+  const updateCartItemsAvailability = async () => {
+    try {
+      const updatedCart = getCart();
+      const updatedItems = await Promise.all(
+        updatedCart.items.map(async (item) => {
+          const product = await getProductById(item.id);
+          const variant = product.product_variants.find(
+            (v: ProductVariant) =>
+              v.color_name === item.color &&
+              v.sizes.some((s) => s.size === item.size),
+          );
+          const availableQty = variant?.sizes.find(
+            (s: any) => s.size === item.size,
+          )?.available_qty;
+
+          return {
+            ...item,
+            availableQty,
+          };
+        }),
+      );
+
+      const filteredItems = updatedItems.filter(
+        (item) => item.availableQty > 0,
+      );
+
+      if (filteredItems.length < updatedCart.items.length) {
+        setCart({ items: filteredItems });
+        setCartItems(filteredItems.length);
+      }
+    } catch (error) {
+      console.error("Error updating cart items availability:", error);
+    }
+  };
+
+  useEffect(() => {
+    // Initial update of cart items availability
+    updateCartItemsAvailability();
+    // Update the cart state and cart items count
+    setCart(getCart());
+    setCartItems(cartLength());
+
+    // Optional: set up an interval to periodically check for updates (e.g., every 5 minutes)
+    const intervalId = setInterval(() => {
+      updateCartItemsAvailability();
+    }, 300000); // 5 minutes
+
+    // Cleanup interval on component unmount
+    return () => clearInterval(intervalId);
+  }, []);
+
+  const handleAddItem = (item: any) => {
+    addCart(item);
+    updateCartItemsAvailability(); // Ensure availability is updated
+    setCart(getCart());
+    setCartItems(cartLength());
+  };
+
+  const handleRemoveOneItem = (itemId: string) => {
+    removeOneItem(itemId);
+    updateCartItemsAvailability(); // Ensure availability is updated
+    setCart(getCart());
+    setCartItems(cartLength());
+  };
+
+  const handleRemoveItem = (itemId: string) => {
+    removeCart(itemId);
+    window.location.reload();
+  };
+
+  const subtotal = getSubtotal();
+  const shipping = 99;
+  const total = subtotal + shipping;
+
   return (
     <Sheet>
       <SheetTrigger className="outline-none">
@@ -31,41 +119,64 @@ const Cart = ({}: CartProps) => {
       <SheetContent className="bg-white">
         <SheetHeader>
           <SheetTitle>Cart ({cartItems})</SheetTitle>
-          <SheetDescription>
+          <SheetDescription className="relative">
             {cartItems > 0 ? (
-              <section>
-                {cart.items.map((item) => {
+              <section className="h-[75vh] overflow-y-scroll">
+                {cart.items.map((item, index) => {
                   const [itemLength, setItemLength] = useState(item.quantity);
                   return (
-                    <div key={item.id} className="flex items-center space-x-2">
+                    <div
+                      key={item.id}
+                      className="flex items-center space-x-2 border-b-2"
+                    >
                       <Image
-                        width={64}
-                        height={64}
+                        width={32}
+                        height={32}
                         src={item.image}
                         alt={item.name}
                         className="h-16 w-16 rounded-lg object-cover"
                       />
                       <div className="flex w-full items-center justify-between">
                         <div className="">
-                          <h3 className="line-clamp-1">{item.name}</h3>
+                          <h3 className="line-clamp-2">
+                            {index + 1}. {item.name} ({item.size}/{item.color})
+                          </h3>
                           <p className="text-gray-500">
-                            ₹{item.price * itemLength || item.quantity}
+                            {formatCurrency(
+                              Number(item.price * itemLength || item.quantity),
+                            )}
                           </p>
                         </div>
-                        <div className="flex items-center space-x-2 px-4 py-2">
-                          <div className="w-full rounded-full bg-primary/[0.1] p-1">
+                        <div className="flex items-center space-x-1 px-4 py-2">
+                          <button
+                            className="w-full cursor-pointer rounded-full bg-primary/[0.1] p-1 disabled:cursor-not-allowed disabled:opacity-35"
+                            onClick={() => {
+                              if (itemLength > 1) {
+                                setItemLength(itemLength - 1);
+                                handleRemoveOneItem(item.id);
+                              } else {
+                                handleRemoveItem(item.id);
+                              }
+                            }}
+                          >
                             <Minus className="size-4" />
-                          </div>
-                          <p>{itemLength || item.quantity}</p>
-                          <div
+                          </button>
+                          <p>{itemLength}</p>
+                          <button
                             className="cursor-pointer rounded-full bg-primary/[0.1] p-1"
                             onClick={() => {
-                              setItemLength(itemLength + 1);
-                              addCart({ ...item });
+                              if (itemLength < item.availableQty) {
+                                setItemLength(itemLength + 1);
+                                handleAddItem({ ...item, quantity: 1 });
+                              } else {
+                                toast.error(
+                                  "Cannot add more items than available quantity.",
+                                );
+                              }
                             }}
                           >
                             <Plus className="size-4" />
-                          </div>
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -75,7 +186,41 @@ const Cart = ({}: CartProps) => {
             ) : (
               <p>Your cart is empty</p>
             )}
+            {cartItems > 0 && (
+              <div className="absolute bottom-0 h-10 w-full bg-gradient-to-b from-transparent to-white" />
+            )}
           </SheetDescription>
+          {cartItems > 0 && (
+            <div className="flex flex-col">
+              <div className="mt-5 flex items-center justify-between text-muted-foreground">
+                <p>Subtotal</p>
+                <p>{formatCurrency(Number(subtotal))}</p>
+              </div>
+              <div className="flex items-center justify-between text-muted-foreground">
+                <p>Shipping</p>
+                <p>{formatCurrency(Number(shipping))}</p>
+              </div>
+              <div className="my-2 flex items-center justify-between border-t text-lg">
+                <p>Total</p>
+                <p>{formatCurrency(Number(total))}</p>
+              </div>
+              <Button>Pay {formatCurrency(Number(total))}</Button>
+              <Button
+                variant={"destructive"}
+                className="mt-1"
+                onClick={() => {
+                  clearCart();
+                  toast.success("Cart has been cleared", {
+                    autoClose: false,
+                  });
+                  window.location.reload();
+                }}
+              >
+                <Trash2 className="mr-1 size-5" />
+                Clear Cart
+              </Button>
+            </div>
+          )}
         </SheetHeader>
       </SheetContent>
     </Sheet>

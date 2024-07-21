@@ -14,7 +14,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
-import { cn } from "@/lib/utils";
+import { cn, formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
@@ -120,7 +120,7 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
                 <p className="line-clamp-2">{product.product_description}</p>
               </TableCell>
               <TableCell className="text-right">
-                ₹{product.product_price}/-
+                {formatCurrency(Number(product.product_price))}/-
               </TableCell>
             </TableRow>
           ))}

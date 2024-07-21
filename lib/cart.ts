@@ -1,3 +1,4 @@
+"use client";
 import { toast } from "react-toastify";
 
 // cart.ts
@@ -8,9 +9,9 @@ interface CartItem {
   price: number;
   color: string;
   size: string;
-  availableQty: number;
-  image: string; // Added image field
-  maxQuantity: number; // Added maxQuantity field
+  availableQty: number; // Added availableQty field
+  image: string;
+  maxQuantity: number;
 }
 
 interface Cart {
@@ -21,7 +22,7 @@ const CART_KEY = "cart";
 
 // Get the cart from localStorage or initialize it
 export const getCart = (): Cart => {
-  const cart = localStorage.getItem(CART_KEY || "cart");
+  const cart = localStorage.getItem(CART_KEY);
   return cart ? JSON.parse(cart) : { items: [] };
 };
 
@@ -41,20 +42,18 @@ export const addCart = (item: CartItem): void => {
     const existingItem = cart.items[existingItemIndex];
     const newQuantity = existingItem.quantity + item.quantity;
 
-    // Check if adding the item exceeds available quantity
     if (newQuantity > item.availableQty) {
       toast.error("Cannot add more items than available quantity.");
+      return;
     }
 
-    // Update the existing item's quantity
     cart.items[existingItemIndex] = { ...existingItem, quantity: newQuantity };
   } else {
-    // Ensure the item’s quantity does not exceed maxQuantity
     if (item.quantity > item.maxQuantity) {
-      throw new Error(`Cannot add more than ${item.maxQuantity} of this item.`);
+      toast.error(`Cannot add more than ${item.maxQuantity} of this item.`);
+      return;
     }
 
-    // Add the new item to the cart
     cart.items.push(item);
   }
 
@@ -68,16 +67,61 @@ export const removeCart = (itemId: string): void => {
   saveCart(cart);
 };
 
+// Remove one item from the cart
+export const removeOneItem = (itemId: string): void => {
+  const cart = getCart();
+  const existingItemIndex = cart.items.findIndex(
+    (cartItem) => cartItem.id === itemId,
+  );
+
+  if (existingItemIndex >= 0) {
+    const existingItem = cart.items[existingItemIndex];
+    const newQuantity = existingItem.quantity - 1;
+
+    if (newQuantity <= 0) {
+      cart.items.splice(existingItemIndex, 1);
+    } else {
+      cart.items[existingItemIndex] = {
+        ...existingItem,
+        quantity: newQuantity,
+      };
+    }
+
+    saveCart(cart);
+  }
+};
+
 // Clear all items from the cart
 export const clearCart = (): void => {
   localStorage.removeItem(CART_KEY);
 };
 
-// Example usage of getCart
+// Update the cart items based on their available quantity
+export const updateCartItemsAvailability = (updatedItems: CartItem[]): void => {
+  const cart = getCart();
+  cart.items = cart.items.map((item) => {
+    const updatedItem = updatedItems.find((uItem) => uItem.id === item.id);
+    if (updatedItem) {
+      item.availableQty = updatedItem.availableQty;
+    }
+    return item;
+  });
+  saveCart(cart);
+};
+
+// Get cart items
 export const getCartItems = (): CartItem[] => {
   return getCart().items;
 };
 
-export const cartLength = () => {
+// Get cart length
+export const cartLength = (): number => {
   return getCart().items.length || 0;
+};
+
+export const getSubtotal = (): number => {
+  return getCartItems().reduce(
+    (total, item) => total + item.price * item.quantity,
+    0,
+  );
 };

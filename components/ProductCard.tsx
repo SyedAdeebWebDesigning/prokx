@@ -9,6 +9,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductCardProps {
   product: IProductDocument;
@@ -88,7 +89,7 @@ const ProductCard = ({
               <h3 className="text-lg font-medium">{product.product_name}</h3>
             </div>
             <span className="text-md font-semibold text-muted-foreground">
-              ₹{product.product_price}
+              {formatCurrency(Number(product.product_price))}
             </span>
           </div>
           <p className="line-clamp-3 text-sm text-muted-foreground">
