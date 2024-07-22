@@ -25,7 +25,6 @@ export const createProduct = async (productData: CreateProductData) => {
     return JSON.parse(JSON.stringify(newProduct));
   } catch (error) {
     console.error("Error creating product:", error);
-    throw error;
   }
 };
 
@@ -41,7 +40,6 @@ export const getProductById = async (productId: string) => {
     return JSON.parse(JSON.stringify(product));
   } catch (error) {
     console.error("Error getting product by ID:", error);
-    throw error;
   }
 };
 
@@ -54,7 +52,6 @@ export const getAllProducts = async () => {
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error getting all products:", error);
-    throw error;
   }
 };
 
@@ -82,7 +79,6 @@ export const updateProduct = async (
     return JSON.parse(JSON.stringify(updatedProduct));
   } catch (error) {
     console.error("Error updating product:", error);
-    throw error;
   }
 };
 
@@ -100,7 +96,6 @@ export const deleteProduct = async (productId: string) => {
     return JSON.parse(JSON.stringify(deletedProduct));
   } catch (error) {
     console.error("Error deleting product:", error);
-    throw error;
   }
 };
 
@@ -113,7 +108,6 @@ export const getPublishableProducts = async () => {
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error getting publishable products:", error);
-    throw error;
   }
 };
 
@@ -134,7 +128,6 @@ export const publishProduct = async (productId: string) => {
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
   } catch (error) {
     console.error("Error publishing product:", error);
-    throw error;
   }
 };
 
@@ -156,7 +149,6 @@ export const unpublishProduct = async (productId: string) => {
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
   } catch (error) {
     console.error("Error un-publishing product:", error);
-    throw error;
   }
 };
 
@@ -170,6 +162,5 @@ export const getProductsByCategory = async (category: string) => {
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error getting products by category:", error);
-    throw error;
   }
 };

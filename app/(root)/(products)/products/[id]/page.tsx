@@ -167,6 +167,7 @@ const Page = ({ params }: PageProps): ReactElement => {
         ) {
           addCart({
             id: sizeId,
+            productId: product._id as string,
             name: product.product_name,
             quantity: quantityToAdd,
             size: size,

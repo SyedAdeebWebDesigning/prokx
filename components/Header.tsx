@@ -130,7 +130,10 @@ const Header = async ({}: HeaderProps) => {
             </SignedOut>
 
             <SignedIn>
-              <Cart />
+              <Cart
+                userClerkId={currentClerkUser?.id as string}
+                clerkUser={clerkUser}
+              />
               <div className="text-gray-400">|</div>
               <UserNav clerkUser={clerkUser} />
               <div className="mt-2">

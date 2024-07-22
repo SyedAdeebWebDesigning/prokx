@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 // cart.ts
 interface CartItem {
   id: string;
+  productId: string;
   name: string;
   quantity: number;
   price: number;

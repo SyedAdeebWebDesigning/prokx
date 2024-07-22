@@ -26,12 +26,39 @@ import { getProductById } from "@/lib/actions/product.action"; // Import your se
 import { ProductVariant } from "@/lib/database/models/Product.model";
 import { toast } from "react-toastify";
 import { Button } from "./ui/button";
+import { getUserAddress } from "@/lib/actions/user.action";
+import CheckOutButton from "./CheckOutButton";
 
-interface CartProps {}
+interface CartProps {
+  userClerkId: string;
+  clerkUser: any;
+}
 
-const Cart = ({}: CartProps) => {
+const Cart = ({ userClerkId, clerkUser }: CartProps) => {
   const [cart, setCart] = useState(getCart());
   const [cartItems, setCartItems] = useState(cart.items.length);
+  const [userAddress, setUserAddress] = useState<any | null>(null);
+  const userFullName = clerkUser?.firstName + " " + clerkUser?.lastName;
+  const userEmail = clerkUser?.email;
+
+  useEffect(() => {
+    const fetchUserAddress = async (userClerkId: string) => {
+      try {
+        const address: any = await getUserAddress(userClerkId);
+        if (address.success) {
+          if (address) {
+            setUserAddress(address.address);
+          } else {
+            setUserAddress(null);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching user address:", error);
+      }
+    };
+
+    fetchUserAddress(userClerkId);
+  }, []);
 
   // Function to update cart items based on their availability
   const updateCartItemsAvailability = async () => {
@@ -40,7 +67,7 @@ const Cart = ({}: CartProps) => {
       const updatedItems = await Promise.all(
         updatedCart.items.map(async (item) => {
           const product = await getProductById(item.id);
-          const variant = product.product_variants.find(
+          const variant = await product.product_variants.find(
             (v: ProductVariant) =>
               v.color_name === item.color &&
               v.sizes.some((s) => s.size === item.size),
@@ -204,7 +231,13 @@ const Cart = ({}: CartProps) => {
                 <p>Total</p>
                 <p>{formatCurrency(Number(total))}</p>
               </div>
-              <Button>Pay {formatCurrency(Number(total))}</Button>
+              <CheckOutButton
+                price={total}
+                cartItems={cart.items}
+                userAddress={userAddress}
+                userFullName={userFullName}
+                userEmail={userEmail}
+              />
               <Button
                 variant={"destructive"}
                 className="mt-1"

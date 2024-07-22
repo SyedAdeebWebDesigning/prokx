@@ -22,14 +22,6 @@ export interface UpdateUserProps {
   photo?: string;
 }
 
-interface PaginatedUsers {
-  users: User[];
-  total: number;
-  totalPages: number;
-  page: number;
-  pageSize: number;
-}
-
 interface AddAddressProps {
   clerkId: string;
   address: Address; // Assuming Address is properly defined in your User model
@@ -241,5 +233,24 @@ export const findUserFromQuery = async (query: string) => {
   } catch (error) {
     console.error("Error finding user from query:", error);
     return [];
+  }
+};
+
+export const getUserAddress = async(userClerkId: string) => {
+  try {
+    await connectToDatabase()
+    const user: User = await getUserById(userClerkId);
+    if (user.hasProfileCompleted) {
+      return {success: true, address: user.address};
+    } else {
+      return {
+        success: false,
+        message: "User profile is incomplete. Please add an address",
+      }
+    }
+  } catch (error: any) {
+    console.log(error.message);
+    return {}
+    
   }
 };
