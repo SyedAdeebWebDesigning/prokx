@@ -13,6 +13,14 @@ import {
 } from "@/lib/database/models/Product.model";
 import { useEffect, useState } from "react";
 import { ProductSkeleton } from "./skeletons/productSkeleton";
+import {
+  Select,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
+import { SelectContent } from "@radix-ui/react-select";
 
 interface ProductPageProps {
   paramsId: string;
@@ -62,8 +70,8 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     window.location.href = `/products/${id}?color=${variant?.color_name}&size=${size}`;
   };
 
-  const handleSizeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    window.location.href = `/products/${id}?color=${selectedVariant?.color_name}&size=${event.target.value}`;
+  const handleSizeChange = (newSize: string) => {
+    window.location.href = `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`;
   };
 
   const handleImageClick = (imageUrl: string) => {
@@ -203,38 +211,32 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                 <div className="ml-6 flex items-center">
                   <span className="mr-3">Size</span>
                   <div className="relative">
-                    <select
-                      value={size}
-                      onChange={handleSizeChange}
-                      className="appearance-none rounded border border-gray-300 py-2 pl-3 pr-10 text-base focus:outline-none focus:ring-2"
-                    >
-                      {selectedVariant?.sizes
-                        .sort((a: any, b: any) => {
-                          const sizeOrder = ["S", "M", "L", "XL", "XXL"];
-                          return (
-                            sizeOrder.indexOf(a.size) -
-                            sizeOrder.indexOf(b.size)
-                          );
-                        })
-                        .map((size: any) => (
-                          <option key={size.size} value={size.size}>
-                            {size.size}
-                          </option>
-                        ))}
-                    </select>
-                    <span className="pointer-events-none absolute right-0 top-0 flex h-full w-10 items-center justify-center text-center text-gray-600">
-                      <svg
-                        fill="none"
-                        stroke="currentColor"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        className="h-4 w-4"
-                        viewBox="0 0 24 24"
-                      >
-                        <path d="M6 9l6 6 6-6"></path>
-                      </svg>
-                    </span>
+                    <Select value={size} onValueChange={handleSizeChange}>
+                      <SelectTrigger className="flex w-full appearance-none items-center rounded border border-gray-300 py-2 pl-3 pr-10 text-base outline-none">
+                        <SelectValue placeholder="Select a size" />
+                      </SelectTrigger>
+                      <SelectContent className="w-20 bg-gray-100">
+                        <SelectGroup className="">
+                          {selectedVariant?.sizes
+                            .sort((a: any, b: any) => {
+                              const sizeOrder = ["S", "M", "L", "XL", "XXL"];
+                              return (
+                                sizeOrder.indexOf(a.size) -
+                                sizeOrder.indexOf(b.size)
+                              );
+                            })
+                            .map((size: any) => (
+                              <SelectItem
+                                key={size.size}
+                                value={size.size}
+                                className="cursor-pointer border-b-2"
+                              >
+                                {size.size}
+                              </SelectItem>
+                            ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
               </div>
