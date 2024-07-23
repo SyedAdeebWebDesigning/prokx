@@ -12,8 +12,7 @@ import {
   ProductVariant,
 } from "@/lib/database/models/Product.model";
 import { useEffect, useState } from "react";
-import { getProductById } from "@/lib/actions/product.action";
-import { ProductSkeleton } from "@/app/(root)/(products)/products/[id]/page";
+import { ProductSkeleton } from "./skeletons/productSkeleton";
 
 interface ProductPageProps {
   paramsId: string;
