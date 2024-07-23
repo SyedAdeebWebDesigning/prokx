@@ -164,7 +164,9 @@ export const updateAddressOfUser = async ({
 export const getUsers = async (userId: string): Promise<User[]> => {
   try {
     await connectToDatabase();
-    const users = await User.find({ clerkId: { $ne: userId } });
+    const users = await User.find({ clerkId: { $ne: userId } }).sort({
+      createdAt: -1,
+    });
 
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
@@ -236,21 +238,20 @@ export const findUserFromQuery = async (query: string) => {
   }
 };
 
-export const getUserAddress = async(userClerkId: string) => {
+export const getUserAddress = async (userClerkId: string) => {
   try {
-    await connectToDatabase()
+    await connectToDatabase();
     const user: User = await getUserById(userClerkId);
     if (user.hasProfileCompleted) {
-      return {success: true, address: user.address};
+      return { success: true, address: user.address };
     } else {
       return {
         success: false,
         message: "User profile is incomplete. Please add an address",
-      }
+      };
     }
   } catch (error: any) {
     console.log(error.message);
-    return {}
-    
+    return {};
   }
 };

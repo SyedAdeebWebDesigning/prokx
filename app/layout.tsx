@@ -3,7 +3,7 @@ import { Poppins } from "next/font/google";
 import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { ToastContainer } from "react-toastify";
-
+import NextTopLoader from "nextjs-toploader";
 import "react-toastify/dist/ReactToastify.css";
 const poppins = Poppins({
   subsets: ["latin"],
@@ -29,6 +29,7 @@ export default function RootLayout({
     <ClerkProvider>
       <html lang="en">
         <body className={poppins.variable}>
+          <NextTopLoader shadow="" showSpinner={false} crawl height={5} />
           {children}
           <ToastContainer
             position="top-right"

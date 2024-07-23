@@ -52,9 +52,7 @@ const Categories = ({}: CategoriesProps) => {
       <div className="mx-auto grid grid-cols-1 gap-4 md:grid-cols-2">
         {categoriesList.map((category, i) => {
           const handleClick = (href: string) => {
-            setTimeout(() => {
-              window.location.href = href;
-            }, 1000);
+            window.location.href = href;
           };
           return (
             <div

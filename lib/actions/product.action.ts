@@ -104,7 +104,9 @@ export const getPublishableProducts = async () => {
   try {
     await connectToDatabase();
 
-    const products = await Product.find({ isPublished: true });
+    const products = await Product.find({ isPublished: true }).sort({
+      createdAt: -1,
+    });
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error("Error getting publishable products:", error);
@@ -158,6 +160,8 @@ export const getProductsByCategory = async (category: string) => {
     const products = await Product.find({
       product_category: category,
       isPublished: true,
+    }).sort({
+      createdAt: -1,
     });
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
