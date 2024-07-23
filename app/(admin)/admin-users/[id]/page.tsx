@@ -61,7 +61,6 @@ const Page = ({}: PageProps) => {
         }
       }
     } catch (error: any) {
-      console.error("Error toggling admin status:", error);
       toast.error("An error occurred while toggling admin status");
     } finally {
       setTimeout(() => {

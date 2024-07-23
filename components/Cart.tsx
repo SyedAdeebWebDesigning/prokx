@@ -52,9 +52,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
             setUserAddress(null);
           }
         }
-      } catch (error) {
-        console.error("Error fetching user address:", error);
-      }
+      } catch (error) {}
     };
 
     fetchUserAddress(userClerkId);
@@ -91,9 +89,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
         setCart({ items: filteredItems });
         setCartItems(filteredItems.length);
       }
-    } catch (error) {
-      console.error("Error updating cart items availability:", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

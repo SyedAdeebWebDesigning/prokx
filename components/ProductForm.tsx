@@ -173,7 +173,6 @@ const ProductForm = ({
       }
     } catch (error: any) {
       toast.error(error.message);
-      console.error("Error saving product:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -188,7 +187,6 @@ const ProductForm = ({
       toast.success("Product published successfully");
     } catch (error: any) {
       toast.error(error.message);
-      console.error("Error publishing product:", error);
     } finally {
       setIsPublishing(false);
       setTimeout(() => {
@@ -206,7 +204,6 @@ const ProductForm = ({
       toast.success("Product unpublished successfully");
     } catch (error: any) {
       toast.error(error.message);
-      console.error("Error un-publishing product:", error);
     } finally {
       setIsPublishing(false);
       setTimeout(() => {

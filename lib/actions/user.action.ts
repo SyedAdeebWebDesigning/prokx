@@ -44,9 +44,7 @@ export const createUser = async (user: createUserProps) => {
 
     const newUser = await User.create(user);
     return JSON.parse(JSON.stringify(newUser));
-  } catch (error) {
-    console.error("Error creating user:", error);
-  }
+  } catch (error) {}
 };
 
 export const getUserById = async (clerkId: string) => {
@@ -58,9 +56,7 @@ export const getUserById = async (clerkId: string) => {
       return {};
     }
     return JSON.parse(JSON.stringify(user));
-  } catch (error) {
-    console.error("Error getting user:", error);
-  }
+  } catch (error) {}
 };
 
 export const updateUser = async (
@@ -80,9 +76,7 @@ export const updateUser = async (
     }
 
     return JSON.parse(JSON.stringify(updatedUser));
-  } catch (error) {
-    console.error("Error updating user:", error);
-  }
+  } catch (error) {}
 };
 
 export const deleteUser = async (clerkId: string) => {
@@ -96,9 +90,7 @@ export const deleteUser = async (clerkId: string) => {
     }
 
     return JSON.parse(JSON.stringify(deletedUser));
-  } catch (error) {
-    console.error("Error deleting user:", error);
-  }
+  } catch (error) {}
 };
 
 export const addAddressToUser = async ({
@@ -125,9 +117,7 @@ export const addAddressToUser = async ({
     await user.save();
 
     return JSON.parse(JSON.stringify(user)); // Return the updated user
-  } catch (error) {
-    console.error("Error adding address to user:", error);
-  }
+  } catch (error) {}
 };
 
 export const updateAddressOfUser = async ({
@@ -156,7 +146,6 @@ export const updateAddressOfUser = async ({
 
     return JSON.parse(JSON.stringify(user)); // Return the updated user
   } catch (error) {
-    console.error("Error updating address of user:", error);
     throw error; // Rethrow the error to handle it in the caller function
   }
 };
@@ -170,7 +159,6 @@ export const getUsers = async (userId: string): Promise<User[]> => {
 
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
-    console.error("Error getting users:", error);
     return [];
   }
 };
@@ -190,7 +178,6 @@ export const addAdmin = async (userId: string) => {
 
     return { success: true, message: "User granted admin privileges" };
   } catch (error) {
-    console.error("Error adding admin:", error);
     return { success: false, message: "An error occurred while adding admin" };
   }
 };
@@ -215,7 +202,6 @@ export const removeAdmin = async (userId: string) => {
 
     return { success: true, message: "Admin privileges removed from user" };
   } catch (error) {
-    console.error("Error removing admin:", error);
     return {
       success: false,
       message: "An error occurred while removing admin",
@@ -233,7 +219,6 @@ export const findUserFromQuery = async (query: string) => {
 
     return JSON.parse(JSON.stringify(users));
   } catch (error) {
-    console.error("Error finding user from query:", error);
     return [];
   }
 };

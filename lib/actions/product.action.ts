@@ -23,9 +23,7 @@ export const createProduct = async (productData: CreateProductData) => {
 
     const newProduct = await Product.create(productData);
     return JSON.parse(JSON.stringify(newProduct));
-  } catch (error) {
-    console.error("Error creating product:", error);
-  }
+  } catch (error) {}
 };
 
 // Get a product by ID
@@ -38,9 +36,7 @@ export const getProductById = async (productId: string) => {
       throw new Error("Product not found");
     }
     return JSON.parse(JSON.stringify(product));
-  } catch (error) {
-    console.error("Error getting product by ID:");
-  }
+  } catch (error) {}
 };
 
 // Get all products
@@ -50,9 +46,7 @@ export const getAllProducts = async () => {
 
     const products = await Product.find();
     return JSON.parse(JSON.stringify(products));
-  } catch (error) {
-    console.error("Error getting all products:", error);
-  }
+  } catch (error) {}
 };
 
 // Update a product
@@ -77,9 +71,7 @@ export const updateProduct = async (
     }
 
     return JSON.parse(JSON.stringify(updatedProduct));
-  } catch (error) {
-    console.error("Error updating product:", error);
-  }
+  } catch (error) {}
 };
 
 // Delete a product
@@ -94,9 +86,7 @@ export const deleteProduct = async (productId: string) => {
     }
 
     return JSON.parse(JSON.stringify(deletedProduct));
-  } catch (error) {
-    console.error("Error deleting product:", error);
-  }
+  } catch (error) {}
 };
 
 // Get all publishable products
@@ -108,9 +98,7 @@ export const getPublishableProducts = async () => {
       createdAt: -1,
     });
     return JSON.parse(JSON.stringify(products));
-  } catch (error) {
-    console.error("Error getting publishable products:", error);
-  }
+  } catch (error) {}
 };
 
 export const publishProduct = async (productId: string) => {
@@ -128,9 +116,7 @@ export const publishProduct = async (productId: string) => {
     }
 
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
-  } catch (error) {
-    console.error("Error publishing product:", error);
-  }
+  } catch (error) {}
 };
 
 // Action for un-publishing a product
@@ -149,9 +135,7 @@ export const unpublishProduct = async (productId: string) => {
     }
 
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
-  } catch (error) {
-    console.error("Error un-publishing product:", error);
-  }
+  } catch (error) {}
 };
 
 export const getProductsByCategory = async (category: string) => {
@@ -164,7 +148,5 @@ export const getProductsByCategory = async (category: string) => {
       createdAt: -1,
     });
     return JSON.parse(JSON.stringify(products));
-  } catch (error) {
-    console.error("Error getting products by category:", error);
-  }
+  } catch (error) {}
 };

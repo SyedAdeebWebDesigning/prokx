@@ -69,7 +69,6 @@ export const createStripeCheckoutSession = async (
 
     return session.url;
   } catch (err) {
-    console.error("Error creating Stripe Checkout session:", err);
     throw new Error("Failed to create Stripe Checkout session.");
   }
 };
