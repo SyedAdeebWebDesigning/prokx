@@ -1,4 +1,3 @@
-"use client";
 import { toast } from "react-toastify";
 
 // cart.ts
@@ -23,7 +22,7 @@ const CART_KEY = "cart";
 
 // Get the cart from localStorage or initialize it
 export const getCart = (): Cart => {
-  const cart = localStorage.getItem(CART_KEY);
+  const cart = localStorage.getItem(CART_KEY || "cart");
   return cart ? JSON.parse(cart) : { items: [] };
 };
 

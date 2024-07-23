@@ -25,6 +25,7 @@ import {
 import { IndianRupee } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "./ui/textarea";
+import { formatDescription } from "@/lib/formatText";
 
 interface Size {
   size: string;
@@ -246,6 +247,16 @@ const ProductForm = ({
     );
   }
 
+  const transformDescription = (text: string) => {
+    // Replace hyphens with bullet points
+    let transformedText = text.replaceAll("-", "•");
+    // Replace **content** with <b>content</b>
+    transformedText = transformedText.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+    // Replace line breaks with <br> tags
+    transformedText = transformedText.replace(/\n/g, "<br>");
+    return transformedText;
+  };
+
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
       <div className="space-y-2">
@@ -270,6 +281,13 @@ const ProductForm = ({
           onChange={(e) => setProductDescription(e.target.value)}
           placeholder="Product Description"
           className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
+        />
+        <div
+          className="mt-2 resize-y overflow-auto rounded border border-gray-300 p-3"
+          style={{ maxHeight: "300px" }}
+          dangerouslySetInnerHTML={{
+            __html: transformDescription(productDescription),
+          }}
         />
       </div>
       <div className="space-y-2">
@@ -328,8 +346,8 @@ const ProductForm = ({
                 className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
               />
             </div>
-            <div className="space-y-2">
-              <Label className="block text-sm font-medium text-gray-700">
+            <div className="flex flex-col items-center justify-center space-x-0 space-y-2">
+              <Label className="my-2 block text-sm font-medium text-gray-700">
                 Color Hex Code
               </Label>
               <SketchPicker

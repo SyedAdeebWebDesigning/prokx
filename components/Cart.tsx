@@ -161,7 +161,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
                         height={32}
                         src={item.image}
                         alt={item.name}
-                        className="h-16 w-16 rounded-lg object-cover"
+                        className="h-16 w-16 rounded object-cover"
                       />
                       <div className="flex w-full items-center justify-between">
                         <div className="">

@@ -49,8 +49,8 @@ export const createStripeCheckoutSession = async (
     const session = await stripe.checkout.sessions.create({
       line_items,
       mode: "payment",
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/?success=true`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/?canceled=true`,
+      success_url: `${process.env.NEXT_PUBLIC_APP_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
       metadata: {
         customer_address: JSON.stringify({
           street: userAddress.line1,

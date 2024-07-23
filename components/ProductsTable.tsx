@@ -18,6 +18,7 @@ import { cn, formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
+import { formatDescriptionInCard } from "@/lib/formatText";
 
 interface ProductsTableProps {
   products: IProductDocument[];
@@ -93,37 +94,43 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredProducts.map((product, index) => (
-            <TableRow
-              onClick={() => {
-                window.location.href = `/admin-products/${product._id}`;
-              }}
-              key={String(product._id)}
-              className={cn(
-                "cursor-pointer hover:bg-transparent",
-                index % 2 !== 0 ? "bg-slate-100 hover:bg-slate-100" : "",
-              )}
-            >
-              <TableCell className="font-medium">{index + 1}.</TableCell>
-              <TableCell className="">{String(product._id)}</TableCell>
-              <TableCell className="">
-                <Image
-                  src={product.product_variants[0].images[0].url}
-                  alt=""
-                  width={64}
-                  height={64}
-                />
-              </TableCell>
-              <TableCell className="">{product.product_name}</TableCell>
-              <TableCell className="">{product.product_category}</TableCell>
-              <TableCell className="w-[50%]">
-                <p className="line-clamp-2">{product.product_description}</p>
-              </TableCell>
-              <TableCell className="text-right">
-                {formatCurrency(Number(product.product_price))}/-
-              </TableCell>
-            </TableRow>
-          ))}
+          {filteredProducts.map((product, index) => {
+            return (
+              <TableRow
+                onClick={() => {
+                  window.location.href = `/admin-products/${product._id}`;
+                }}
+                key={String(product._id)}
+                className={cn(
+                  "cursor-pointer hover:bg-transparent",
+                  index % 2 !== 0 ? "bg-slate-100 hover:bg-slate-100" : "",
+                )}
+              >
+                <TableCell className="font-medium">{index + 1}.</TableCell>
+                <TableCell className="">{String(product._id)}</TableCell>
+                <TableCell className="">
+                  <Image
+                    src={product.product_variants[0].images[0].url}
+                    alt=""
+                    width={64}
+                    height={64}
+                  />
+                </TableCell>
+                <TableCell className="">{product.product_name}</TableCell>
+                <TableCell className="">{product.product_category}</TableCell>
+                <TableCell className="w-[50%]">
+                  <p className="line-clamp-2">
+                    {product.product_description
+                      .replaceAll("**", "")
+                      .replaceAll("-", "")}
+                  </p>
+                </TableCell>
+                <TableCell className="text-right">
+                  {formatCurrency(Number(product.product_price))}/-
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>

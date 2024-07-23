@@ -39,7 +39,7 @@ export const getProductById = async (productId: string) => {
     }
     return JSON.parse(JSON.stringify(product));
   } catch (error) {
-    console.error("Error getting product by ID:", error);
+    console.error("Error getting product by ID:");
   }
 };
 
