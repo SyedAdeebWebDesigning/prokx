@@ -148,7 +148,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
           <SheetTitle>Cart ({cartItems})</SheetTitle>
           <SheetDescription className="relative">
             {cartItems > 0 ? (
-              <section className="h-[75vh] overflow-y-scroll">
+              <section className="relative h-[75vh] overflow-y-scroll">
                 {cart.items.map((item, index) => {
                   const [itemLength, setItemLength] = useState(item.quantity);
                   return (
@@ -218,7 +218,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
             )}
           </SheetDescription>
           {cartItems > 0 && (
-            <div className="flex flex-col">
+            <div className="absolute bottom-1 left-0 flex w-full flex-col px-2">
               <div className="mt-5 flex items-center justify-between text-muted-foreground">
                 <p>Subtotal</p>
                 <p>{formatCurrency(Number(subtotal))}</p>
