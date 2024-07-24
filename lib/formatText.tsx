@@ -75,3 +75,13 @@ export const formatDescription = (text: string) => {
     </div>
   );
 };
+
+export const transformDescription = (text: string) => {
+  // Replace hyphens with bullet points
+  let transformedText = text.replaceAll("- ", "•");
+  // Replace **content** with <b>content</b>
+  transformedText = transformedText.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
+  // Replace line breaks with <br> tags
+  transformedText = transformedText.replace(/\n/g, "<br>");
+  return transformedText;
+};

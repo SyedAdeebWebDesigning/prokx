@@ -25,7 +25,7 @@ import {
 import { IndianRupee } from "lucide-react";
 import Image from "next/image";
 import { Textarea } from "./ui/textarea";
-import { formatDescription } from "@/lib/formatText";
+import { formatDescription, transformDescription } from "@/lib/formatText";
 
 interface Size {
   size: string;
@@ -244,16 +244,7 @@ const ProductForm = ({
     );
   }
 
-  const transformDescription = (text: string) => {
-    // Replace hyphens with bullet points
-    let transformedText = text.replaceAll("-", "•");
-    // Replace **content** with <b>content</b>
-    transformedText = transformedText.replace(/\*\*(.*?)\*\*/g, "<b>$1</b>");
-    // Replace line breaks with <br> tags
-    transformedText = transformedText.replace(/\n/g, "<br>");
-    return transformedText;
-  };
-
+  
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
       <div className="space-y-2">

@@ -4,6 +4,7 @@ import { createStripeCheckoutSession } from "@/lib/actions/orders.action";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useEffect } from "react";
+import { toast } from "react-toastify";
 
 interface CheckOutButtonProps {
   price: number;
@@ -52,7 +53,7 @@ const CheckOutButton = ({
       );
       window.location.href = checkoutUrl as string;
     } catch (err: any) {
-      console.log(err);
+      toast.error(err.message);
     }
   };
 
