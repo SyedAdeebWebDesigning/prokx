@@ -5,6 +5,7 @@ import { formatCurrency } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
+import { clearCart, isCartTampered } from "@/lib/cart";
 
 interface CheckOutButtonProps {
   price: number;
@@ -43,6 +44,14 @@ const CheckOutButton = ({
       return;
     }
 
+    // Check if the cart has been tampered with
+    if (isCartTampered()) {
+      toast.error("Cart has been tampered with.", { autoClose: false });
+      clearCart();
+      window.location.reload();
+      return;
+    }
+
     // Proceed to checkout
     try {
       const checkoutUrl = await createStripeCheckoutSession(
@@ -53,7 +62,9 @@ const CheckOutButton = ({
       );
       window.location.href = checkoutUrl as string;
     } catch (err: any) {
-      toast.error(err.message);
+      toast.error(
+        "Size exceeds the limit of 1MB. Try removing some items and try again.",
+      );
     }
   };
 

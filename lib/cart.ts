@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
+import { createHash } from "crypto";
 
-// cart.ts
 interface CartItem {
   id: string;
   productId: string;
@@ -9,7 +9,7 @@ interface CartItem {
   price: number;
   color: string;
   size: string;
-  availableQty: number; // Added availableQty field
+  availableQty: number;
   image: string;
   maxQuantity: number;
 }
@@ -19,6 +19,7 @@ interface Cart {
 }
 
 const CART_KEY = "cart";
+const CART_HASH_KEY = process.env.SECRET_KEY!;
 
 // Get the cart from localStorage or initialize it
 export const getCart = (): Cart => {
@@ -26,12 +27,35 @@ export const getCart = (): Cart => {
   return cart ? JSON.parse(cart) : { items: [] };
 };
 
-// Save the cart to localStorage
+// Save the cart to localStorage and update the hash
 const saveCart = (cart: Cart): void => {
   localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  updateCartHash(cart);
 };
 
-// Add an item to the cart
+// Generate a hash for the cart data
+const generateCartHash = (cart: Cart): string => {
+  const hash = createHash("sha256");
+  hash.update(JSON.stringify(cart.items));
+  return hash.digest("hex");
+};
+
+// Update the cart hash in localStorage
+const updateCartHash = (cart: Cart): void => {
+  const hash = generateCartHash(cart);
+  localStorage.setItem(CART_HASH_KEY, hash);
+};
+
+// Validate the current cart hash against the saved hash
+export const isCartTampered = (): boolean => {
+  const savedHash = localStorage.getItem(CART_HASH_KEY);
+  const currentCart = getCart();
+  const currentHash = generateCartHash(currentCart);
+  return savedHash !== currentHash;
+};
+
+// Other cart functions (addCart, removeCart, etc.) remain the same
+
 export const addCart = (item: CartItem): void => {
   const cart = getCart();
   const existingItemIndex = cart.items.findIndex(
@@ -60,14 +84,12 @@ export const addCart = (item: CartItem): void => {
   saveCart(cart);
 };
 
-// Remove an item from the cart
 export const removeCart = (itemId: string): void => {
   const cart = getCart();
   cart.items = cart.items.filter((item) => item.id !== itemId);
   saveCart(cart);
 };
 
-// Remove one item from the cart
 export const removeOneItem = (itemId: string): void => {
   const cart = getCart();
   const existingItemIndex = cart.items.findIndex(
@@ -91,12 +113,11 @@ export const removeOneItem = (itemId: string): void => {
   }
 };
 
-// Clear all items from the cart
 export const clearCart = (): void => {
   localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(CART_HASH_KEY);
 };
 
-// Update the cart items based on their available quantity
 export const updateCartItemsAvailability = (updatedItems: CartItem[]): void => {
   const cart = getCart();
   cart.items = cart.items.map((item) => {
@@ -109,12 +130,10 @@ export const updateCartItemsAvailability = (updatedItems: CartItem[]): void => {
   saveCart(cart);
 };
 
-// Get cart items
 export const getCartItems = (): CartItem[] => {
   return getCart().items;
 };
 
-// Get cart length
 export const cartLength = (): number => {
   return getCart().items.length || 0;
 };
