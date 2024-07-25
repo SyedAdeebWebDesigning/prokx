@@ -14,7 +14,7 @@ export const createStripeCheckoutSession = async (
   });
 
   try {
-    // Validate cart items
+    // Validate cart items and construct line_items array
     const line_items = cartItems.map((item) => {
       if (!item.price || !item.name || !item.quantity) {
         throw new Error(`Invalid cart item: ${JSON.stringify(item)}`);
@@ -45,6 +45,15 @@ export const createStripeCheckoutSession = async (
       quantity: 1,
     });
 
+    // Construct metadata order details
+    const orderDetails = cartItems.map((item) => ({
+      name: item.name,
+      size: item.size,
+      color: item.color,
+      quantity: item.quantity,
+      price: item.price,
+    }));
+
     // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items,
@@ -53,17 +62,17 @@ export const createStripeCheckoutSession = async (
       cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}/`,
       metadata: {
         customer_address: JSON.stringify({
-          street: userAddress.line1,
+          street: userAddress.street,
           city: userAddress.city,
           state: userAddress.state,
-          postal_code: userAddress.postal_code,
+          postal_code: userAddress.postalCode,
           country: userAddress.country,
-          customer_email: userEmail,
         }),
+        customer_email: userEmail,
+        order_details: JSON.stringify(orderDetails),
       },
       customer_email: userEmail,
 
-      payment_method_types: ["card"],
       shipping_address_collection: {
         allowed_countries: ["IN"],
       },

@@ -58,6 +58,8 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
     fetchUserAddress(userClerkId);
   }, []);
 
+  console.log(cart.items);
+
   // Function to update cart items based on their availability
   const updateCartItemsAvailability = async () => {
     try {
@@ -98,14 +100,6 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
     // Update the cart state and cart items count
     setCart(getCart());
     setCartItems(cartLength());
-
-    // Optional: set up an interval to periodically check for updates (e.g., every 5 minutes)
-    const intervalId = setInterval(() => {
-      updateCartItemsAvailability();
-    }, 300000); // 5 minutes
-
-    // Cleanup interval on component unmount
-    return () => clearInterval(intervalId);
   }, []);
 
   const handleAddItem = (item: any) => {

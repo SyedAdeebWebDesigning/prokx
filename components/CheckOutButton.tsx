@@ -32,6 +32,7 @@ const CheckOutButton = ({
       window.location.href = "/address?type=create";
       return;
     }
+;
 
     // Check if the cart has been tampered with
     if (isCartTampered()) {

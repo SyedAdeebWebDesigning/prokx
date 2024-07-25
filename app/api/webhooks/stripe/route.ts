@@ -36,20 +36,42 @@ export async function POST(request: Request) {
   try {
     // Handle checkout session completion
     if (eventType === "checkout.session.completed") {
-      const { id, amount_total, metadata } = event.data.object as any;
+      const session = event.data.object as any;
+      const { id, amount_total, metadata, payment_status } = session;
+
+      // Log the metadata to check its content
+      console.log("Received metadata:", metadata);
+
+      // Check if order_details exists in metadata
+      if (!metadata.order_details) {
+        throw new Error("order_details is missing in metadata");
+      }
+
+      // Parse the order details from metadata
+      let orderDetails;
+      try {
+        orderDetails = JSON.parse(metadata.order_details);
+      } catch (err: any) {
+        throw new Error(`Failed to parse order_details: ${err.message}`);
+      }
 
       // Construct order object from the event data
       const order = {
         id,
+        paymentStatus: payment_status,
         amount: amount_total,
-        address: JSON.parse(metadata.customer_address),
         email: metadata.customer_email,
+        address: metadata.customer_address,
+        items: orderDetails,
       };
 
       // Log the order object for debugging
       console.log("Order created", order);
 
       // TODO: Handle order processing (e.g., save to database, send confirmation email, etc.)
+
+      // Return the order in the response
+      return NextResponse.json({ message: "Order created", order });
     }
 
     // Return a response indicating that the event was handled successfully
