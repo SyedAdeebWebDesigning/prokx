@@ -60,11 +60,6 @@ export const createStripeCheckoutSession = async (
           country: userAddress.country,
           customer_email: userEmail,
         }),
-        order_details: cartItems
-          .map((item) => ({
-            product_id: item.product_id,
-          }))
-          .join(", "),
       },
       customer_email: userEmail,
 
