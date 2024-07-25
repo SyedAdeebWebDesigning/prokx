@@ -62,11 +62,11 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
               <Link href={"/user-profile"}>Update profile</Link>
             </DropdownMenuItem>
             {clerkUser.hasProfileCompleted ? (
-              <DropdownMenuItem asChild className="cursor-pointer">
+              <DropdownMenuItem asChild className="cursor-pointer ">
                 <Link href={"/address?type=update"}>Update your address</Link>
               </DropdownMenuItem>
             ) : (
-              <DropdownMenuItem asChild className="cursor-pointer">
+              <DropdownMenuItem asChild className="cursor-pointer ">
                 <Link href={"/address?type=create"}>Complete your address</Link>
               </DropdownMenuItem>
             )}
@@ -75,7 +75,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
             <DropdownMenuItem>
               <Button
                 variant={"destructive"}
-                className="h-7 w-full cursor-pointer rounded-full bg-red-500 hover:bg-red-600 focus:bg-red-600"
+                className="h-9 w-full cursor-pointer rounded bg-red-500 hover:bg-red-600 focus:bg-red-600"
                 onClick={() => {
                   signOut();
                   window.location.href = `/sign-in`;

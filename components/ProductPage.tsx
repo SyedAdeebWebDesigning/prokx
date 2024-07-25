@@ -84,7 +84,6 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
   );
   const sizeId = selectedSize?._id;
   const cartItem = getCart().items.find((c) => c.id === sizeId);
-  console.log("cartId", cartItem?.quantity);
   const cartQty = cartItem?.quantity ?? 0;
 
   const handleAddToCart = () => {
@@ -139,6 +138,17 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
       : false;
 
   const productDescription = product.product_description;
+
+  const AvailableQty =
+    selectedVariant?.sizes.find((s: any) => s.size === size)?.available_qty ??
+    0;
+
+  const availableText =
+    AvailableQty <= 4
+      ? `Hurry up! Only ${AvailableQty} items left in the stock`
+      : `
+  ${AvailableQty} items left in the stock
+  `;
 
   return (
     <main className="my-20">
@@ -251,12 +261,7 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                   !isAvailable ? "text-red-400" : "",
                 )}
               >
-                {isAvailable
-                  ? `available, only ${
-                      selectedVariant?.sizes.find((s: any) => s.size === size)
-                        ?.available_qty
-                    } stocks left`
-                  : "out of stock"}
+                {isAvailable ? availableText : "out of stock"}
               </p>
               <div className="flex w-full flex-col items-center justify-between md:flex-row">
                 <span className="title-font text-2xl font-medium text-gray-900">

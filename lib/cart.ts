@@ -23,13 +23,13 @@ const CART_HASH_KEY = process.env.SECRET_KEY!;
 
 // Get the cart from localStorage or initialize it
 export const getCart = (): Cart => {
-  const cart = localStorage.getItem(CART_KEY || "cart");
+  const cart = window.localStorage.getItem(CART_KEY || "cart");
   return cart ? JSON.parse(cart) : { items: [] };
 };
 
 // Save the cart to localStorage and update the hash
 const saveCart = (cart: Cart): void => {
-  localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  window.localStorage.setItem(CART_KEY, JSON.stringify(cart));
   updateCartHash(cart);
 };
 
@@ -43,12 +43,12 @@ const generateCartHash = (cart: Cart): string => {
 // Update the cart hash in localStorage
 const updateCartHash = (cart: Cart): void => {
   const hash = generateCartHash(cart);
-  localStorage.setItem(CART_HASH_KEY, hash);
+  window.localStorage.setItem(CART_HASH_KEY, hash);
 };
 
 // Validate the current cart hash against the saved hash
 export const isCartTampered = (): boolean => {
-  const savedHash = localStorage.getItem(CART_HASH_KEY);
+  const savedHash = window.localStorage.getItem(CART_HASH_KEY);
   const currentCart = getCart();
   const currentHash = generateCartHash(currentCart);
   return savedHash !== currentHash;
@@ -114,8 +114,8 @@ export const removeOneItem = (itemId: string): void => {
 };
 
 export const clearCart = (): void => {
-  localStorage.removeItem(CART_KEY);
-  localStorage.removeItem(CART_HASH_KEY);
+  window.localStorage.removeItem(CART_KEY);
+  window.localStorage.removeItem(CART_HASH_KEY);
 };
 
 export const updateCartItemsAvailability = (updatedItems: CartItem[]): void => {

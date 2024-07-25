@@ -58,9 +58,16 @@ export const createStripeCheckoutSession = async (
           state: userAddress.state,
           postal_code: userAddress.postal_code,
           country: userAddress.country,
+          customer_email: userEmail,
         }),
+        order_details: cartItems
+          .map((item) => ({
+            product_id: item.product_id,
+          }))
+          .join(", "),
       },
       customer_email: userEmail,
+
       payment_method_types: ["card"],
       shipping_address_collection: {
         allowed_countries: ["IN"],

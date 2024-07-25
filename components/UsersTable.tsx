@@ -47,7 +47,6 @@ const UsersTable = ({ users }: UsersTableProps) => {
   // Handle row click action
   const handleRowClick = (userId: string) => {
     router.push(`/admin-users/${userId}`);
-    console.log(`Clicked user ID: ${userId}`);
   };
 
   return (

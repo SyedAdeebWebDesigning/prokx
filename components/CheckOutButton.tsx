@@ -3,9 +3,10 @@
 import { createStripeCheckoutSession } from "@/lib/actions/orders.action";
 import { formatCurrency } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { clearCart, isCartTampered } from "@/lib/cart";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
 
 interface CheckOutButtonProps {
   price: number;
@@ -22,19 +23,7 @@ const CheckOutButton = ({
   userFullName,
   userEmail,
 }: CheckOutButtonProps) => {
-  useEffect(() => {
-    // Check to see if this is a redirect back from Checkout
-    const query = new URLSearchParams(window.location.search);
-    if (query.get("success")) {
-      console.log("Order placed! You will receive an email confirmation.");
-    }
-
-    if (query.get("canceled")) {
-      console.log(
-        "Order canceled -- continue to shop around and checkout when you’re ready.",
-      );
-    }
-  }, []);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCheckout = async () => {
     // Check if user has address
@@ -54,6 +43,7 @@ const CheckOutButton = ({
 
     // Proceed to checkout
     try {
+      setIsSubmitting(true);
       const checkoutUrl = await createStripeCheckoutSession(
         cartItems,
         userAddress,
@@ -65,13 +55,22 @@ const CheckOutButton = ({
       toast.error(
         "Size exceeds the limit of 1MB. Try removing some items and try again.",
       );
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
-    <Button onClick={handleCheckout}>
+    <Button onClick={handleCheckout} disabled={isSubmitting}>
       {userAddress ? (
-        <p>Pay {formatCurrency(price)}</p>
+        <p className="flex items-center">
+          {isSubmitting && (
+            <span className="mr-2 animate-spin">
+              <Loader2 />
+            </span>
+          )}{" "}
+          {isSubmitting ? "Submitting..." : `Pay ${formatCurrency(price)}`}
+        </p>
       ) : (
         "Complete Your Profile"
       )}

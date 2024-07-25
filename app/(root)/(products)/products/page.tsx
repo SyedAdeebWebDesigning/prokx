@@ -9,7 +9,6 @@ interface productsPageProps {}
 const productsPage = async ({}: productsPageProps) => {
   const data = await getPublishableProducts();
   const products = JSON.parse(JSON.stringify(data));
-  console.log(products);
   if (products.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">

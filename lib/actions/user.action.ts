@@ -236,7 +236,6 @@ export const getUserAddress = async (userClerkId: string) => {
       };
     }
   } catch (error: any) {
-    console.log(error.message);
     return {};
   }
 };

@@ -9,7 +9,6 @@ interface capsPageProps {}
 const capsPage = async ({}: capsPageProps) => {
   const data = (await getProductsByCategory("Caps")) as IProductDocument[];
   const products = JSON.parse(JSON.stringify(data));
-  console.log(products);
   if (products.length === 0) {
     return (
       <div className="flex min-h-screen flex-col items-center justify-center">
