@@ -1,42 +1,57 @@
+import { NextApiRequest, NextApiResponse } from "next";
 import Stripe from "stripe";
-import { NextResponse } from "next/server";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
-export async function POST(request: Request) {
-  const body = await request.text();
+export const config = {
+  api: {
+    bodyParser: false, // Disallow body parsing, let Stripe handle it
+  },
+};
 
-  const sig = request.headers.get("stripe-signature") as string;
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
-  } catch (err: any) {
-    return NextResponse.json(
-      { message: "Webhook error", error: err.message },
-      { status: 400 },
-    );
+const buffer = async (req: NextApiRequest) => {
+  const chunks = [];
+  for await (const chunk of req) {
+    chunks.push(typeof chunk === "string" ? Buffer.from(chunk) : chunk);
   }
+  return Buffer.concat(chunks);
+};
 
-  // Get the ID and type
-  const eventType = event.type;
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (req.method === "POST") {
+    const buf = await buffer(req);
+    const sig = req.headers["stripe-signature"] as string;
 
-  // CREATE
-  if (eventType === "checkout.session.completed") {
-    const { id, amount_total, metadata } = event.data.object as any;
+    let event: Stripe.Event;
 
-    const order = {
-      id,
-      amount: amount_total,
-      address: JSON.parse(metadata),
-    };
+    try {
+      event = stripe.webhooks.constructEvent(
+        buf,
+        sig,
+        process.env.STRIPE_WEBHOOK_SECRET!,
+      );
+    } catch (err: any) {
+      console.error("Webhook signature verification failed:", err.message);
+      return res.status(400).send(`Webhook Error: ${err.message}`);
+    }
 
-    console.log("Order created", order);
+    // Handle the event
+    switch (event.type) {
+      case "checkout.session.completed":
+        const session = event.data.object as Stripe.Checkout.Session;
+        console.log("Checkout session completed:", session);
+        // Handle successful checkout session here (e.g., save order to database)
+        break;
+      // Handle other event types as needed
+      default:
+        console.warn(`Unhandled event type: ${event.type}`);
+    }
 
-    return NextResponse.json({ message: "OK" });
+    res.status(200).json({ received: true });
+  } else {
+    res.setHeader("Allow", "POST");
+    res.status(405).end("Method Not Allowed");
   }
+};
 
-  return new Response("", { status: 200 });
-}
+export default handler;
