@@ -40,7 +40,7 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
   const [mainImage, setMainImage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isFullText, setIsFullText] = useState(false);
-  const [quantity, setQuantity] = useState(1);
+  const [quantity] = useState(1);
 
   const result = JSON.parse(JSON.stringify(product));
   useEffect(() => {
@@ -91,7 +91,6 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
   );
   const sizeId = selectedSize?._id;
   const cartItem = getCart().items.find((c) => c.id === sizeId);
-  const cartQty = cartItem?.quantity ?? 0;
 
   const handleAddToCart = () => {
     if (selectedVariant) {
