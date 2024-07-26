@@ -1,7 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { queueOrderProcessing } from "@/lib/backgroundJob"; // Implement this
-import { createOrder } from "@/lib/actions/orders.action";
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -69,7 +68,7 @@ export async function POST(request: Request) {
       };
 
       //  Queue the order processing
-      await createOrder(order);
+      queueOrderProcessing(order);
 
       return NextResponse.json({ message: "OK" });
     }
