@@ -68,22 +68,19 @@ export async function POST(request: Request) {
         id,
         paymentStatus: payment_status,
         amount: amount_total,
+        userId: metadata.user_clerk_id,
         email: metadata.customer_email,
         address: address,
         items: orderDetails,
       };
 
-      // Create the order in your database
-      await createOrder(order);
-
-      // Return the order in the response
-      return NextResponse.json({ message: "Order created", order });
+      const newOrder = await createOrder(order);
+      return NextResponse.json({ message: "OK", order: newOrder });
     }
 
     // Return a response indicating that the event was handled successfully
     return new Response("Webhook received successfully", { status: 200 });
   } catch (err: any) {
-    console.error("Error handling the event:", err.message);
     return NextResponse.json(
       { message: "Event handling error", error: err.message },
       { status: 500 },
