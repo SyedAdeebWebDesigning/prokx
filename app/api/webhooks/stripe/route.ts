@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       console.log("Constructed order:", JSON.stringify(order, null, 2));
 
       // Queue the order processing
-      await queueOrderProcessing(order); // Ensure this function handles order creation in the database
+      queueOrderProcessing(order); // Ensure this function handles order creation in the database
 
       return NextResponse.json({ message: "OK", data: order });
     }
