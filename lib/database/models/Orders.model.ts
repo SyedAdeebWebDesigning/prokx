@@ -4,6 +4,8 @@ const orderSchema = new Schema(
   {
     userEmail: { type: String, required: true },
     orderTotal: { type: Number, required: true },
+    paymentStatus: { type: String, required: true },
+    userId: { type: String, required: false },
     orderAddress: {
       street: { type: String, required: true },
       city: { type: String, required: true },

@@ -68,7 +68,6 @@ export async function POST(request: Request) {
         id,
         paymentStatus: payment_status,
         amount: amount_total,
-        userId: metadata.user_clerk_id,
         email: metadata.customer_email,
         address: address,
         items: orderDetails,

@@ -9,7 +9,7 @@ interface CreateOrderProps {
   paymentStatus: string;
   amount: number;
   email: string;
-  userId: string;
+  userId?: string;
   address: {
     street: string;
     city: string;
