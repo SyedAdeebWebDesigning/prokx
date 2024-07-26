@@ -111,7 +111,7 @@ export const createOrder = async (order: any): Promise<void> => {
     }
 
     // Create and save the order in the orders collection
-    const newOrder = new Order({
+    const newOrder = {
       userEmail: order.userEmail,
       orderTotal: order.orderTotal,
       paymentStatus: order.paymentStatus,
@@ -125,10 +125,10 @@ export const createOrder = async (order: any): Promise<void> => {
         productColor: item.color,
         productSize: item.size,
       })),
-    });
+    };
 
-    await newOrder.save();
-    console.log("Order saved successfully:", newOrder); // Debugging output
+    const data = await Order.create(newOrder);
+    return JSON.parse(JSON.stringify(data));
   } catch (error: any) {
     console.error("Error creating order:", error);
     throw new Error(`Failed to create order: ${error.message}`);
