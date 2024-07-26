@@ -66,8 +66,9 @@ const CheckOutButton = ({
       );
     } finally {
       setIsSubmitting(false);
-      // Uncomment to clear cart after checkout
-      // clearCart();
+      
+      // clear cart after checkout
+      clearCart();
     }
   };
 
