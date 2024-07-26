@@ -5,9 +5,9 @@ import { formatCurrency } from "@/lib/utils";
 import { Button } from "./ui/button";
 import { toast } from "react-toastify";
 import { clearCart, isCartTampered } from "@/lib/cart";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface CheckOutButtonProps {
   price: number;
@@ -25,15 +25,23 @@ const CheckOutButton = ({
   userEmail,
 }: CheckOutButtonProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleCheckout = async () => {
-    const router = useRouter();
+    // Check if the component is mounted
+    if (!isMounted) return;
+
     // Check if user has address
     if (!userAddress) {
-      // Redirect to profile page
       router.push("/address?type=create");
       return;
     }
+
     // Check if the cart has been tampered with
     if (isCartTampered()) {
       toast.error("Cart has been tampered with.", { autoClose: false });
@@ -58,6 +66,7 @@ const CheckOutButton = ({
       );
     } finally {
       setIsSubmitting(false);
+      // Uncomment to clear cart after checkout
       // clearCart();
     }
   };
