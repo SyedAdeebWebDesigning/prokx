@@ -3,7 +3,7 @@ import { createOrder } from "@/lib/actions/orders.action";
 // Simulated job queue (could be replaced with a more robust solution)
 const jobQueue: any[] = [];
 
-export const queueOrderProcessing = (order: any) => {
+export const queueOrderProcessing = async(order: any) => {
   jobQueue.push(order);
   processJobs();
 };
