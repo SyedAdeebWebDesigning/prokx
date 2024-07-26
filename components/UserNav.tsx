@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useRouter } from "next/navigation";
 interface UserNavProps {
   clerkUser: User;
 }
@@ -20,6 +21,8 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
   const { signOut } = useAuth();
   const firstLetterOfName = clerkUser?.firstName?.[0] ?? "";
   const lastLetterOfName = clerkUser?.lastName?.[0] ?? "";
+
+  const router = useRouter();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="rounded-full focus:outline-none">
@@ -62,11 +65,11 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
               <Link href={"/user-profile"}>Update profile</Link>
             </DropdownMenuItem>
             {clerkUser.hasProfileCompleted ? (
-              <DropdownMenuItem asChild className="cursor-pointer ">
+              <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href={"/address?type=update"}>Update your address</Link>
               </DropdownMenuItem>
             ) : (
-              <DropdownMenuItem asChild className="cursor-pointer ">
+              <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href={"/address?type=create"}>Complete your address</Link>
               </DropdownMenuItem>
             )}
@@ -78,7 +81,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
                 className="h-9 w-full cursor-pointer rounded bg-red-500 hover:bg-red-600 focus:bg-red-600"
                 onClick={() => {
                   signOut();
-                  window.location.href = `/sign-in`;
+                  router.push(`/sign-in`);
                 }}
               >
                 Logout

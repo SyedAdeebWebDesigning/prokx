@@ -3,10 +3,12 @@
 import Image from "next/image";
 import Heading from "./Heading";
 import MaxWidthWrapper from "./MaxWidthWrapper";
+import { useRouter } from "next/navigation";
 
 interface CategoriesProps {}
 
 const Categories = ({}: CategoriesProps) => {
+  const router = useRouter();
   const categoriesList = [
     {
       name: "TShirts",
@@ -52,7 +54,7 @@ const Categories = ({}: CategoriesProps) => {
       <div className="mx-auto grid grid-cols-1 gap-4 md:grid-cols-2">
         {categoriesList.map((category, i) => {
           const handleClick = (href: string) => {
-            window.location.href = href;
+            router.push(href);
           };
           return (
             <div

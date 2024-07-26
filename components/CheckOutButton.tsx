@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { clearCart, isCartTampered } from "@/lib/cart";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { useRouter } from "next/router";
 
 interface CheckOutButtonProps {
   price: number;
@@ -26,10 +27,11 @@ const CheckOutButton = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleCheckout = async () => {
+    const router = useRouter();
     // Check if user has address
     if (!userAddress) {
       // Redirect to profile page
-      window.location.href = "/address?type=create";
+      router.push("/address?type=create");
       return;
     }
     // Check if the cart has been tampered with

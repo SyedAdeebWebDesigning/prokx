@@ -2,7 +2,7 @@
 
 import { IProductDocument } from "@/lib/database/models/Product.model";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import {
   HoverCard,
@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/hover-card";
 import { formatCurrency } from "@/lib/utils";
 import { formatDescriptionInCard } from "@/lib/formatText";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   product: IProductDocument;
@@ -28,14 +29,21 @@ const ProductCard = ({
 }: ProductCardProps) => {
   const [imageIndex, setImageIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleClick = () => {
+    if (!isMounted) return; // Prevent navigation if not mounted
     const defaultVariant = product.product_variants[0];
     const defaultSize = defaultVariant.sizes[0].size; // Assuming sizes is an array
-    const defaultColor = defaultVariant.color_name; // Assuming name is available
+    const defaultColor = defaultVariant.color_name; // Assuming color_name is available
 
     const url = `/products/${product._id}?size=${defaultSize}&color=${defaultColor}`;
-    window.location.href = url;
+    router.push(url);
   };
 
   // Find all available sizes and sort them according to the custom order
@@ -69,15 +77,17 @@ const ProductCard = ({
     >
       <div className="flex flex-col items-center justify-center">
         <div className="relative h-80 w-full">
-          <Image
-            fill
-            loading="lazy"
-            src={product.product_variants[0].images[imageIndex].url}
-            alt={`product-${index}_name-${product.product_name}`}
-            className={`object-contain transition-all duration-300 ${
-              isHovered ? "scale-90" : "scale-100"
-            }`}
-          />
+          {isMounted && (
+            <Image
+              fill
+              loading="lazy"
+              src={product.product_variants[0].images[imageIndex].url}
+              alt={`product-${index}_name-${product.product_name}`}
+              className={`object-contain transition-all duration-300 ${
+                isHovered ? "scale-90" : "scale-100"
+              }`}
+            />
+          )}
         </div>
         <div className="w-full bg-gradient-to-b from-transparent to-gray-100 p-5">
           <div className="flex w-full items-center justify-between py-2">

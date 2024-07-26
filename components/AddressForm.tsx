@@ -94,7 +94,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
           await addAddressToUser({ clerkId: user.clerkId, address });
           toast.success("Address added successfully");
           setTimeout(() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_APP_URL}`;
+            router.push(process.env.NEXT_PUBLIC_APP_URL as string);
           }, 1500);
         } catch (error) {
           toast.error("Error creating address");
@@ -114,7 +114,7 @@ const AddressForm = ({ searchParams, user }: AddressFormProps) => {
           await updateAddressOfUser({ clerkId: user.clerkId, address });
           toast.success("Address updated successfully");
           setTimeout(() => {
-            window.location.href = `${process.env.NEXT_PUBLIC_APP_URL}`;
+            router.push(process.env.NEXT_PUBLIC_APP_URL as string);
           }, 1500);
         } catch (error) {
           toast.error("Error updating address");

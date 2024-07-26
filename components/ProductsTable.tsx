@@ -19,12 +19,14 @@ import Image from "next/image";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { formatDescriptionInCard } from "@/lib/formatText";
+import { useRouter } from "next/navigation";
 
 interface ProductsTableProps {
   products: IProductDocument[];
 }
 
 const ProductsTable = ({ products }: ProductsTableProps) => {
+  const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredProducts, setFilteredProducts] =
     useState<IProductDocument[]>(products);
@@ -98,7 +100,7 @@ const ProductsTable = ({ products }: ProductsTableProps) => {
             return (
               <TableRow
                 onClick={() => {
-                  window.location.href = `/admin-products/${product._id}`;
+                  router.push(`/admin-products/${product._id}`);
                 }}
                 key={String(product._id)}
                 className={cn(
