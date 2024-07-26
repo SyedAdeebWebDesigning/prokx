@@ -120,9 +120,9 @@ export const createOrder = async (order: CreateOrderProps): Promise<void> => {
       // Decrease the product quantity using the helper function
       await decreaseProductQuantity(
         item.product_id,
-        item.size,
-        item.color,
-        item.quantity,
+        item.size, // Updated to match your schema
+        item.color, // Updated to match your schema
+        item.quantity, // Updated to match your schema
       );
     }
 
@@ -133,7 +133,14 @@ export const createOrder = async (order: CreateOrderProps): Promise<void> => {
       paymentStatus: order.paymentStatus,
       userId: order.userId,
       orderAddress: order.address,
-      orderDetails: order.items,
+      orderDetails: order.items.map((item) => ({
+        productId: item.product_id, // Updated to match your schema
+        productTitle: item.name, // Ensure `name` is correctly mapped from order.items
+        productPrice: item.price, // Ensure `price` is correctly mapped from order.items
+        productQty: item.quantity, // Updated to match your schema
+        productColor: item.color, // Updated to match your schema
+        productSize: item.size, // Updated to match your schema
+      })),
     });
 
     await newOrder.save();

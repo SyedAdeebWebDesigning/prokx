@@ -1,6 +1,33 @@
 import { Schema, model, models } from "mongoose";
 
-const orderSchema = new Schema(
+// Define the interface for the order details
+interface OrderDetail {
+  productId: string;
+  productTitle: string;
+  productPrice: number;
+  productQty: number;
+  productColor: string;
+  productSize: string;
+}
+
+// Define the interface for the order
+export interface IOrder {
+  userEmail: string;
+  orderTotal: number;
+  paymentStatus: string;
+  userId?: string;
+  orderAddress: {
+    street: string;
+    city: string;
+    state: string;
+    country: string;
+    postalCode: string;
+  };
+  orderDetails: OrderDetail[];
+}
+
+// Define the order schema
+const orderSchema = new Schema<IOrder>(
   {
     userEmail: { type: String, required: true },
     orderTotal: { type: Number, required: true },
@@ -27,7 +54,6 @@ const orderSchema = new Schema(
   { timestamps: true },
 );
 
-const Order = models.Order || model("Order", orderSchema);
+// Create the order model
+const Order = models.Order || model<IOrder>("Order", orderSchema);
 export default Order;
-
-export const IOrders = typeof orderSchema;
