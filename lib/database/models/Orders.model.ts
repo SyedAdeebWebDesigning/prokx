@@ -21,7 +21,6 @@ const orderSchema = new Schema(
         productQty: { type: Number, required: true },
         productColor: { type: String, required: true },
         productSize: { type: String, required: true },
-        productImage: { type: String, required: true },
       },
     ],
   },
