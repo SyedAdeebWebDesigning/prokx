@@ -5,31 +5,6 @@ import Product from "../database/models/Product.model";
 import Order from "../database/models/Orders.model";
 import { decreaseProductQuantity } from "./product.action";
 
-interface CreateOrderProps {
-  id?: string;
-  paymentStatus: string;
-  amount: number;
-  email: string;
-  userId?: string;
-  address: {
-    street: string;
-    city: string;
-    state: string;
-    postalCode: string;
-    country: string;
-  };
-  items: [
-    {
-      product_id: string;
-      name: string;
-      size: string;
-      color: string;
-      quantity: number;
-      price: number;
-    },
-  ];
-}
-
 export const createStripeCheckoutSession = async (
   cartItems: any[],
   userAddress: any,
@@ -113,37 +88,45 @@ export const createStripeCheckoutSession = async (
   }
 };
 
-export const createOrder = async (order: CreateOrderProps): Promise<void> => {
+export const createOrder = async (order: any): Promise<void> => {
   try {
+    console.log("Received order:", order); // Debugging: log the order received
+
+    // Ensure order.items is defined and is an array
+    if (!Array.isArray(order.items)) {
+      throw new Error("order.items is not an array");
+    }
+
     // Iterate through each item in the order
     for (const item of order.items) {
-      // Decrease the product quantity using the helper function
+      console.log("Decreasing quantity for product ID:", item.product_id); // Debugging
       await decreaseProductQuantity(
         item.product_id,
-        item.size, // Updated to match your schema
-        item.color, // Updated to match your schema
-        item.quantity, // Updated to match your schema
+        item.size,
+        item.color,
+        item.quantity,
       );
     }
 
     // Create and save the order in the orders collection
     const newOrder = new Order({
-      userEmail: order.email,
-      orderTotal: order.amount,
+      userEmail: order.userEmail,
+      orderTotal: order.orderTotal,
       paymentStatus: order.paymentStatus,
       userId: order.userId,
-      orderAddress: order.address,
-      orderDetails: order.items.map((item) => ({
-        productId: item.product_id, // Updated to match your schema
-        productTitle: item.name, // Ensure `name` is correctly mapped from order.items
-        productPrice: item.price, // Ensure `price` is correctly mapped from order.items
-        productQty: item.quantity, // Updated to match your schema
-        productColor: item.color, // Updated to match your schema
-        productSize: item.size, // Updated to match your schema
+      orderAddress: order.orderAddress,
+      orderDetails: order.items.map((item: any) => ({
+        productId: item.product_id,
+        productTitle: item.product_name,
+        productPrice: item.product_price,
+        productQty: item.quantity,
+        productColor: item.color,
+        productSize: item.size,
       })),
     });
 
     await newOrder.save();
+    console.log("Order saved successfully:", newOrder); // Debugging output
   } catch (error: any) {
     console.error("Error creating order:", error);
     throw new Error(`Failed to create order: ${error.message}`);

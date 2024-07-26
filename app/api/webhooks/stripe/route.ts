@@ -54,7 +54,7 @@ export async function POST(request: Request) {
           country: address.country,
           postalCode: address.postal_code,
         },
-        orderDetails: orderDetails.map((item: any) => ({
+        items: orderDetails.map((item: any) => ({
           product_id: item.product_id,
           product_name: item.name,
           product_price: item.price,
@@ -63,6 +63,9 @@ export async function POST(request: Request) {
           size: item.size,
         })),
       };
+
+      // Log the constructed order object for verification
+      console.log("Constructed order:", JSON.stringify(order, null, 2));
 
       // Queue the order processing
       queueOrderProcessing(order); // Ensure this function handles order creation in the database
@@ -74,7 +77,7 @@ export async function POST(request: Request) {
   } catch (err: any) {
     console.error("Error processing event:", err);
     return NextResponse.json(
-      { message: "Event handling error", error: err },
+      { message: "Event handling error", error: err.message },
       { status: 500 },
     );
   }
