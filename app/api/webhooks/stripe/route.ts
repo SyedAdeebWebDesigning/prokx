@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { queueOrderProcessing } from "@/lib/backgroundJob"; // Implement this
+import { createOrder } from "@/lib/actions/orders.action";
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -58,7 +59,6 @@ export async function POST(request: Request) {
       }
 
       const order = {
-        id,
         paymentStatus: payment_status,
         amount: amount_total,
         userId: metadata.user_clerk_id,
@@ -68,9 +68,12 @@ export async function POST(request: Request) {
       };
 
       //  Queue the order processing
-      queueOrderProcessing(order);
+      try {
+        await createOrder(order);
+        console.log("Order processed successfully:", order);
+      } catch (error) {}
 
-      return NextResponse.json({ message: "OK" });
+      return NextResponse.json({ message: "OK", data: order });
     }
 
     return new Response("Webhook received successfully", { status: 200 });
