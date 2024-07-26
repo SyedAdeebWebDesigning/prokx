@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
+import { createOrder } from "@/lib/actions/orders.action";
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -55,20 +56,26 @@ export async function POST(request: Request) {
         throw new Error(`Failed to parse order_details: ${err.message}`);
       }
 
+      let address;
+      try {
+        address = JSON.parse(metadata.customer_address);
+      } catch (err: any) {
+        throw new Error(`Failed to parse customer_address: ${err.message}`);
+      }
+
       // Construct order object from the event data
       const order = {
         id,
         paymentStatus: payment_status,
         amount: amount_total,
+        userId: metadata.user_clerk_id,
         email: metadata.customer_email,
-        address: metadata.customer_address,
+        address: address,
         items: orderDetails,
       };
 
-      // Log the order object for debugging
-      console.log("Order created", order);
-
-      // TODO: Handle order processing (e.g., save to database, send confirmation email, etc.)
+      // Create the order in your database
+      await createOrder(order);
 
       // Return the order in the response
       return NextResponse.json({ message: "Order created", order });
@@ -77,8 +84,7 @@ export async function POST(request: Request) {
     // Return a response indicating that the event was handled successfully
     return new Response("Webhook received successfully", { status: 200 });
   } catch (err: any) {
-    // Log any errors during event handling
-    console.error("Error handling event", err.message);
+    console.error("Error handling the event:", err.message);
     return NextResponse.json(
       { message: "Event handling error", error: err.message },
       { status: 500 },

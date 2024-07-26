@@ -12,7 +12,7 @@ interface CheckOutButtonProps {
   price: number;
   cartItems: any[];
   userAddress: any;
-  userFullName: string;
+  userClerkId: string;
   userEmail: string;
 }
 
@@ -20,7 +20,7 @@ const CheckOutButton = ({
   price,
   cartItems,
   userAddress,
-  userFullName,
+  userClerkId,
   userEmail,
 }: CheckOutButtonProps) => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -32,8 +32,6 @@ const CheckOutButton = ({
       window.location.href = "/address?type=create";
       return;
     }
-;
-
     // Check if the cart has been tampered with
     if (isCartTampered()) {
       toast.error("Cart has been tampered with.", { autoClose: false });
@@ -48,7 +46,7 @@ const CheckOutButton = ({
       const checkoutUrl = await createStripeCheckoutSession(
         cartItems,
         userAddress,
-        userFullName,
+        userClerkId,
         userEmail,
       );
       window.location.href = checkoutUrl as string;
@@ -58,6 +56,7 @@ const CheckOutButton = ({
       );
     } finally {
       setIsSubmitting(false);
+      clearCart();
     }
   };
 
@@ -70,7 +69,7 @@ const CheckOutButton = ({
               <Loader2 />
             </span>
           )}{" "}
-          {isSubmitting ? "Submitting..." : `Pay ${formatCurrency(price)}`}
+          {isSubmitting ? "" : `Pay ${formatCurrency(price)}`}
         </p>
       ) : (
         "Complete Your Profile"

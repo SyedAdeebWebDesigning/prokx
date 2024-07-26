@@ -31,15 +31,15 @@ import CheckOutButton from "./CheckOutButton";
 
 interface CartProps {
   userClerkId: string;
-  clerkUser: any;
+  clerkUser: string;
+  userEmail: string;
 }
 
-const Cart = ({ userClerkId, clerkUser }: CartProps) => {
+const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
   const [cart, setCart] = useState(getCart());
   const [cartItems, setCartItems] = useState(cart.items.length);
   const [userAddress, setUserAddress] = useState<any | null>(null);
-  const userFullName = clerkUser?.firstName + " " + clerkUser?.lastName;
-  const userEmail = clerkUser?.email;
+  const userId = clerkUser;
 
   useEffect(() => {
     const fetchUserAddress = async (userClerkId: string) => {
@@ -57,8 +57,6 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
 
     fetchUserAddress(userClerkId);
   }, []);
-
-  console.log(cart.items);
 
   // Function to update cart items based on their availability
   const updateCartItemsAvailability = async () => {
@@ -225,7 +223,7 @@ const Cart = ({ userClerkId, clerkUser }: CartProps) => {
                 price={total}
                 cartItems={cart.items}
                 userAddress={userAddress}
-                userFullName={userFullName}
+                userClerkId={userId}
                 userEmail={userEmail}
               />
               <Button

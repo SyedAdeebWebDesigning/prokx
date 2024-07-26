@@ -61,8 +61,7 @@ const Header = async ({}: HeaderProps) => {
       isAdmin: true,
     },
   ];
-  const { sessionClaims } = auth();
-  const userId = sessionClaims?.userId as string;
+
   const currentClerkUser = await currentUser();
   const clerkUser = await getUserById(currentClerkUser?.id as string);
 
@@ -132,7 +131,10 @@ const Header = async ({}: HeaderProps) => {
             <SignedIn>
               <Cart
                 userClerkId={currentClerkUser?.id as string}
-                clerkUser={clerkUser}
+                clerkUser={currentClerkUser?.id as string}
+                userEmail={
+                  currentClerkUser?.emailAddresses[0].emailAddress as string
+                }
               />
               <div className="text-gray-400">|</div>
               <UserNav clerkUser={clerkUser} />

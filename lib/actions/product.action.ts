@@ -150,3 +150,51 @@ export const getProductsByCategory = async (category: string) => {
     return JSON.parse(JSON.stringify(products));
   } catch (error) {}
 };
+
+export const decreaseProductQuantity = async (
+  productId: string,
+  size: string,
+  color: string,
+  quantity: number,
+): Promise<void> => {
+  try {
+    // Find the product by productId
+    const product: IProductDocument | null = await Product.findById(productId);
+
+    if (!product) {
+      throw new Error("Product not found");
+    }
+
+    // Find the specific variant by size and color
+    const variant = product.product_variants.find((variant) => {
+      return (
+        variant.color_name === color &&
+        variant.sizes.some((s) => s.size === size)
+      );
+    });
+
+    if (!variant) {
+      throw new Error("Variant not found");
+    }
+
+    // Find the size object within the variant
+    const sizeObj = variant.sizes.find((s) => s.size === size);
+
+    if (!sizeObj) {
+      throw new Error("Size not found");
+    }
+
+    // Check if there is enough quantity to decrease
+    if (sizeObj.available_qty < quantity) {
+      throw new Error("Not enough quantity available");
+    }
+
+    // Decrease the available quantity
+    sizeObj.available_qty -= quantity;
+
+    // Save the updated product document
+    await product.save();
+  } catch (error: any) {
+    throw new Error(`Failed to decrease quantity: ${error.message}`);
+  }
+};

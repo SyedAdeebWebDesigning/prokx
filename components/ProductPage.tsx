@@ -149,6 +149,14 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     selectedVariant?.sizes.find((s: any) => s.size === size)?.available_qty ??
     0;
 
+  const sizeOrder = ["XS", "S", "M", "L", "XL", "XXL", "XXXL"];
+
+  const customSortSizes = (sizes: any[]) => {
+    return sizes.sort((a, b) => {
+      return sizeOrder.indexOf(a.size) - sizeOrder.indexOf(b.size);
+    });
+  };
+
   const availableText =
     AvailableQty <= 4
       ? `Hurry up! Only ${AvailableQty} items left in the stock`
@@ -238,11 +246,13 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                       </SelectTrigger>
                       <SelectContent className="w-20 bg-gray-100">
                         <SelectGroup>
-                          {selectedVariant?.sizes.map((s: any) => (
-                            <SelectItem key={s.size} value={s.size}>
-                              {s.size}
-                            </SelectItem>
-                          ))}
+                          {customSortSizes(selectedVariant?.sizes || []).map(
+                            (s: any) => (
+                              <SelectItem key={s.size} value={s.size}>
+                                {s.size}
+                              </SelectItem>
+                            ),
+                          )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -262,7 +272,7 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                 </Button>
               </div>
               <div className="flex">
-                <p>{availableText}</p>
+                <p>{AvailableQty >= 1 ? availableText : "Out of stock"}</p>
               </div>
             </div>
           </div>
