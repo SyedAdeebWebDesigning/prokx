@@ -6,7 +6,7 @@ import { formatDescription, transformDescription } from "@/lib/formatText";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { addCart, getCart } from "@/lib/cart";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   IProductDocument,
   ProductVariant,
@@ -28,6 +28,7 @@ interface ProductPageProps {
 }
 
 const ProductPage = ({ paramsId, product }: ProductPageProps) => {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const id = JSON.parse(JSON.stringify(paramsId));
   const size = searchParams.get("size") || "defaultSize";
@@ -68,11 +69,17 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     const variant = product.product_variants.find(
       (variant) => variant.color_name === colorName,
     );
-    window.location.href = `/products/${id}?color=${variant?.color_name}&size=${size}`;
+    if (variant) {
+      router.push(`/products/${id}?color=${variant.color_name}&size=${size}`);
+      setSelectedVariant(variant);
+      setMainImage(variant.images[0]?.url);
+    }
   };
 
   const handleSizeChange = (newSize: string) => {
-    window.location.href = `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`;
+    router.push(
+      `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`,
+    );
   };
 
   const handleImageClick = (imageUrl: string) => {
@@ -231,74 +238,32 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                         <SelectValue placeholder="Select a size" />
                       </SelectTrigger>
                       <SelectContent className="w-20 bg-gray-100">
-                        <SelectGroup className="">
-                          {selectedVariant?.sizes
-                            .sort((a: any, b: any) => {
-                              const sizeOrder = ["S", "M", "L", "XL", "XXL"];
-                              return (
-                                sizeOrder.indexOf(a.size) -
-                                sizeOrder.indexOf(b.size)
-                              );
-                            })
-                            .map((size: any) => (
-                              <SelectItem
-                                key={size.size}
-                                value={size.size}
-                                className="cursor-pointer border-b-2"
-                              >
-                                {size.size}
-                              </SelectItem>
-                            ))}
+                        <SelectGroup>
+                          {selectedVariant?.sizes.map((s: any) => (
+                            <SelectItem key={s.size} value={s.size}>
+                              {s.size}
+                            </SelectItem>
+                          ))}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
                   </div>
                 </div>
               </div>
-              <p
-                className={cn(
-                  "my-2 text-center md:text-left",
-                  !isAvailable ? "text-red-400" : "",
-                )}
-              >
-                {isAvailable ? availableText : "out of stock"}
-              </p>
-              <div className="flex w-full flex-col items-center justify-between md:flex-row">
+              <div className="flex">
                 <span className="title-font text-2xl font-medium text-gray-900">
-                  {formatCurrency(Number(product.product_price))}
+                  {formatCurrency(result.product_price)}
                 </span>
-                <div className="mt-2 flex w-full flex-col md:flex-row md:justify-end md:space-x-2">
-                  <div className="flex items-center justify-center rounded border px-2 py-1 md:px-4">
-                    <button
-                      className="px-2 py-1 disabled:cursor-not-allowed"
-                      onClick={() => setQuantity(quantity - 1)}
-                      disabled={quantity <= 1}
-                    >
-                      -
-                    </button>
-                    <span className="mx-2">{quantity}</span>
-                    <button
-                      className="px-2 py-1 disabled:cursor-not-allowed"
-                      onClick={() => setQuantity(quantity + 1)}
-                      disabled={
-                        quantity >=
-                        (selectedVariant?.sizes.find(
-                          (s: any) => s.size === size,
-                        )?.available_qty ?? 0) -
-                          cartQty
-                      }
-                    >
-                      +
-                    </button>
-                  </div>
-                  <Button
-                    className="mt-2 px-6 py-2 text-white focus:outline-none md:mt-0"
-                    onClick={handleAddToCart}
-                    disabled={!isAvailable}
-                  >
-                    Add to Cart
-                  </Button>
-                </div>
+                <Button
+                  className="ml-auto flex"
+                  disabled={AvailableQty <= 0}
+                  onClick={handleAddToCart}
+                >
+                  Add to cart
+                </Button>
+              </div>
+              <div className="flex">
+                <p>{availableText}</p>
               </div>
             </div>
           </div>

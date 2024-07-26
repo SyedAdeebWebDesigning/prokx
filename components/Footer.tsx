@@ -37,7 +37,7 @@ const Footer = ({}: FooterProps) => {
         },
         {
           name: "Caps",
-          href: "/caps",
+          href: "/products/caps",
         },
       ],
     },

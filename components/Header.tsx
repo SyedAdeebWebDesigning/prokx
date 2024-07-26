@@ -49,7 +49,7 @@ const Header = async ({}: HeaderProps) => {
     },
     {
       name: "Caps",
-      href: "/caps",
+      href: "/products/caps",
     },
     {
       name: "Orders",

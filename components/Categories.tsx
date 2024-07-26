@@ -17,7 +17,7 @@ const Categories = ({}: CategoriesProps) => {
     {
       name: "Caps",
       image: "/images/collections-caps.png",
-      href: "/caps",
+      href: "/products/caps",
       objectFit: "contain",
     },
     {
