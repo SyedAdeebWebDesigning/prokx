@@ -4,6 +4,7 @@ import Stripe from "stripe";
 import Product from "../database/models/Product.model";
 import Order from "../database/models/Orders.model";
 import { decreaseProductQuantity } from "./product.action";
+import { connectToDatabase } from "../database";
 
 export const createStripeCheckoutSession = async (
   cartItems: any[],
@@ -90,6 +91,7 @@ export const createStripeCheckoutSession = async (
 
 export const createOrder = async (order: any): Promise<void> => {
   try {
+    await connectToDatabase();
     console.log("Received order:", order); // Debugging: log the order received
 
     // Ensure order.items is defined and is an array
