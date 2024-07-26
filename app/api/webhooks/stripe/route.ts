@@ -50,8 +50,8 @@ export async function POST(request: Request) {
         address: address,
         items: orderDetails.map((item: any) => ({
           product_id: item.product_id,
-          product_name: item.product_name,
-          product_price: item.product_price,
+          product_name: item.name,
+          product_price: item.price,
           quantity: item.quantity,
           color: item.color,
           size: item.size,
