@@ -43,12 +43,18 @@ export async function POST(request: Request) {
 
       // Prepare the order object
       const order = {
-        email: metadata.customer_email,
-        amount: amount_total,
+        userEmail: metadata.customer_email,
+        orderTotal: amount_total,
         paymentStatus: payment_status,
         userId: metadata.user_clerk_id,
-        address: address,
-        items: orderDetails.map((item: any) => ({
+        orderAddress: {
+          street: address.street,
+          city: address.city,
+          state: address.state,
+          country: address.country,
+          postalCode: address.postal_code,
+        },
+        orderDetails: orderDetails.map((item: any) => ({
           product_id: item.product_id,
           product_name: item.name,
           product_price: item.price,
