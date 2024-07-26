@@ -30,16 +30,11 @@ export async function POST(request: Request) {
   try {
     if (eventType === "checkout.session.completed") {
       const session = event.data.object as any;
-      const { amount_total, metadata, payment_status } = session;
+      const { amount_total, payment_status } = session;
 
-      console.log("Received metadata:", metadata);
+      console.log("Received session data:", session); // Debugging log
 
-      if (!metadata.order_details) {
-        throw new Error("order_details is missing in metadata");
-      }
-
-      const orderDetails = JSON.parse(metadata.order_details);
-      const address = JSON.parse(metadata.customer_address);
+      const metadata = session.metadata;
 
       // Prepare the order object
       const order = {
@@ -48,13 +43,13 @@ export async function POST(request: Request) {
         paymentStatus: payment_status,
         userId: metadata.user_clerk_id,
         orderAddress: {
-          street: address.street,
-          city: address.city,
-          state: address.state,
-          country: address.country,
-          postalCode: address.postal_code,
+          street: JSON.parse(metadata.customer_address).street,
+          city: JSON.parse(metadata.customer_address).city,
+          state: JSON.parse(metadata.customer_address).state,
+          country: JSON.parse(metadata.customer_address).country,
+          postalCode: JSON.parse(metadata.customer_address).postal_code,
         },
-        items: orderDetails.map((item: any) => ({
+        items: JSON.parse(metadata.order_details).map((item: any) => ({
           product_id: item.product_id,
           product_name: item.name,
           product_price: item.price,
@@ -68,7 +63,7 @@ export async function POST(request: Request) {
       console.log("Constructed order:", JSON.stringify(order, null, 2));
 
       // Queue the order processing
-      queueOrderProcessing(order); // Ensure this function handles order creation in the database
+      await queueOrderProcessing(order); // Ensure this function handles order creation in the database
 
       return NextResponse.json({ message: "OK", data: order });
     }
