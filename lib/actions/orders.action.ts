@@ -49,7 +49,7 @@ export const createStripeCheckoutSession = async (
 
     // Construct metadata order details
     const orderDetails = cartItems.map((item) => ({
-      product_id: item.id,
+      product_id: item.productId,
       name: item.name,
       size: item.size,
       color: item.color,

@@ -200,7 +200,7 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                 {product.product_category}
               </h2>
               <h1 className="title-font mb-1 text-3xl font-medium text-gray-900">
-                {product.product_name} ({size}/{color})
+                {product.product_name} ({size}/{color}) {product._id as string}
               </h1>
               <div
                 className={`${isFullText ? "line-clamp-none" : "line-clamp-[10]"} `}
