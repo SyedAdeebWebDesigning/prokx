@@ -56,7 +56,7 @@ const CheckOutButton = ({
       );
     } finally {
       setIsSubmitting(false);
-      clearCart();
+      // clearCart();
     }
   };
 

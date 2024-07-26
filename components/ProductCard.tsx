@@ -87,7 +87,9 @@ const ProductCard = ({
                   {product.product_category}
                 </h5>
               )}
-              <h3 className="text-lg font-medium">{product.product_name}</h3>
+              <h3 className="line-clamp-1 text-lg font-medium">
+                {product.product_name}
+              </h3>
             </div>
             <span className="text-md font-semibold text-muted-foreground">
               {formatCurrency(Number(product.product_price))}

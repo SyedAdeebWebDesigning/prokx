@@ -107,6 +107,7 @@ export const createStripeCheckoutSession = async (
 
     return session.url;
   } catch (err) {
+    console.error("Error creating Stripe Checkout session:", err);
     throw new Error("Failed to create Stripe Checkout session.");
   }
 };
@@ -150,29 +151,24 @@ export const createOrder = async (order: CreateOrderProps): Promise<void> => {
 
       // Decrease the available quantity
       sizeObj.available_qty -= item.quantity;
-    }
 
-    // Save all changes to the product document
-    await Promise.all(
-      order.items.map(async (item) => {
-        const product = await Product.findById(item.product_id);
-        return product?.save();
-      }),
-    );
+      // Save the updated product variant
+      await product.save();
+    }
 
     // Create and save the order in the orders collection
     const newOrder = new Order({
-      id: order.id,
+      userEmail: order.email,
+      orderTotal: order.amount,
       paymentStatus: order.paymentStatus,
-      amount: order.amount,
-      email: order.email,
       userId: order.userId,
-      address: order.address,
-      items: order.items,
+      orderAddress: order.address,
+      orderDetails: order.items,
     });
 
     await newOrder.save();
   } catch (error: any) {
+    console.error("Error creating order:", error);
     throw new Error(`Failed to create order: ${error.message}`);
   }
 };
