@@ -1,6 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { queueOrderProcessing } from "@/lib/backgroundJob"; // Implement this
+import { createOrder } from "@/lib/actions/orders.action";
 
 // Initialize Stripe with the secret key
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -43,34 +44,34 @@ export async function POST(request: Request) {
         throw new Error("order_details is missing in metadata");
       }
 
-      // let orderDetails;
-      // try {
-      //   orderDetails = JSON.parse(metadata.order_details);
-      // } catch (err: any) {
-      //   throw new Error(`Failed to parse order_details: ${err.message}`);
-      // }
+      let orderDetails;
+      try {
+        orderDetails = JSON.parse(metadata.order_details);
+      } catch (err: any) {
+        throw new Error(`Failed to parse order_details: ${err.message}`);
+      }
 
-      // let address;
-      // try {
-      //   address = JSON.parse(metadata.customer_address);
-      // } catch (err: any) {
-      //   throw new Error(`Failed to parse customer_address: ${err.message}`);
-      // }
+      let address;
+      try {
+        address = JSON.parse(metadata.customer_address);
+      } catch (err: any) {
+        throw new Error(`Failed to parse customer_address: ${err.message}`);
+      }
 
-      //   const order = {
-      //     id,
-      //     paymentStatus: payment_status,
-      //     amount: amount_total,
-      //     userId: metadata.user_clerk_id,
-      //     email: metadata.customer_email,
-      //     address: address,
-      //     items: orderDetails,
-      //   };
+      const order = {
+        id,
+        paymentStatus: payment_status,
+        amount: amount_total,
+        userId: metadata.user_clerk_id,
+        email: metadata.customer_email,
+        address: address,
+        items: orderDetails,
+      };
 
-      //   // Queue the order processing
-      //   queueOrderProcessing(order);
+      //  Queue the order processing
+      await createOrder(order);
 
-      //   return NextResponse.json({ message: "OK" });
+      return NextResponse.json({ message: "OK" });
     }
 
     return new Response("Webhook received successfully", { status: 200 });

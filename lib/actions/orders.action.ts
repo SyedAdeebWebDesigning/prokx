@@ -3,6 +3,7 @@
 import Stripe from "stripe";
 import Product from "../database/models/Product.model";
 import Order from "../database/models/Orders.model";
+import { decreaseProductQuantity } from "./product.action";
 
 interface CreateOrderProps {
   id?: string;
@@ -116,44 +117,13 @@ export const createOrder = async (order: CreateOrderProps): Promise<void> => {
   try {
     // Iterate through each item in the order
     for (const item of order.items) {
-      // Find the product by product ID
-      const product = await Product.findById(item.product_id);
-
-      if (!product) {
-        throw new Error(`Product not found: ${item.product_id}`);
-      }
-
-      // Find the specific variant by size and color
-      const variant = product.product_variants.find((variant: any) => {
-        return (
-          variant.color_name === item.color &&
-          variant.sizes.some((s: any) => s.size === item.size)
-        );
-      });
-
-      if (!variant) {
-        throw new Error(`Variant not found for product: ${item.product_id}`);
-      }
-
-      // Find the size object within the variant
-      const sizeObj = variant.sizes.find((s: any) => s.size === item.size);
-
-      if (!sizeObj) {
-        throw new Error(`Size not found for product: ${item.product_id}`);
-      }
-
-      // Check if there is enough quantity to decrement
-      if (sizeObj.available_qty < item.quantity) {
-        throw new Error(
-          `Not enough quantity available for product: ${item.product_id}`,
-        );
-      }
-
-      // Decrease the available quantity
-      sizeObj.available_qty -= item.quantity;
-
-      // Save the updated product variant
-      await product.save();
+      // Decrease the product quantity using the helper function
+      await decreaseProductQuantity(
+        item.product_id,
+        item.size,
+        item.color,
+        item.quantity,
+      );
     }
 
     // Create and save the order in the orders collection
