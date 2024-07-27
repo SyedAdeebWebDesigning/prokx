@@ -9,13 +9,13 @@ import { User, currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
-interface PageProps {
+interface SuccessPageProps {
   user: User;
   order: IOrder;
   products: { [key: string]: IProductDocument };
 }
 
-const Page = async ({}: PageProps) => {
+const SuccessPage = async ({}: SuccessPageProps) => {
   const user = await currentUser();
   const userId = user?.id;
   const data = await getUserRecentOrder(userId as string);
@@ -122,4 +122,4 @@ const Page = async ({}: PageProps) => {
   );
 };
 
-export default Page;
+export default SuccessPage;
