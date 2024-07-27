@@ -6,7 +6,7 @@ import { formatDescription, transformDescription } from "@/lib/formatText";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { addCart, getCart } from "@/lib/cart";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   IProductDocument,
   ProductVariant,
@@ -29,6 +29,7 @@ interface ProductPageProps {
 
 const ProductPage = ({ paramsId, product }: ProductPageProps) => {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const id = JSON.parse(JSON.stringify(paramsId));
   const size = searchParams.get("size") || "defaultSize";
   const color = searchParams.get("color") || "defaultColor";
@@ -68,11 +69,13 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     const variant = product.product_variants.find(
       (variant) => variant.color_name === colorName,
     );
-    window.location.href = `/products/${id}?color=${variant?.color_name}&size=${size}`;
+    router.push(`/products/${id}?color=${variant?.color_name}&size=${size}`);
   };
 
   const handleSizeChange = (newSize: string) => {
-    window.location.href = `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`;
+    router.push(
+      `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`,
+    );
   };
 
   const handleImageClick = (imageUrl: string) => {
