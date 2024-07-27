@@ -134,3 +134,32 @@ export const createOrder = async (order: any): Promise<void> => {
     throw new Error(`Failed to create order: ${error.message}`);
   }
 };
+
+export const getOrders = async (): Promise<any> => {
+  try {
+    await connectToDatabase();
+    const order = await Order.find().sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(order));
+  } catch (err) {
+    throw new Error("Failed to fetch orders");
+  }
+};
+
+export const getUserRecentOrder = async (userClerkId: string) => {
+  try {
+    await connectToDatabase();
+    const order = await Order.findOne({ userId: userClerkId })
+      .sort({ createdAt: -1 })
+      .limit(1)
+      .lean(); // Use lean() for better performance
+
+    if (!order) {
+      throw new Error("No orders found for this user");
+    }
+
+    return order; // lean() returns plain JavaScript objects
+  } catch (error) {
+    console.error("Error fetching user order:", error);
+    throw new Error("Failed to fetch user order");
+  }
+};

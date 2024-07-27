@@ -12,6 +12,9 @@ interface OrderDetail {
 
 // Define the interface for the order
 export interface IOrder {
+  _id?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   userEmail: string;
   orderTotal: number;
   paymentStatus: string;
@@ -53,6 +56,8 @@ const orderSchema = new Schema<IOrder>(
   },
   { timestamps: true },
 );
+
+export const OrderProps = typeof orderSchema;
 
 // Create the order model
 const Order = models.Order || model<IOrder>("Order", orderSchema);
