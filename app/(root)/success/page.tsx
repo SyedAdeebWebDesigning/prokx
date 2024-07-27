@@ -9,11 +9,7 @@ import { User, currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
-interface SuccessPageProps {
-  user: User;
-  order: IOrder;
-  products: { [key: string]: IProductDocument };
-}
+interface SuccessPageProps {}
 
 const SuccessPage = async ({}: SuccessPageProps) => {
   const user = await currentUser();
