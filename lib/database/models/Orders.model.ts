@@ -18,6 +18,7 @@ export interface IOrder {
   userEmail: string;
   orderTotal: number;
   paymentStatus: string;
+  orderStatus: string;
   userId?: string;
   orderAddress: {
     street: string;
@@ -35,6 +36,7 @@ const orderSchema = new Schema<IOrder>(
     userEmail: { type: String, required: true },
     orderTotal: { type: Number, required: true },
     paymentStatus: { type: String, required: true },
+    orderStatus: { type: String, required: true, default: "Order Placed" },
     userId: { type: String, required: false },
     orderAddress: {
       street: { type: String, required: true },

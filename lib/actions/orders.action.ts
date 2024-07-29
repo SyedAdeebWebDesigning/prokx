@@ -115,6 +115,7 @@ export const createOrder = async (order: any): Promise<void> => {
       userEmail: order.userEmail,
       orderTotal: order.orderTotal,
       paymentStatus: order.paymentStatus,
+      orderStatus: "Order Placed",
       userId: order.userId,
       orderAddress: order.orderAddress,
       orderDetails: order.items.map((item: any) => ({
