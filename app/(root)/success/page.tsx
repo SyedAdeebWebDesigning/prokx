@@ -1,10 +1,11 @@
 import Heading from "@/components/Heading";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { getUserRecentOrder } from "@/lib/actions/orders.action";
 import { getProductById } from "@/lib/actions/product.action";
 import { IOrder } from "@/lib/database/models/Orders.model";
 import { IProductDocument } from "@/lib/database/models/Product.model";
-import { formatCurrency, formatDateTime } from "@/lib/utils";
+import { cn, formatCurrency, formatDateTime } from "@/lib/utils";
 import { User, currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
@@ -83,15 +84,28 @@ const SuccessPage = async ({}: SuccessPageProps) => {
               })}
             </div>
 
-            <div className="rounded bg-gray-50 p-4 shadow-md">
+            <div className="relative w-full rounded bg-gray-50 p-4 shadow-md">
               <h2 className="mb-4 text-lg font-semibold">Summary</h2>
               <div className="flex justify-between border-b pb-2">
                 <p>Shipping</p>
                 <p>{formatCurrency(99)}</p>
               </div>
-              <div className="flex justify-between pt-2 font-semibold">
-                <p>Total</p>
-                <p>{formatCurrency(order.orderTotal / 100)}</p>
+              <div className="flex h-auto flex-col justify-between">
+                <div className="mb-full flex justify-between pt-2 font-semibold">
+                  <p>Total</p>
+                  <p>{formatCurrency(order.orderTotal / 100)}</p>
+                </div>
+                <div className="absolute bottom-2 left-0 flex w-full items-center justify-center px-2">
+                  <Link
+                    href={"/products"}
+                    className={cn(
+                      "w-full",
+                      buttonVariants({ variant: "default" }),
+                    )}
+                  >
+                    Continue Shopping
+                  </Link>
+                </div>
               </div>
             </div>
 
