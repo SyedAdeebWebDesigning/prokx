@@ -16,23 +16,31 @@ const SuccessPage = async ({}: SuccessPageProps) => {
   const user = await currentUser();
   const userId = user?.id;
   const data = await getUserRecentOrder(userId as string);
+  if (data === null) {
+    return (
+      <div className="flex min-h-[65vh] flex-col items-center justify-center space-y-2">
+        <h1 className="text-3xl">No orders found</h1>
+      </div>
+    );
+  }
   const order: IOrder = JSON.parse(JSON.stringify(data));
 
   // Fetch product data for all order details
   const products = await Promise.all(
-    order.orderDetails.map((item) => getProductById(item.productId)),
+    order?.orderDetails?.map((item) => getProductById(item.productId)),
   );
 
   // Construct the address string for Google Maps
 
   return (
     <main className="my-20">
-      <Heading>Thanks for your order</Heading>
+      <Heading>Thank you for your order</Heading>
       <MaxWidthWrapper>
         <div className="rounded bg-white p-6">
           <div className="mb-6 flex flex-col">
             <h1 className="text-2xl font-medium text-gray-800">
-              Order #<span className="text-primary">{order._id}</span>
+              Order #
+              <span className="text-primary">{order._id?.slice(0, 24)}</span>
             </h1>
             <p className="text-gray-600">
               {formatDateTime(order.createdAt as Date).dateTime}
@@ -110,8 +118,9 @@ const SuccessPage = async ({}: SuccessPageProps) => {
             </div>
 
             <div className="col-span-full rounded bg-gray-50 p-4 shadow-md">
-              <h2 className="mb-4 text-lg font-semibold">Payment Details</h2>
+              <h2 className="mb-4 text-lg font-semibold">Transaction Status</h2>
               <p>Payment Status: {order.paymentStatus}</p>
+              <p>Order Status: {order.orderStatus}</p>
             </div>
 
             <div className="col-span-full rounded bg-gray-50 p-4 shadow-md">

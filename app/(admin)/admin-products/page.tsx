@@ -5,7 +5,7 @@ import { getAllProducts } from "@/lib/actions/product.action";
 
 interface adminProductsPageProps {}
 
-const adminProductsPage = async ({}: adminProductsPageProps) => {
+const AdminProductsPage = async ({}: adminProductsPageProps) => {
   const products = await getAllProducts();
   return (
     <main className="mb-10">
@@ -16,4 +16,4 @@ const adminProductsPage = async ({}: adminProductsPageProps) => {
   );
 };
 
-export default adminProductsPage;
+export default AdminProductsPage;

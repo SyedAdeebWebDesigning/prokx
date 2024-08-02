@@ -142,7 +142,17 @@ export const getOrders = async (): Promise<any> => {
     const order = await Order.find().sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(order));
   } catch (err) {
-    throw new Error("Failed to fetch orders");
+    return {};
+  }
+};
+
+export const getOrderById = async (orderId: string): Promise<any> => {
+  try {
+    await connectToDatabase();
+    const order = await Order.findById(orderId);
+    return JSON.parse(JSON.stringify(order));
+  } catch (err) {
+    throw new Error("Failed to fetch order");
   }
 };
 
@@ -161,6 +171,20 @@ export const getUserRecentOrder = async (userClerkId: string) => {
     return order; // lean() returns plain JavaScript objects
   } catch (error) {
     console.error("Error fetching user order:", error);
-    throw new Error("Failed to fetch user order");
+    return {};
   }
 };
+
+export const updateOrderStatus = async (
+  orderId: string,
+  orderStatus: string,
+): Promise<any> => {
+  try {
+    await connectToDatabase();
+    const order = await Order.findByIdAndUpdate
+      (orderId, { orderStatus }, { new: true });
+    return JSON.parse(JSON.stringify(order));
+  } catch (err) {
+    throw new Error("Failed to update order status");
+  }
+}
