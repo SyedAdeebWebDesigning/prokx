@@ -23,7 +23,7 @@ const layout = async ({
 }) => {
   const user = await currentUser();
   const clerkUser: User = await getUserById(user?.id || "");
-  const isAdmin = clerkUser.isAdmin;
+  const isAdmin = clerkUser?.isAdmin;
 
   if (!isAdmin) {
     return (

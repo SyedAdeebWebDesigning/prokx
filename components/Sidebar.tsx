@@ -70,7 +70,7 @@ const Sidebar = ({ clerkUser }: SidebarProps) => {
           >
             <Avatar className="border-4 border-primary/20">
               <AvatarImage
-                src={clerkUser.photo}
+                src={clerkUser?.photo}
                 alt="user"
                 className="rounded-full"
               />
@@ -81,17 +81,17 @@ const Sidebar = ({ clerkUser }: SidebarProps) => {
             </Avatar>
             <div className="ml-3 line-clamp-1 flex flex-1 flex-col justify-center whitespace-nowrap">
               <p className="text-medium line-clamp-1 flex items-center text-pretty text-lg text-primary">
-                {clerkUser.username}
+                {clerkUser?.username}
                 <span className="ml-1">
                   {" "}
                   <VerifiedIcon
-                    fill={clerkUser.isOwner ? "gold" : "lightblue"}
-                    className={clerkUser.isOwner ? "text-black" : "text-white"}
+                    fill={clerkUser?.isOwner ? "gold" : "lightblue"}
+                    className={clerkUser?.isOwner ? "text-black" : "text-white"}
                   />
                 </span>
               </p>
               <p className="line-clamp-1 text-sm text-muted-foreground">
-                {clerkUser.email}
+                {clerkUser?.email}
               </p>
             </div>
           </div>

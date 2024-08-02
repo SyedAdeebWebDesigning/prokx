@@ -31,7 +31,7 @@ const MobileNav = ({ navLinks, clerkUser }: MobileNavProps) => {
             {navLinks.map((navLink) => {
               const isActive = pathname === navLink.href;
 
-              if (navLink.isAdmin && !clerkUser.isAdmin) {
+              if (navLink.isAdmin && !clerkUser?.isAdmin) {
                 return null;
               }
 

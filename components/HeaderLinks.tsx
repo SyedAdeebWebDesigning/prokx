@@ -19,7 +19,7 @@ const HeaderLinks = ({ navLink, clerkUser }: HeaderLinksProps) => {
   const isActive = pathname === navLink.href;
 
   // Check if the link is an admin link and the user is an admin
-  const showLink = !navLink.isAdmin || (navLink.isAdmin && clerkUser.isAdmin);
+  const showLink = !navLink.isAdmin || (navLink.isAdmin && clerkUser?.isAdmin);
 
   return (
     <>

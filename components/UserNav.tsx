@@ -28,7 +28,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
       <DropdownMenuTrigger className="rounded-full focus:outline-none">
         <Avatar className="border-4 border-primary/50">
           <AvatarImage
-            src={clerkUser.photo}
+            src={clerkUser?.photo}
             alt="user"
             className="rounded-full"
           />
@@ -46,7 +46,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
           <div className="relative size-8">
             <Image
               className="size-8 rounded-full bg-blue-100 shadow-xl"
-              src={clerkUser.photo}
+              src={clerkUser?.photo}
               fill
               alt="User Photo"
             />
@@ -55,7 +55,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
             <p className="line-clamp-1 text-sm font-medium text-black">
               Manage your account <br />
             </p>
-            <span className="text-xs">{clerkUser.email}</span>
+            <span className="text-xs">{clerkUser?.email}</span>
           </div>
         </div>
         <DropdownMenuSeparator className="h-[2px] bg-gray-300" />
@@ -64,7 +64,7 @@ const UserNav = ({ clerkUser }: UserNavProps) => {
             <DropdownMenuItem asChild className="cursor-pointer">
               <Link href={"/user-profile"}>Update profile</Link>
             </DropdownMenuItem>
-            {clerkUser.hasProfileCompleted ? (
+            {clerkUser?.hasProfileCompleted ? (
               <DropdownMenuItem asChild className="cursor-pointer">
                 <Link href={"/address?type=update"}>Update your address</Link>
               </DropdownMenuItem>
