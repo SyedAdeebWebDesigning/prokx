@@ -181,10 +181,30 @@ export const updateOrderStatus = async (
 ): Promise<any> => {
   try {
     await connectToDatabase();
-    const order = await Order.findByIdAndUpdate
-      (orderId, { orderStatus }, { new: true });
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { orderStatus },
+      { new: true },
+    );
     return JSON.parse(JSON.stringify(order));
   } catch (err) {
     throw new Error("Failed to update order status");
   }
-}
+};
+
+export const updatePaymentStatus = async (
+  orderId: string,
+  paymentStatus: string,
+): Promise<any> => {
+  try {
+    await connectToDatabase();
+    const order = await Order.findByIdAndUpdate(
+      orderId,
+      { paymentStatus },
+      { new: true },
+    );
+    return JSON.parse(JSON.stringify(order));
+  } catch (err) {
+    throw new Error("Failed to update payment status");
+  }
+};
