@@ -142,7 +142,7 @@ export const getOrders = async (): Promise<any> => {
     const order = await Order.find().sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(order));
   } catch (err) {
-    return {};
+    return [];
   }
 };
 
@@ -206,5 +206,19 @@ export const updatePaymentStatus = async (
     return JSON.parse(JSON.stringify(order));
   } catch (err) {
     throw new Error("Failed to update payment status");
+  }
+};
+
+
+export const getOrdersByUserClerkId = async (userClerkId: string) => {
+  try {
+    await connectToDatabase();
+    const orders = await Order.find({ userId: userClerkId }).sort({
+      createdAt: -1,
+    });
+    return JSON.parse(JSON.stringify(orders));
+  } catch (error) {
+    console.error("Error fetching user orders:", error);
+    return [];
   }
 };
