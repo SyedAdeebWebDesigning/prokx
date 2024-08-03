@@ -209,7 +209,7 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                 {isFullText ? "Read less" : "Read more"}{" "}
               </Button>
 
-              <div className="mb-5 mt-6 flex items-center border-b-2 border-gray-100 pb-5">
+              <div className="mb-5 mt-6 flex flex-col items-start space-y-4 border-b-2 border-gray-100 pb-5">
                 <div className="flex space-x-1">
                   <span className="mr-3">Color</span>
                   {product.product_variants.map((variant) => (
@@ -226,35 +226,34 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                     />
                   ))}
                 </div>
-                <div className="ml-6 flex items-center">
+                <div className="flex w-full flex-col justify-center">
                   <span className="mr-3">Size</span>
                   <div className="relative">
-                    <Select value={size} onValueChange={handleSizeChange}>
-                      <SelectTrigger className="flex w-full appearance-none items-center rounded border border-gray-300 py-2 pl-3 pr-10 text-base outline-none">
-                        <SelectValue placeholder="Select a size" />
-                      </SelectTrigger>
-                      <SelectContent className="w-20 bg-gray-100">
-                        <SelectGroup className="">
-                          {selectedVariant?.sizes
-                            .sort((a: any, b: any) => {
-                              const sizeOrder = ["S", "M", "L", "XL", "XXL"];
-                              return (
-                                sizeOrder.indexOf(a.size) -
-                                sizeOrder.indexOf(b.size)
-                              );
-                            })
-                            .map((size: any) => (
-                              <SelectItem
-                                key={size.size}
-                                value={size.size}
-                                className="cursor-pointer border-b-2"
-                              >
-                                {size.size}
-                              </SelectItem>
-                            ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <div className="flex items-center">
+                      <div className="grid w-full grid-cols-4 gap-2 sm:grid-cols-6">
+                        {selectedVariant?.sizes
+                          .sort((a: any, b: any) => {
+                            const sizeOrder = ["S", "M", "L", "XL", "XXL"];
+                            return (
+                              sizeOrder.indexOf(a.size) -
+                              sizeOrder.indexOf(b.size)
+                            );
+                          })
+                          .map((variantSize: any) => (
+                            <div
+                              key={variantSize.size}
+                              className={`cursor-pointer border p-2 ${
+                                variantSize.size === size
+                                  ? "bg-gray-100"
+                                  : "bg-white"
+                              }`}
+                              onClick={() => handleSizeChange(variantSize.size)}
+                            >
+                              {variantSize.size}
+                            </div>
+                          ))}
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
