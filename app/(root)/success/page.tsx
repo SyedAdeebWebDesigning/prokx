@@ -1,12 +1,12 @@
 import Heading from "@/components/Heading";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { getUserRecentOrder } from "@/lib/actions/orders.action";
 import { getProductById } from "@/lib/actions/product.action";
 import { IOrder } from "@/lib/database/models/Orders.model";
 import { IProductDocument } from "@/lib/database/models/Product.model";
-import { cn, formatCurrency, formatDateTime } from "@/lib/utils";
-import { User, currentUser } from "@clerk/nextjs/server";
+import { cn, formatCurrency, formatDateTime, formatOrderId } from "@/lib/utils";
+import { currentUser } from "@clerk/nextjs/server";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -39,8 +39,10 @@ const SuccessPage = async ({}: SuccessPageProps) => {
         <div className="rounded bg-white p-6">
           <div className="mb-6 flex flex-col">
             <h1 className="text-2xl font-medium text-gray-800">
-              Order #
-              <span className="text-primary">{order._id?.slice(0, 24)}</span>
+              Order ID:{" "}
+              <span className="text-primary">
+                {formatOrderId(order._id as string)}
+              </span>
             </h1>
             <p className="text-gray-600">
               {formatDateTime(order.createdAt as Date).dateTime}

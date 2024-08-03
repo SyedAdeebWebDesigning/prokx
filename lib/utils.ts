@@ -56,3 +56,10 @@ export const formatCurrency = (amount: number) => {
     currency: "INR",
   }).format(amount);
 };
+
+export const formatOrderId = (orderId: string) => {
+  return orderId
+    .slice(0, 24)
+    .replace(/(.{4})/g, "$1 ")
+    .toUpperCase();
+};

@@ -12,7 +12,7 @@ import {
   TableCell,
   TableCaption,
 } from "./ui/table";
-import { cn, formatCurrency } from "@/lib/utils";
+import { cn, formatCurrency, formatOrderId } from "@/lib/utils";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -99,7 +99,9 @@ const OrdersTable = ({ orderDetails }: OrdersTableProps) => {
                 )}
               >
                 <TableCell className="font-medium">{index + 1}.</TableCell>
-                <TableCell>{String(order._id)}</TableCell>
+                <TableCell className="font-medium">
+                  {formatOrderId(order._id as string)}
+                </TableCell>
                 <TableCell>{String(order.userId)}</TableCell>
                 <TableCell>{String(order.userEmail)}</TableCell>
                 <TableCell>{order.paymentStatus}</TableCell>

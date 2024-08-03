@@ -45,11 +45,11 @@ const OrderPage = async ({ params }: OrderPageProps) => {
             />
           </div>
         </div>
-        <div className="rounded bg-secondary p-4">
+        <div className="relative rounded bg-secondary p-4">
           <h2 className="my-2 text-center text-3xl text-muted-foreground">
             Product Details
           </h2>
-          <div className="h-[15vh] space-y-2 overflow-y-scroll">
+          <div className="h-[19vh] space-y-2 overflow-y-scroll">
             {order.orderDetails.map((product, index) => {
               const _: IProductDocument = products[index];
               const productVariant = _?.product_variants.find(
@@ -72,11 +72,32 @@ const OrderPage = async ({ params }: OrderPageProps) => {
                       {product.productSize} / {product.productColor})
                     </h3>
                     <h3>Qty: {product.productQty}</h3>
-                    <h3>Price: {formatCurrency(order.orderTotal / 100)}</h3>
+                    <h3>
+                      Price:{" "}
+                      {formatCurrency(
+                        product.productPrice * product.productQty,
+                      )}
+                    </h3>
                   </div>
                 </div>
               );
             })}
+          </div>
+          <div className="absolute bottom-2 left-0 w-full px-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-muted-foreground">Subtotal:</h3>
+              <h3 className="text-muted-foreground">
+                {formatCurrency(order.orderTotal / 100 - 99)}
+              </h3>
+            </div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-muted-foreground">Shipping:</h3>
+              <h3 className="text-muted-foreground">{formatCurrency(99)}</h3>
+            </div>
+            <div className="my-1 flex items-center justify-between border-t-2 text-lg font-medium">
+              <h3 className="">Total:</h3>
+              <h3 className="">{formatCurrency(order.orderTotal / 100)}</h3>
+            </div>
           </div>
         </div>
         <div className="rounded bg-secondary p-4">
