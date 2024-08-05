@@ -19,7 +19,7 @@ import {
 } from "@/lib/cart";
 import { formatCurrency } from "@/lib/utils";
 
-import { Minus, Plus, ShoppingBagIcon, Trash2 } from "lucide-react";
+import { Loader2, Minus, Plus, ShoppingBagIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { getProductById } from "@/lib/actions/product.action"; // Import your server actions
@@ -28,6 +28,8 @@ import { toast } from "react-toastify";
 import { Button } from "./ui/button";
 import { getUserAddress } from "@/lib/actions/user.action";
 import CheckOutButton from "./CheckOutButton";
+import { createOrder } from "@/lib/actions/orders.action";
+import { useRouter } from "next/navigation";
 
 interface CartProps {
   userClerkId: string;
@@ -39,7 +41,10 @@ const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
   const [cart, setCart] = useState(getCart());
   const [cartItems, setCartItems] = useState(cart.items.length);
   const [userAddress, setUserAddress] = useState<any | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const userId = clerkUser;
+
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUserAddress = async (userClerkId: string) => {
@@ -123,27 +128,36 @@ const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
   const shipping = 99;
   const total = subtotal + shipping;
 
-  // const order = {
-  //   userEmail: userEmail,
-  //   orderTotal: total,
-  //   paymentStatus: payment_status,
-  //   userId: metadata.user_clerk_id,
-  //   orderAddress: {
-  //     street: JSON.parse(metadata.customer_address).street,
-  //     city: JSON.parse(metadata.customer_address).city,
-  //     state: JSON.parse(metadata.customer_address).state,
-  //     country: JSON.parse(metadata.customer_address).country,
-  //     postalCode: JSON.parse(metadata.customer_address).postal_code,
-  //   },
-  //   items: JSON.parse(metadata.order_details).map((item: any) => ({
-  //     product_id: item.product_id,
-  //     product_name: item.name,
-  //     product_price: item.price,
-  //     quantity: item.quantity,
-  //     color: item.color,
-  //     size: item.size,
-  //   })),
-  // };
+  const handlePayOnDelivery = async () => {
+    setIsLoading(true);
+    const order = {
+      userEmail: userEmail,
+      orderTotal: total * 100,
+      paymentStatus: "pending",
+      userId: userClerkId,
+      orderAddress: userAddress,
+      items: cart.items.map((item: any) => ({
+        product_id: item.productId,
+        product_name: item.name,
+        product_price: item.price,
+        quantity: item.quantity,
+        color: item.color,
+        size: item.size,
+      })),
+    };
+
+    try {
+      await createOrder(order);
+      toast.success("Order added successfully");
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      clearCart();
+      setIsLoading(false);
+      window.location.reload();
+      window.location.replace("/success");
+    }
+  };
 
   return (
     <Sheet>
@@ -250,15 +264,11 @@ const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
               />
               <Button
                 variant={"link"}
-                className="mt-1"
-                onClick={() => {
-                  clearCart();
-                  toast.success("Cart has been cleared", {
-                    autoClose: false,
-                  });
-                  window.location.reload();
-                }}
+                className="mt-1 flex items-center justify-center"
+                disabled={isLoading}
+                onClick={() => handlePayOnDelivery()}
               >
+                {isLoading && <Loader2 className="mr-1 animate-spin" />}
                 Pay on Delivery
               </Button>
               <Button
