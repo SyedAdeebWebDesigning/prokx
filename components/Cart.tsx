@@ -123,6 +123,28 @@ const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
   const shipping = 99;
   const total = subtotal + shipping;
 
+  // const order = {
+  //   userEmail: userEmail,
+  //   orderTotal: total,
+  //   paymentStatus: payment_status,
+  //   userId: metadata.user_clerk_id,
+  //   orderAddress: {
+  //     street: JSON.parse(metadata.customer_address).street,
+  //     city: JSON.parse(metadata.customer_address).city,
+  //     state: JSON.parse(metadata.customer_address).state,
+  //     country: JSON.parse(metadata.customer_address).country,
+  //     postalCode: JSON.parse(metadata.customer_address).postal_code,
+  //   },
+  //   items: JSON.parse(metadata.order_details).map((item: any) => ({
+  //     product_id: item.product_id,
+  //     product_name: item.name,
+  //     product_price: item.price,
+  //     quantity: item.quantity,
+  //     color: item.color,
+  //     size: item.size,
+  //   })),
+  // };
+
   return (
     <Sheet>
       <SheetTrigger className="outline-none">
@@ -226,6 +248,19 @@ const Cart = ({ userClerkId, clerkUser, userEmail }: CartProps) => {
                 userClerkId={userId}
                 userEmail={userEmail}
               />
+              <Button
+                variant={"link"}
+                className="mt-1"
+                onClick={() => {
+                  clearCart();
+                  toast.success("Cart has been cleared", {
+                    autoClose: false,
+                  });
+                  window.location.reload();
+                }}
+              >
+                Pay on Delivery
+              </Button>
               <Button
                 variant={"destructive"}
                 className="mt-1"
