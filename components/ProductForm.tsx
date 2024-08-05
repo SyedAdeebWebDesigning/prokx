@@ -111,7 +111,7 @@ const ProductForm = ({
     const files = e.target.files;
     if (files) {
       const updatedVariants = [...variants];
-      const updatedImages: Image[] = [];
+      const updatedImages = [...updatedVariants[variantIndex].images];
 
       for (let i = 0; i < files.length; i++) {
         const file = files[i];
@@ -244,7 +244,6 @@ const ProductForm = ({
     );
   }
 
-  
   return (
     <form onSubmit={handleSubmit} className="mx-auto max-w-3xl space-y-8 p-4">
       <div className="space-y-2">
@@ -350,6 +349,7 @@ const ProductForm = ({
               <Input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={(e) => handleFileChange(e, index)}
                 className="block w-full rounded border border-gray-300 px-3 py-2 shadow-sm focus:border-primary focus:ring-primary sm:text-sm"
               />
