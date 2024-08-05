@@ -1,7 +1,6 @@
 "use server";
 
 import Stripe from "stripe";
-import Product from "../database/models/Product.model";
 import Order from "../database/models/Orders.model";
 import { decreaseProductQuantity } from "./product.action";
 import { connectToDatabase } from "../database";
@@ -208,7 +207,6 @@ export const updatePaymentStatus = async (
     throw new Error("Failed to update payment status");
   }
 };
-
 
 export const getOrdersByUserClerkId = async (userClerkId: string) => {
   try {
