@@ -8,7 +8,7 @@ interface AdminOrderPageProps {}
 const AdminOrderPage = async ({}: AdminOrderPageProps) => {
   const data = await getOrders();
   const orders: IOrder[] = JSON.parse(JSON.stringify(data));
-  console.log(orders);
+  
 
   return (
     <main className="my-10">

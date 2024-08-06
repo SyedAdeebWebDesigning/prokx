@@ -198,3 +198,22 @@ export const decreaseProductQuantity = async (
     throw new Error(`Failed to decrease quantity: ${error.message}`);
   }
 };
+
+export const getRelatedProducts = async (
+  category: string,
+  productId: string,
+) => {
+  try {
+    await connectToDatabase();
+    const relatedProducts = await Product.find({
+      product_category: category,
+      _id: { $ne: productId },
+    })
+      .limit(4)
+      .sort({ createdAt: -1 });
+    return JSON.parse(JSON.stringify(relatedProducts));
+  } catch (error) {
+    console.error("Error fetching related products:", error);
+    return [];
+  }
+};

@@ -2,7 +2,7 @@
 
 import { cn, formatCurrency } from "@/lib/utils";
 import { Button } from "./ui/button";
-import { formatDescription, transformDescription } from "@/lib/formatText";
+import { transformDescription } from "@/lib/formatText";
 import Image from "next/image";
 import { toast } from "react-toastify";
 import { addCart, getCart } from "@/lib/cart";
@@ -13,14 +13,6 @@ import {
 } from "@/lib/database/models/Product.model";
 import { useEffect, useState } from "react";
 import { ProductSkeleton } from "./skeletons/productSkeleton";
-import {
-  Select,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./ui/select";
-import { SelectContent } from "@radix-ui/react-select";
 
 interface ProductPageProps {
   paramsId: string;
@@ -69,12 +61,15 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     const variant = product.product_variants.find(
       (variant) => variant.color_name === colorName,
     );
-    router.push(`/products/${id}?color=${variant?.color_name}&size=${size}`);
+    router.push(`/products/${id}?color=${variant?.color_name}&size=${size}`, {
+      scroll: false,
+    });
   };
 
   const handleSizeChange = (newSize: string) => {
     router.push(
       `/products/${id}?color=${selectedVariant?.color_name}&size=${newSize}`,
+      { scroll: false },
     );
   };
 
@@ -159,7 +154,15 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
         <div className="container mx-auto px-5 py-24">
           <div className="mx-auto flex flex-wrap md:w-4/5">
             <div className="relative w-full md:w-1/2">
-              <div className="absolute -top-20 left-0 mx-auto flex w-full justify-center space-x-2 overflow-x-scroll md:-left-20 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
+              <div className="relative h-96 w-full rounded object-center md:h-[500px]">
+                <Image
+                  alt="ecommerce"
+                  layout="fill"
+                  className="object-contain"
+                  src={mainImage || "https://dummyimage.com/400x400"}
+                />
+              </div>
+              <div className="absolute left-0 mx-auto flex w-full justify-center space-x-2 overflow-x-scroll py-2 md:-left-20 md:top-0 md:flex-col md:space-x-0 md:space-y-2">
                 {selectedVariant?.images.map((image: any) => (
                   <Button
                     key={image.url}
@@ -175,16 +178,8 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
                   </Button>
                 ))}
               </div>
-              <div className="relative h-96 w-full rounded object-center md:h-[500px]">
-                <Image
-                  alt="ecommerce"
-                  layout="fill"
-                  className="object-contain"
-                  src={mainImage || "https://dummyimage.com/400x400"}
-                />
-              </div>
             </div>
-            <div className="mt-6 w-full md:mt-0 md:w-1/2 md:py-6 md:pl-10">
+            <div className="mt-24 w-full md:mt-0 md:w-1/2 md:py-6 md:pl-10">
               <h2 className="title-font text-sm tracking-widest text-gray-500">
                 {product.product_category}
               </h2>

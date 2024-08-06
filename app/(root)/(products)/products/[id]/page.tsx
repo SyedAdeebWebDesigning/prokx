@@ -3,6 +3,7 @@ import ProductPage from "@/components/ProductPage";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import MaxWidthWrapper from "@/components/MaxWidthWrapper";
 import { IProductDocument } from "@/lib/database/models/Product.model";
+import RelatedProducts from "@/components/RelatedProducts";
 
 interface PageProps {
   params: {
@@ -27,7 +28,12 @@ const Page = async ({ params }: PageProps) => {
                 Reviews
               </TabsTrigger>
             </TabsList>
-            <TabsContent value="related">{/* RelatedProducts */}</TabsContent>
+            <TabsContent value="related">
+              <RelatedProducts
+                currentProductId={params.id}
+                category={category as string}
+              />
+            </TabsContent>
             <TabsContent value="reviews">Change your reviews here.</TabsContent>
           </Tabs>
         </div>

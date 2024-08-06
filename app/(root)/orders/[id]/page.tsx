@@ -90,7 +90,7 @@ const OrderDetail = async ({ params }: OrderDetailProps) => {
                 <p>{formatCurrency(99)}</p>
               </div>
               <div className="flex h-auto flex-col justify-between">
-                <div className="mb-full flex justify-between pt-2 font-semibold">
+                <div className="mb-full my-10 flex justify-between pt-2 font-semibold md:my-0">
                   <p>Total</p>
                   <p>{formatCurrency(order.orderTotal / 100)}</p>
                 </div>
