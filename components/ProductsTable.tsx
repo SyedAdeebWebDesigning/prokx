@@ -5,20 +5,20 @@ import debounce from "lodash.debounce";
 import type { IProductDocument } from "@/lib/database/models/Product.model";
 import { Button } from "./ui/button";
 import Link from "next/link";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "./ui/table";
+import
+  {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+  } from "./ui/table";
 import { cn, formatCurrency } from "@/lib/utils";
 import Image from "next/image";
 import { Input } from "./ui/input";
 import { Search } from "lucide-react";
-import { formatDescriptionInCard } from "@/lib/formatText";
 import { useRouter } from "next/navigation";
 
 interface ProductsTableProps {
