@@ -23,7 +23,9 @@ export const createProduct = async (productData: CreateProductData) => {
 
     const newProduct = await Product.create(productData);
     return JSON.parse(JSON.stringify(newProduct));
-  } catch (error) {}
+  } catch (error: any) {
+    throw new Error("Error creating: ", error.message);
+  }
 };
 
 // Get a product by ID
