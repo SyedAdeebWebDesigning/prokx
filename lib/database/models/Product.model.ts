@@ -64,3 +64,4 @@ const Product =
   mongoose.model<IProductDocument>("Product", productSchema);
 
 export default Product;
+
