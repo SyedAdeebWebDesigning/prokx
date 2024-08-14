@@ -22,7 +22,7 @@ const Page = async ({ params }: PageProps) => {
       <ProductPage paramsId={params.id} product={product} />
       <MaxWidthWrapper>
         <div className="flex w-full items-center justify-center">
-          <Tabs defaultValue="reviews" className="w-full">
+          <Tabs defaultValue="related" className="w-full">
             <TabsList className="w-full">
               <TabsTrigger value="related" className="w-1/2">
                 Show Related {category}

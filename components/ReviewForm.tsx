@@ -3,6 +3,8 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useState } from "react";
+import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +17,11 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Star } from "lucide-react";
-import { useState } from "react";
+import { addReview } from "@/lib/actions/review.actions";
 
 interface ReviewFormProps {
   userId: string;
+  productId: string;
 }
 
 const formSchema = z.object({
@@ -28,7 +31,8 @@ const formSchema = z.object({
   }),
 });
 
-const ReviewForm = ({ userId }: ReviewFormProps) => {
+const ReviewForm = ({ userId, productId }: ReviewFormProps) => {
+  const [loading, setLoading] = useState(false);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,14 +43,29 @@ const ReviewForm = ({ userId }: ReviewFormProps) => {
 
   const [rating, setRating] = useState<number>(form.getValues("userRating"));
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Handle the form submission with validated values
-    const data = {
-      userId,
-      ...values,
-    };
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setLoading(true);
+    try {
+      const reviewData = {
+        productId: productId,
+        user_clerk_id: userId,
+        user_rating: values.userRating,
+        user_review: values.userReview,
+      };
 
-    console.log(data);
+      console.log(reviewData);
+
+      await addReview(reviewData);
+
+      toast.success("Review submitted successfully");
+      setTimeout(() => {
+        form.reset();
+      }, 1500);
+    } catch (error: any) {
+      toast.error(error.message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const handleRatingChange = (value: number) => {
@@ -114,8 +133,9 @@ const ReviewForm = ({ userId }: ReviewFormProps) => {
         <Button
           type="submit"
           className="w-full bg-blue-600 font-semibold text-white hover:bg-blue-700"
+          disabled={loading}
         >
-          Submit Review
+          {loading ? "Submitting..." : "Submit Review"}
         </Button>
       </form>
     </Form>

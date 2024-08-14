@@ -1,13 +1,49 @@
-import { StarIcon } from "lucide-react";
+import {
+  FaRegStar, // outlined star
+  FaStar, // filled star
+  FaStarHalfAlt, // half filled star
+} from "react-icons/fa";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ReviewForm from "./ReviewForm";
+import {
+  getProductReviewLength,
+  getReviewsByProductId,
+} from "@/lib/actions/review.actions";
 
 interface ProductReviewsProps {
   productId: string;
-  userId: string
+  userId: string;
 }
 
-const ProductReviews = ({ productId, userId }: ProductReviewsProps) => {
+const ProductReviews = async ({ productId, userId }: ProductReviewsProps) => {
+  const data = await getReviewsByProductId(productId);
+  const reviews = JSON.parse(JSON.stringify(data));
+
+  // Calculate the average rating
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce(
+          (sum: number, review: any) => sum + review.user_rating,
+          0,
+        ) / reviews.length
+      : 0;
+
+  const reviewLength = getProductReviewLength(productId);
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        stars.push(<FaStar key={i} className="text-yellow-500" />);
+      } else if (rating >= i - 0.5) {
+        stars.push(<FaStarHalfAlt key={i} className="text-yellow-500" />);
+      } else {
+        stars.push(<FaRegStar key={i} className="text-gray-300" />);
+      }
+    }
+    return stars;
+  };
+
   return (
     <MaxWidthWrapper>
       <div className="flex flex-col justify-between sm:flex-row">
@@ -16,18 +52,14 @@ const ProductReviews = ({ productId, userId }: ProductReviewsProps) => {
         </div>
         <div className="my-5 flex flex-col items-center space-x-2 sm:flex-row">
           <div>
-            <h2 className="text-5xl">4.1</h2>
+            <h2 className="text-5xl">{averageRating.toFixed(1)}</h2>
           </div>
           <div>
             <div className="flex items-center space-x-1">
-              <StarIcon fill="#ffd700" />
-              <StarIcon fill="#ffd700" />
-              <StarIcon fill="#ffd700" />
-              <StarIcon fill="#ffd700" />
-              <StarIcon />
+              {renderStars(averageRating)}
             </div>
             <p className="text-center text-muted-foreground sm:text-left">
-              231 Reviews
+              {reviewLength} Reviews
             </p>
           </div>
         </div>
@@ -36,13 +68,26 @@ const ProductReviews = ({ productId, userId }: ProductReviewsProps) => {
         <div className="flex items-center justify-center">
           <div className="flex w-full flex-col items-center">
             <h2 className="text-2xl font-bold">Add a review</h2>
-            <ReviewForm userId={userId} />
+            <ReviewForm userId={userId} productId={productId} />
           </div>
         </div>
         <div className="flex items-center justify-center">
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold">Reviews</h2>
-            <p className="text-gray-500">No reviews yet</p>
+            {reviews.length > 0 ? (
+              reviews.map((review: any) => (
+                <div key={review._id} className="mb-4 w-full">
+                  <div className="flex items-center space-x-2">
+                    {renderStars(review.user_rating)}
+                    <p className="text-sm text-gray-600">
+                      {review.user_review}
+                    </p>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500">No reviews yet</p>
+            )}
           </div>
         </div>
       </div>
