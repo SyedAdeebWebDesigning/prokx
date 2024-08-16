@@ -6,6 +6,8 @@ import { IProductDocument } from "@/lib/database/models/Product.model";
 import RelatedProducts from "@/components/RelatedProducts";
 import ProductReviews from "@/components/ProductReviews";
 import { currentUser } from "@clerk/nextjs/server";
+import RedirectToSignIn from "@/lib/RedirectToSignIn";
+;
 
 interface PageProps {
   params: {
@@ -17,8 +19,10 @@ const Page = async ({ params }: PageProps) => {
   const product: IProductDocument = await getProductById(params.id);
   const user = await currentUser();
   const category = product.product_category;
+
   return (
     <main>
+      <RedirectToSignIn userId={user?.id || undefined} />
       <ProductPage paramsId={params.id} product={product} />
       <MaxWidthWrapper>
         <div className="flex w-full items-center justify-center">
