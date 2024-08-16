@@ -74,7 +74,7 @@ const ProductReviews = async ({ productId, userId }: ProductReviewsProps) => {
         <div className="flex items-center justify-center">
           <div className="flex flex-col items-center">
             <h2 className="text-2xl font-bold">Reviews</h2>
-            {reviews.length > 0 ? (
+            {/* {reviews.length > 0 ? (
               reviews.map((review: any) => (
                 <div key={review._id} className="mb-4 w-full">
                   <div className="flex items-center space-x-2">
@@ -87,7 +87,7 @@ const ProductReviews = async ({ productId, userId }: ProductReviewsProps) => {
               ))
             ) : (
               <p className="text-gray-500">No reviews yet</p>
-            )}
+            )} */}
           </div>
         </div>
       </div>
