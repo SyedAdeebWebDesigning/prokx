@@ -7,6 +7,7 @@ import RelatedProducts from "@/components/RelatedProducts";
 import ProductReviews from "@/components/ProductReviews";
 import { currentUser } from "@clerk/nextjs/server";
 import RedirectToSignIn from "@/lib/RedirectToSignIn";
+import { getReviewsByProductId } from "@/lib/actions/review.actions";
 ;
 
 interface PageProps {
@@ -20,10 +21,13 @@ const Page = async ({ params }: PageProps) => {
   const user = await currentUser();
   const category = product.product_category;
 
+  const data = await getReviewsByProductId(params.id);
+  const reviews = JSON.parse(JSON.stringify(data));
+
   return (
     <main>
       <RedirectToSignIn userId={user?.id || undefined} />
-      <ProductPage paramsId={params.id} product={product} />
+      <ProductPage paramsId={params.id} product={product} reviews={reviews}/>
       <MaxWidthWrapper>
         <div className="flex w-full items-center justify-center">
           <Tabs defaultValue="related" className="w-full">

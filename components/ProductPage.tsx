@@ -13,13 +13,16 @@ import {
 } from "@/lib/database/models/Product.model";
 import { useEffect, useState } from "react";
 import { ProductSkeleton } from "./skeletons/productSkeleton";
+import { IReview } from "@/lib/database/models/Reviews.model";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 
 interface ProductPageProps {
   paramsId: string;
   product: IProductDocument;
+  reviews: IReview[];
 }
 
-const ProductPage = ({ paramsId, product }: ProductPageProps) => {
+const ProductPage = ({ paramsId, product, reviews }: ProductPageProps) => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const id = JSON.parse(JSON.stringify(paramsId));
@@ -130,6 +133,28 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
     window.location.reload();
   };
 
+  const averageRating =
+    reviews.length > 0
+      ? reviews.reduce(
+          (sum: number, review: any) => sum + review.user_rating,
+          0,
+        ) / reviews.length
+      : 0;
+
+  const renderStars = (rating: number) => {
+    const stars = [];
+    for (let i = 1; i <= 5; i++) {
+      if (rating >= i) {
+        stars.push(<FaStar key={i} className="text-yellow-500" />);
+      } else if (rating >= i - 0.5) {
+        stars.push(<FaStarHalfAlt key={i} className="text-yellow-500" />);
+      } else {
+        stars.push(<FaRegStar key={i} className="text-gray-300" />);
+      }
+    }
+    return stars;
+  };
+
   const isAvailable =
     selectedVariant?.sizes.find((s) => s.size === size)?.available_qty ?? 0 > 0
       ? true
@@ -186,6 +211,17 @@ const ProductPage = ({ paramsId, product }: ProductPageProps) => {
               <h1 className="title-font mb-1 text-3xl font-medium text-gray-900">
                 {product.product_name} ({size}/{color})
               </h1>
+              <div className="ml-2">
+                <div className="flex items-center space-x-1">
+                  {renderStars(averageRating)}
+                  <h2 className="mt-1 text-muted-foreground">
+                    {averageRating.toFixed(1)}
+                  </h2>
+                </div>
+                <p className="flex items-center text-muted-foreground">
+                  {reviews.length} customers reviews
+                </p>
+              </div>
               <div
                 className={`${isFullText ? "line-clamp-none" : "line-clamp-[10]"} `}
               >
