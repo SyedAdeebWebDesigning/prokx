@@ -105,9 +105,9 @@ const ProductCard = ({
               {formatCurrency(Number(product.product_price))}
             </span>
           </div>
-          <p className="line-clamp-3 text-sm text-muted-foreground">
+          <div className="line-clamp-3 text-sm text-muted-foreground">
             {formatDescriptionInCard(product.product_description)}
-          </p>
+          </div>
           <div className="mt-4 flex w-full items-center justify-between">
             <div className="flex items-center space-x-1">
               <span key={index} className="text-lg text-muted-foreground">

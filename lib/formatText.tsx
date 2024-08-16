@@ -13,7 +13,7 @@ export const formatDescriptionInCard = (text: string) => {
           const parts = bulletPointText.split(/(\*\*.*?\*\*)/g).filter(Boolean);
 
           return (
-            <p key={index} className="text-base">
+            <div key={index} className="text-base">
               {parts.map((part, i) => {
                 if (part.startsWith("**") && part.endsWith("**")) {
                   // Remove the ** from the text and make it bold
@@ -22,7 +22,7 @@ export const formatDescriptionInCard = (text: string) => {
                   return <span key={i}>{part}</span>;
                 }
               })}
-            </p>
+            </div>
           );
         }
 
