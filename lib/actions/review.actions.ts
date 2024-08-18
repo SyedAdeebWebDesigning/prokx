@@ -16,7 +16,7 @@ export const addReview = async (reviewData: any) => {
 export const getReviewsByProductId = async (productId: string) => {
   try {
     await connectToDatabase();
-    const data = await Reviews.find({ productId });
+    const data = await Reviews.find({ productId }).sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(data));
   } catch (error: any) {
     throw new Error("Error fetching: ", error);

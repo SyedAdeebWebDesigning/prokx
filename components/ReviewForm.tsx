@@ -53,11 +53,9 @@ const ReviewForm = ({ userId, productId }: ReviewFormProps) => {
         user_review: values.userReview,
       };
 
-      console.log(reviewData);
-
       await addReview(reviewData);
 
-      toast.success("Review submitted successfully");
+      toast.success("Review submitted successfully", { autoClose: false });
       setTimeout(() => {
         form.reset();
       }, 1500);
@@ -65,6 +63,7 @@ const ReviewForm = ({ userId, productId }: ReviewFormProps) => {
       toast.error(error.message);
     } finally {
       setLoading(false);
+      window.location.reload();
     }
   }
 
