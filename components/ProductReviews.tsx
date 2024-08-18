@@ -1,14 +1,12 @@
-import {
-  FaRegStar, // outlined star
-  FaStar, // filled star
-  FaStarHalfAlt, // half filled star
-} from "react-icons/fa";
+import { FaRegStar, FaStar, FaStarHalfAlt } from "react-icons/fa";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import ReviewForm from "./ReviewForm";
 import {
   getProductReviewLength,
   getReviewsByProductId,
 } from "@/lib/actions/review.actions";
+import Review from "./Review";
+import { IReview } from "@/lib/database/models/Reviews.model";
 
 interface ProductReviewsProps {
   productId: string;
@@ -71,20 +69,11 @@ const ProductReviews = async ({ productId, userId }: ProductReviewsProps) => {
             <ReviewForm userId={userId} productId={productId} />
           </div>
         </div>
-        <div className="flex items-center justify-center">
-          <div className="flex flex-col items-center">
+        <div className="flex w-full items-center">
+          <div className="flex h-[30vh] w-full flex-col items-center overflow-scroll">
             <h2 className="text-2xl font-bold">Reviews</h2>
             {reviews.length > 0 ? (
-              reviews.map((review: any) => (
-                <div key={review._id} className="mb-4 w-full">
-                  <div className="flex items-center space-x-2">
-                    {renderStars(review.user_rating)}
-                    <p className="text-sm text-gray-600">
-                      {review.user_review}
-                    </p>
-                  </div>
-                </div>
-              ))
+              reviews.map((review: IReview) => <Review review={review} />)
             ) : (
               <p className="text-gray-500">No reviews yet</p>
             )}

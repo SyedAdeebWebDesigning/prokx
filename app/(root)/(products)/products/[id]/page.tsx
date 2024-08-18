@@ -8,8 +8,6 @@ import ProductReviews from "@/components/ProductReviews";
 import { currentUser } from "@clerk/nextjs/server";
 import RedirectToSignIn from "@/lib/RedirectToSignIn";
 import { getReviewsByProductId } from "@/lib/actions/review.actions";
-;
-
 interface PageProps {
   params: {
     id: string;
@@ -27,7 +25,7 @@ const Page = async ({ params }: PageProps) => {
   return (
     <main>
       <RedirectToSignIn userId={user?.id || undefined} />
-      <ProductPage paramsId={params.id} product={product} reviews={reviews}/>
+      <ProductPage paramsId={params.id} product={product} reviews={reviews} />
       <MaxWidthWrapper>
         <div className="flex w-full items-center justify-center">
           <Tabs defaultValue="related" className="w-full">
