@@ -13,37 +13,37 @@ const Categories = ({}: CategoriesProps) => {
     {
       name: "TShirts",
       image: "/images/collections-tshirts.png",
-      href: "/tshirts",
+      href: "/products?category=T-Shirt",
       objectFit: "contain",
     },
     {
       name: "Caps",
       image: "/images/collections-caps.png",
-      href: "/products/caps",
+      href: "/products?category=Caps",
       objectFit: "contain",
     },
     {
       name: "Hoodies",
       image: "/images/collections-hoodies.png",
-      href: "/hoodies",
+      href: "/products?category=Hoodies",
       objectFit: "contain",
     },
     {
       name: "Sweatshirts",
       image: "/images/collections-sweatshirts.png",
-      href: "/sweatshirts",
+      href: "/products?category=Sweatshirts",
       objectFit: "contain",
     },
     {
       name: "Zippers",
       image: "/images/collections-zippers.png",
-      href: "/zippers",
+      href: "/products?category=Zippers",
       objectFit: "contain",
     },
     {
       name: "Mugs",
       image: "/images/collections-mugs.png",
-      href: "/mugs",
+      href: "/products?category=Mugs",
       objectFit: "contain",
     },
   ];

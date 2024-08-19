@@ -75,11 +75,11 @@ const Header = async ({}: HeaderProps) => {
               className="relative h-[50px] w-[100px] md:w-[200px]"
             >
               <Image
-                src={"/logos/Logo.svg"}
+                src={"/logos/PROK.png"}
                 fill
                 alt="logo"
                 loading="eager"
-                className=""
+                className="object-contain"
               />
             </Link>
             <SignedIn>
