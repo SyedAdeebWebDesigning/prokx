@@ -92,15 +92,20 @@ export const deleteProduct = async (productId: string) => {
 };
 
 // Get all publishable products
-export const getPublishableProducts = async () => {
+export const getPublishableProducts = async (page = 1, limit = 8) => {
   try {
     await connectToDatabase();
 
-    const products = await Product.find({ isPublished: true }).sort({
-      createdAt: -1,
-    });
+    const products = await Product.find({ isPublished: true })
+      .sort({ createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit);
+
     return JSON.parse(JSON.stringify(products));
-  } catch (error) {}
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
 };
 
 export const publishProduct = async (productId: string) => {
@@ -219,4 +224,3 @@ export const getRelatedProducts = async (
     return [];
   }
 };
-
