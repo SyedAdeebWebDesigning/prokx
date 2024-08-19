@@ -4,10 +4,10 @@ import ProductCard from "@/components/ProductCard";
 import { getProductsByCategory } from "@/lib/actions/product.action";
 import { IProductDocument } from "@/lib/database/models/Product.model";
 
-interface capsPageProps {}
+interface TshirtsPageProps {}
 
-const capsPage = async ({}: capsPageProps) => {
-  const data = (await getProductsByCategory("Caps")) as IProductDocument[];
+const TshirtsPage = async ({}: TshirtsPageProps) => {
+  const data = (await getProductsByCategory("T-Shirt")) as IProductDocument[];
   const products = JSON.parse(JSON.stringify(data));
   if (products.length === 0) {
     return (
@@ -18,7 +18,7 @@ const capsPage = async ({}: capsPageProps) => {
   }
   return (
     <div className="my-20">
-      <Heading>Caps Collections </Heading>
+      <Heading>T-Shirts Collections </Heading>
       <MaxWidthWrapper>
         <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
           {products.map((product: IProductDocument, index: number) => {
@@ -30,4 +30,4 @@ const capsPage = async ({}: capsPageProps) => {
   );
 };
 
-export default capsPage;
+export default TshirtsPage;
