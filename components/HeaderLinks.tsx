@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import clsx from "clsx";
 import User from "@/lib/database/models/User.model";
 
@@ -15,8 +15,13 @@ interface HeaderLinksProps {
 }
 
 const HeaderLinks = ({ navLink, clerkUser }: HeaderLinksProps) => {
-  const pathname = usePathname();
-  const isActive = pathname === navLink.href;
+  const searchParams = useSearchParams();
+  const category = searchParams.get("category");
+
+  // Check if the link is active based on category query parameter
+  const isActive = category
+    ? navLink.href.includes(category)
+    : navLink.href === "/products";
 
   // Check if the link is an admin link and the user is an admin
   const showLink = !navLink.isAdmin || (navLink.isAdmin && clerkUser?.isAdmin);

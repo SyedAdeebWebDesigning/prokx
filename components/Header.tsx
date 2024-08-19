@@ -28,28 +28,28 @@ const Header = async ({}: HeaderProps) => {
       href: "/products",
     },
     {
-      name: "TShirts",
-      href: "/products/tshirts",
+      name: "T-Shirt",
+      href: "/products?category=T-Shirt",
     },
     {
       name: "Hoodies",
-      href: "/products/hoodies",
+      href: "/products?category=Hoodies",
     },
     {
       name: "Sweatshirts",
-      href: "/products/sweatshirts",
+      href: "/products?category=Sweatshirts",
     },
     {
       name: "Zippers",
-      href: "/products/zipper",
+      href: "/products?category=Zippers",
     },
     {
       name: "Mugs",
-      href: "/products/mugs",
+      href: "/products?category=Mugs",
     },
     {
       name: "Caps",
-      href: "/products/caps",
+      href: "/products?category=Caps",
     },
     {
       name: "Orders",
