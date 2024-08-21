@@ -16,11 +16,19 @@ export interface CreateProductData {
   }[];
   isPublished?: boolean; // Optional, depending on your requirements
 }
-// Create a new product
-export const createProduct = async (productData: CreateProductData) => {
+
+/**
+ * Creates a new product in the database.
+ *
+ * @param {CreateProductData} productData - The product data to create.
+ * @returns {Promise<IProductDocument>} The newly created product.
+ * @throws Will throw an error if the product creation fails.
+ */
+export const createProduct = async (
+  productData: CreateProductData,
+): Promise<IProductDocument> => {
   try {
     await connectToDatabase();
-
     const newProduct = await Product.create(productData);
     return JSON.parse(JSON.stringify(newProduct));
   } catch (error: any) {
@@ -28,11 +36,18 @@ export const createProduct = async (productData: CreateProductData) => {
   }
 };
 
-// Get a product by ID
-export const getProductById = async (productId: string) => {
+/**
+ * Retrieves a product by its ID.
+ *
+ * @param {string} productId - The ID of the product to retrieve.
+ * @returns {Promise<IProductDocument | null>} The product if found, otherwise null.
+ * @throws Will throw an error if the product is not found or retrieval fails.
+ */
+export const getProductById = async (
+  productId: string,
+): Promise<IProductDocument | any> => {
   try {
     await connectToDatabase();
-
     const product = await Product.findById(productId);
     if (!product) {
       throw new Error("Product not found");
@@ -41,24 +56,34 @@ export const getProductById = async (productId: string) => {
   } catch (error) {}
 };
 
-// Get all products
-export const getAllProducts = async () => {
+/**
+ * Retrieves all products in the database.
+ *
+ * @returns {Promise<IProductDocument[]>} An array of all products.
+ * @throws Will throw an error if the retrieval fails.
+ */
+export const getAllProducts = async (): Promise<IProductDocument[] | any> => {
   try {
     await connectToDatabase();
-
     const products = await Product.find();
     return JSON.parse(JSON.stringify(products));
   } catch (error) {}
 };
 
-// Update a product
+/**
+ * Updates a product by its ID with the provided data.
+ *
+ * @param {string} productId - The ID of the product to update.
+ * @param {Partial<IProductDocument>} updateData - The data to update the product with.
+ * @returns {Promise<IProductDocument | null>} The updated product if found, otherwise null.
+ * @throws Will throw an error if the product is not found or update fails.
+ */
 export const updateProduct = async (
   productId: string,
   updateData: Partial<IProductDocument>,
-) => {
+): Promise<IProductDocument | any> => {
   try {
     await connectToDatabase();
-
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       updateData,
@@ -67,40 +92,51 @@ export const updateProduct = async (
         runValidators: true, // Validate the updates against the schema
       },
     );
-
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
-
     return JSON.parse(JSON.stringify(updatedProduct));
   } catch (error) {}
 };
 
-// Delete a product
-export const deleteProduct = async (productId: string) => {
+/**
+ * Deletes a product by its ID.
+ *
+ * @param {string} productId - The ID of the product to delete.
+ * @returns {Promise<IProductDocument | null>} The deleted product if found, otherwise null.
+ * @throws Will throw an error if the product is not found or deletion fails.
+ */
+export const deleteProduct = async (
+  productId: string,
+): Promise<IProductDocument | any> => {
   try {
     await connectToDatabase();
-
     const deletedProduct = await Product.findByIdAndDelete(productId);
-
     if (!deletedProduct) {
       throw new Error("Product not found");
     }
-
     return JSON.parse(JSON.stringify(deletedProduct));
   } catch (error) {}
 };
 
-// Get all publishable products
-export const getPublishableProducts = async (page = 1, limit = 8) => {
+/**
+ * Retrieves all publishable products with pagination support.
+ *
+ * @param {number} [page=1] - The page number to retrieve.
+ * @param {number} [limit=8] - The number of products per page.
+ * @returns {Promise<IProductDocument[]>} An array of publishable products.
+ * @throws Will throw an error if retrieval fails.
+ */
+export const getPublishableProducts = async (
+  page: number = 1,
+  limit: number = 8,
+): Promise<IProductDocument[]> => {
   try {
     await connectToDatabase();
-
     const products = await Product.find({ isPublished: true })
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit);
-
     return JSON.parse(JSON.stringify(products));
   } catch (error) {
     console.error(error);
@@ -108,56 +144,84 @@ export const getPublishableProducts = async (page = 1, limit = 8) => {
   }
 };
 
-export const publishProduct = async (productId: string) => {
+/**
+ * Publishes a product by its ID.
+ *
+ * @param {string} productId - The ID of the product to publish.
+ * @returns {Promise<IProductDocument | null>} The published product if found, otherwise null.
+ * @throws Will throw an error if the product is not found or publishing fails.
+ */
+export const publishProduct = async (
+  productId: string,
+): Promise<IProductDocument | any> => {
   try {
     await connectToDatabase();
-
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { isPublished: true },
       { new: true },
     );
-
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
-
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
   } catch (error) {}
 };
 
-// Action for un-publishing a product
-export const unpublishProduct = async (productId: string) => {
+/**
+ * Unpublishes a product by its ID.
+ *
+ * @param {string} productId - The ID of the product to unpublish.
+ * @returns {Promise<IProductDocument | null>} The unpublished product if found, otherwise null.
+ * @throws Will throw an error if the product is not found or unpublishing fails.
+ */
+export const unpublishProduct = async (
+  productId: string,
+): Promise<IProductDocument | any> => {
   try {
     await connectToDatabase();
-
     const updatedProduct = await Product.findByIdAndUpdate(
       productId,
       { isPublished: false },
       { new: true },
     );
-
     if (!updatedProduct) {
       throw new Error("Product not found");
     }
-
     return updatedProduct.toJSON(); // Convert to JSON-serializable object
   } catch (error) {}
 };
 
-export const getProductsByCategory = async (category: string) => {
+/**
+ * Retrieves products by category.
+ *
+ * @param {string} category - The category of products to retrieve.
+ * @returns {Promise<IProductDocument[]>} An array of products in the specified category.
+ * @throws Will throw an error if retrieval fails.
+ */
+export const getProductsByCategory = async (
+  category: string,
+): Promise<IProductDocument[] | any> => {
   try {
     await connectToDatabase();
     const products = await Product.find({
       product_category: category,
       isPublished: true,
-    }).sort({
-      createdAt: -1,
-    });
+    }).sort({ createdAt: -1 });
     return JSON.parse(JSON.stringify(products));
   } catch (error) {}
 };
 
+/**
+ * Decreases the available quantity of a product variant by a specified amount.
+ *
+ * @param {string} productId - The ID of the product.
+ * @param {string} size - The size of the variant to decrease quantity for.
+ * @param {string} color - The color of the variant to decrease quantity for.
+ * @param {number} quantity - The amount to decrease the quantity by.
+ * @returns {Promise<void>}
+ * @throws Will throw an error if the product, variant, size, or quantity is invalid.
+ */
 export const decreaseProductQuantity = async (
   productId: string,
   size: string,
@@ -165,51 +229,45 @@ export const decreaseProductQuantity = async (
   quantity: number,
 ): Promise<void> => {
   try {
-    // Find the product by productId
     const product: IProductDocument | null = await Product.findById(productId);
-
     if (!product) {
       throw new Error("Product not found");
     }
-
-    // Find the specific variant by size and color
     const variant = product.product_variants.find((variant) => {
       return (
         variant.color_name === color &&
         variant.sizes.some((s) => s.size === size)
       );
     });
-
     if (!variant) {
       throw new Error("Variant not found");
     }
-
-    // Find the size object within the variant
     const sizeObj = variant.sizes.find((s) => s.size === size);
-
     if (!sizeObj) {
       throw new Error("Size not found");
     }
-
-    // Check if there is enough quantity to decrease
     if (sizeObj.available_qty < quantity) {
       throw new Error("Not enough quantity available");
     }
-
-    // Decrease the available quantity
     sizeObj.available_qty -= quantity;
-
-    // Save the updated product document
     await product.save();
   } catch (error: any) {
     throw new Error(`Failed to decrease quantity: ${error.message}`);
   }
 };
 
+/**
+ * Retrieves related products by category, excluding a specific product ID.
+ *
+ * @param {string} category - The category of related products.
+ * @param {string} productId - The ID of the product to exclude from the results.
+ * @returns {Promise<IProductDocument[]>} An array of related products.
+ * @throws Will throw an error if retrieval fails.
+ */
 export const getRelatedProducts = async (
   category: string,
   productId: string,
-) => {
+): Promise<IProductDocument[]> => {
   try {
     await connectToDatabase();
     const relatedProducts = await Product.find({

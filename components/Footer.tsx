@@ -17,27 +17,27 @@ const Footer = ({}: FooterProps) => {
         },
         {
           name: "TShirts",
-          href: "/tshirts",
+          href: "/products?category=T-Shirt",
         },
         {
           name: "Hoodies",
-          href: "/hoodies",
+          href: "/products?category=Hoodies",
         },
         {
           name: "Sweatshirts",
-          href: "/sweatshirts",
+          href: "/products?category=Sweatshirts",
         },
         {
           name: "Zippers",
-          href: "/zippers",
+          href: "/products?category=Zippers",
         },
         {
           name: "Mugs",
-          href: "/mugs",
+          href: "/products?category=Mugs",
         },
         {
           name: "Caps",
-          href: "/products/caps",
+          href: "/products?category=Caps",
         },
       ],
     },
