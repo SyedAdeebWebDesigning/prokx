@@ -5,6 +5,16 @@ import Order from "../database/models/Orders.model";
 import { decreaseProductQuantity } from "./product.action";
 import { connectToDatabase } from "../database";
 
+/**
+ * Creates a Stripe Checkout session for the user's cart.
+ *
+ * @param {any[]} cartItems - The items in the user's cart.
+ * @param {any} userAddress - The address of the user.
+ * @param {string} userClerkId - The unique identifier of the user from Clerk.
+ * @param {string} userEmail - The email address of the user.
+ * @returns {Promise<string>} - The URL of the created Stripe Checkout session.
+ * @throws {Error} - If the checkout session creation fails.
+ */
 export const createStripeCheckoutSession = async (
   cartItems: any[],
   userAddress: any,
@@ -16,7 +26,6 @@ export const createStripeCheckoutSession = async (
   });
 
   try {
-    // Validate cart items and construct line_items array
     const line_items = cartItems.map((item) => {
       if (!item.price || !item.name || !item.quantity) {
         throw new Error(`Invalid cart item: ${JSON.stringify(item)}`);
@@ -24,30 +33,28 @@ export const createStripeCheckoutSession = async (
       return {
         price_data: {
           currency: "INR",
-          unit_amount: item.price * 100, // Stripe expects amount in cents
+          unit_amount: item.price * 100,
           product_data: {
             name: item.name,
-            description: `${item.size}, ${item.color}`, // Optional description
+            description: `${item.size}, ${item.color}`,
           },
         },
         quantity: item.quantity,
       };
     });
 
-    // Add shipping fee
     line_items.push({
       price_data: {
         currency: "INR",
-        unit_amount: 99 * 100, // ₹99 shipping fee in cents
+        unit_amount: 99 * 100,
         product_data: {
           name: "Shipping Fee",
-          description: "Standard shipping fee", // Optional description
+          description: "Standard shipping fee",
         },
       },
       quantity: 1,
     });
 
-    // Construct metadata order details
     const orderDetails = cartItems.map((item) => ({
       product_id: item.productId,
       name: item.name,
@@ -57,7 +64,6 @@ export const createStripeCheckoutSession = async (
       price: item.price,
     }));
 
-    // Create Checkout Session
     const session = await stripe.checkout.sessions.create({
       line_items,
       mode: "payment",
@@ -88,19 +94,24 @@ export const createStripeCheckoutSession = async (
   }
 };
 
+/**
+ * Creates a new order in the database.
+ *
+ * @param {any} order - The order data to be created.
+ * @returns {Promise<void>} - A promise that resolves when the order is created.
+ * @throws {Error} - If creating the order fails.
+ */
 export const createOrder = async (order: any): Promise<void> => {
   try {
     await connectToDatabase();
-    console.log("Received order:", order); // Debugging: log the order received
+    console.log("Received order:", order);
 
-    // Ensure order.items is defined and is an array
     if (!Array.isArray(order.items)) {
       throw new Error("order.items is not an array");
     }
 
-    // Iterate through each item in the order
     for (const item of order.items) {
-      console.log("Decreasing quantity for product ID:", item.product_id); // Debugging
+      console.log("Decreasing quantity for product ID:", item.product_id);
       await decreaseProductQuantity(
         item.product_id,
         item.size,
@@ -109,7 +120,6 @@ export const createOrder = async (order: any): Promise<void> => {
       );
     }
 
-    // Create and save the order in the orders collection
     const newOrder = {
       userEmail: order.userEmail,
       orderTotal: order.orderTotal,
@@ -135,6 +145,11 @@ export const createOrder = async (order: any): Promise<void> => {
   }
 };
 
+/**
+ * Retrieves all orders from the database, sorted by creation date.
+ *
+ * @returns {Promise<any>} - A promise that resolves with the retrieved orders.
+ */
 export const getOrders = async (): Promise<any> => {
   try {
     await connectToDatabase();
@@ -145,6 +160,13 @@ export const getOrders = async (): Promise<any> => {
   }
 };
 
+/**
+ * Retrieves a specific order by its ID.
+ *
+ * @param {string} orderId - The ID of the order to retrieve.
+ * @returns {Promise<any>} - A promise that resolves with the retrieved order.
+ * @throws {Error} - If fetching the order fails.
+ */
 export const getOrderById = async (orderId: string): Promise<any> => {
   try {
     await connectToDatabase();
@@ -155,25 +177,40 @@ export const getOrderById = async (orderId: string): Promise<any> => {
   }
 };
 
+/**
+ * Retrieves the most recent order for a specific user.
+ *
+ * @param {string} userClerkId - The unique identifier of the user from Clerk.
+ * @returns {Promise<any>} - A promise that resolves with the most recent order.
+ * @throws {Error} - If no orders are found or if fetching fails.
+ */
 export const getUserRecentOrder = async (userClerkId: string) => {
   try {
     await connectToDatabase();
     const order = await Order.findOne({ userId: userClerkId })
       .sort({ createdAt: -1 })
       .limit(1)
-      .lean(); // Use lean() for better performance
+      .lean();
 
     if (!order) {
       throw new Error("No orders found for this user");
     }
 
-    return order; // lean() returns plain JavaScript objects
+    return order;
   } catch (error) {
     console.error("Error fetching user order:", error);
     return {};
   }
 };
 
+/**
+ * Updates the status of an order.
+ *
+ * @param {string} orderId - The ID of the order to update.
+ * @param {string} orderStatus - The new status for the order.
+ * @returns {Promise<any>} - A promise that resolves with the updated order.
+ * @throws {Error} - If updating the order status fails.
+ */
 export const updateOrderStatus = async (
   orderId: string,
   orderStatus: string,
@@ -191,6 +228,14 @@ export const updateOrderStatus = async (
   }
 };
 
+/**
+ * Updates the payment status of an order.
+ *
+ * @param {string} orderId - The ID of the order to update.
+ * @param {string} paymentStatus - The new payment status for the order.
+ * @returns {Promise<any>} - A promise that resolves with the updated order.
+ * @throws {Error} - If updating the payment status fails.
+ */
 export const updatePaymentStatus = async (
   orderId: string,
   paymentStatus: string,
@@ -208,6 +253,13 @@ export const updatePaymentStatus = async (
   }
 };
 
+/**
+ * Retrieves all orders for a specific user.
+ *
+ * @param {string} userClerkId - The unique identifier of the user from Clerk.
+ * @returns {Promise<any>} - A promise that resolves with the retrieved orders.
+ * @throws {Error} - If fetching the user's orders fails.
+ */
 export const getOrdersByUserClerkId = async (userClerkId: string) => {
   try {
     await connectToDatabase();
@@ -220,5 +272,3 @@ export const getOrdersByUserClerkId = async (userClerkId: string) => {
     return [];
   }
 };
-
-
